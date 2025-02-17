@@ -3,7 +3,10 @@ import { z } from "zod";
 
 export const config = createEnv({
   server: {
+    DOPPLER_ENVIRONMENT: z.string().min(1),
+
     DISCORD_TOKEN: z.string().min(1),
+    DEV_SERVER_ID: z.string().min(1),
   },
 
   /**

@@ -1,0 +1,33 @@
+{
+  "name": "gridscout",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GridScout/GridScout"
+  },
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.1.27",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "@sapphire/result": "^2.7.2",
+    "chalk": "^5.4.1",
+    "ioredis": "^5.4.2",
+    "winston": "^3.17.0"
+  }
+}

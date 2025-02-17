@@ -1,0 +1,13 @@
+{
+  "name": "bot",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch ./src/index.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "eslint": "^8"
+  }
+}

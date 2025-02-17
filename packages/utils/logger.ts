@@ -1,9 +1,8 @@
 import winston from "winston";
 import chalk from "chalk";
+import { config } from "@/config";
 
-const debugEnabled = process.argv.some(
-  (arg) => arg === "-D" || arg === "--debug",
-);
+const debugEnabled = config.DOPPLER_ENVIRONMENT === "dev";
 
 const levelColors: { [key: string]: (msg: string) => string } = {
   error: chalk.red,

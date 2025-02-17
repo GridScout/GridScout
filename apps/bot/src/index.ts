@@ -1,48 +1,21 @@
-import { ErgastClient } from "@/api";
+import { config } from "@/config";
 import { Logger } from "@/utils";
+import { Client, Collection } from "discord.js";
+import SlashCommand from "@/bot/structures/slashCommand";
 
-(async () => {
-  const ergast = new ErgastClient();
+Logger.info("Starting GridScout 🏎️");
 
-  const start = Date.now();
+export const client = new Client({
+  intents: [],
+  allowedMentions: {
+    parse: ["users"],
+  },
+});
 
-  // const driverData = await ergast.driver.getDriver("max_verstappen");
+export const commands: Collection<string, SlashCommand> = new Collection();
 
-  // if (driverData.isErr()) {
-  //   console.error(driverData.unwrapErr());
-  //   return;
-  // }
+// Logger.info("Loading commands...");
 
-  // console.log(driverData.unwrap());
+// Logger.info("Loading events...");
 
-  // const driverStandings = await ergast.standings.getDriverStandings(2024);
-
-  // if (driverStandings.isErr()) {
-  //   console.error(driverStandings.unwrapErr());
-  //   return;
-  // }
-
-  // console.log(driverStandings.unwrap().standings);
-
-  // const constructorStandings =
-  //   await ergast.standings.getConstructorStandings(2024);
-
-  // if (constructorStandings.isErr()) {
-  //   console.error(constructorStandings.unwrapErr());
-  //   return;
-  // }
-
-  // console.log(constructorStandings.unwrap());
-
-  // const calendar = await ergast.calendar.getCalendar();
-
-  // if (calendar.isErr()) {W
-  //   console.error(calendar.unwrapErr());
-  //   return;
-  // }
-
-  // console.log(calendar.unwrap().races);
-
-  const end = Date.now();
-  Logger.info(`Time: ${end - start}ms`);
-})();
+client.login(config.DISCORD_TOKEN);

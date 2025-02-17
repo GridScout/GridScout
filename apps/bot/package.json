@@ -2,6 +2,6 @@
   "name": "bot",
   "private": true,
   "scripts": {
-    "dev": "bun --watch ./src/index.ts"
+    "dev": "doppler run -- bun --watch ./src/index.ts"
   }
 }

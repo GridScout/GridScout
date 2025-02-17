@@ -1,4 +1,4 @@
-![Under Development](https://cdn.maxmoon.sh/UuatvGsaSB.png)
+![Under Development](https://cdn.maxmoon.sh/n2pwvryzcG.png)
 
 ![GridScout Banner Image](https://cdn.maxmoon.sh/6tv4wannUK.png)
 

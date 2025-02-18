@@ -2,6 +2,9 @@ import { ErgastClient } from "../utils/request";
 import { Calendar, ERace, ERacesResponse, RaceDates } from "@/types";
 import { Result, err, ok } from "@sapphire/result";
 
+import countries from "i18n-iso-countries";
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
+
 export class CalendarService {
   constructor(private readonly client: ErgastClient) {}
 
@@ -53,7 +56,7 @@ export class CalendarService {
 
         return {
           raceName: race.raceName,
-          country: race.Circuit.Location.country,
+          country: this.normaliseCountry(race.Circuit.Location.country) || null,
           dates,
         };
       });
@@ -67,5 +70,15 @@ export class CalendarService {
     } catch (error) {
       return err(`Error fetching calendar: ${error}`);
     }
+  }
+
+  /**
+   * Normalise country to i18n-iso-countries format
+   * @param country - The country to normalise
+   * @returns {string} The normalised country
+   */
+  private normaliseCountry(country: string): string | null {
+    const countryCode = countries.getAlpha2Code(country, "en");
+    return countryCode ? countries.getName(countryCode, "en") || null : null;
   }
 }

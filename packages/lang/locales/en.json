@@ -1,0 +1,11 @@
+{
+  "calendar": {
+    "title": "Race Calendar",
+    "seasonTitle": "{season} Season",
+    "error": "Error fetching calendar...",
+    "footer": "⏰ All dates and times have been automatically converted to your local timezone"
+  },
+  "bot": {
+    "activity": "the next Grand Prix 🏆"
+  }
+}

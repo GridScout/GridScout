@@ -5,7 +5,7 @@ export interface Calendar {
 
 interface Race {
   raceName: string;
-  country: string;
+  country: string | null;
   dates: RaceDates;
 }
 

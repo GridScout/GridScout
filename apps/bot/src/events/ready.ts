@@ -46,8 +46,6 @@ export default class ReadyEvent extends Event {
         }),
       );
 
-      console.log(commandData);
-
       if (config.DOPPLER_ENVIRONMENT === "dev") {
         const devGuild = client.guilds.cache.get(config.DEV_SERVER_ID);
         if (!devGuild) {

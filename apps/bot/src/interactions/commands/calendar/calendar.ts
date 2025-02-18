@@ -1,12 +1,11 @@
 import SlashCommand from "@/bot/structures/slashCommand";
 import countryEmojis from "@/lang/emojis/countries.json";
 import numberEmojis from "@/lang/emojis/numbers.json";
-import messages from "@/lang/locales/en.json"; // NEW: Import localized messages
+import messages from "@/lang/locales/en.json";
 
 import { ErgastClient } from "@/api";
 
 import {
-  EmbedBuilder,
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
 } from "discord.js";

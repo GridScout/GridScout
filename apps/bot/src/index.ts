@@ -32,6 +32,7 @@ client.login(config.DISCORD_TOKEN);
 Sentry.init({
   dsn: config.SENTRY_DSN,
   tracesSampleRate: 1.0, // Capture 100% of the transactions
+  environment: config.DOPPLER_ENVIRONMENT,
 });
 
 process.on("unhandledRejection", (error) => {

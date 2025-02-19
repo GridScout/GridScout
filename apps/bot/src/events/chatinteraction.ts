@@ -1,8 +1,8 @@
 import { commands } from "@/bot/index";
 import { Logger } from "@/utils";
 import Event from "@/bot/structures/event";
-
-import type { ChatInputCommandInteraction } from "discord.js";
+import * as Sentry from "@sentry/bun";
+import { ChannelType, ChatInputCommandInteraction } from "discord.js";
 
 export default class ChatInteractionEvent extends Event {
   constructor() {
@@ -23,18 +23,40 @@ export default class ChatInteractionEvent extends Event {
       }));
     }
 
-    if (command.options?.guildOnly && !interaction.guild)
+    if (command.options?.guildOnly && !interaction.guild) {
       return void (await interaction.reply({
         content: "This command can only be executed in a server",
       }));
-
-    try {
-      await command.execute(interaction);
-    } catch (error) {
-      Logger.error(
-        `Error executing command ${interaction.commandName} by ${interaction.user.username}`,
-      );
-      Logger.error(String(error));
     }
+
+    await Sentry.startSpan(
+      {
+        op: "command",
+        name: `${interaction.commandName}`,
+        attributes: {
+          guild: interaction.guild?.name,
+          guild_id: interaction.guild?.id,
+          user: interaction.user.username,
+          user_id: interaction.user.id,
+          channel:
+            interaction.channel?.type === ChannelType.DM
+              ? "DM"
+              : (interaction.channel?.name ?? "Unknown"),
+          channel_id: interaction.channel?.id,
+        },
+      },
+      async () => {
+        try {
+          await command.execute(interaction);
+        } catch (error) {
+          Logger.error(
+            `Error executing command ${interaction.commandName} by ${interaction.user.username}`,
+          );
+          Logger.error(String(error));
+          Sentry.captureException(error);
+          throw error;
+        }
+      },
+    );
   }
 }

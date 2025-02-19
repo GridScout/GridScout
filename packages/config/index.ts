@@ -6,7 +6,9 @@ export const config = createEnv({
     DOPPLER_ENVIRONMENT: z.string().min(1),
 
     DISCORD_TOKEN: z.string().min(1),
-    DEV_SERVER_ID: z.string().min(1),
+    DEV_SERVER_ID: z.string(),
+
+    SENTRY_DSN: z.string(),
   },
 
   /**

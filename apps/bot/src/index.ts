@@ -3,6 +3,7 @@ import { Logger } from "@/utils";
 import { loadCommands } from "@/bot/handlers/commands";
 import { loadEvents } from "@/bot/handlers/events";
 import SlashCommand from "@/bot/structures/slashCommand";
+import * as Sentry from "@sentry/bun";
 
 import { Client, Collection } from "discord.js";
 
@@ -27,3 +28,16 @@ export const commands: Collection<string, SlashCommand> = new Collection();
 })();
 
 client.login(config.DISCORD_TOKEN);
+
+Sentry.init({
+  dsn: config.SENTRY_DSN,
+  tracesSampleRate: 1.0, // Capture 100% of the transactions
+});
+
+process.on("unhandledRejection", (error) => {
+  Logger.error("An error occurred", error);
+});
+
+process.on("uncaughtException", (error) => {
+  Logger.error("An error occurred", error);
+});

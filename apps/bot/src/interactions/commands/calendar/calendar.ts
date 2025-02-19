@@ -156,12 +156,19 @@ export default class Command extends SlashCommand {
 }
 
 function formatDate(date: string, time?: string): string {
-  const d = time ? new Date(`${date}T${time}`) : new Date(date);
-  const day = d.getDate();
-  const ordinal = getOrdinal(day);
-  const month = d.toLocaleString("en-US", { month: "long" });
-  const year = d.getFullYear();
-  return `${day}${ordinal} ${month} ${year}`;
+  if (time) {
+    const unixTimestamp = Math.floor(
+      new Date(`${date}T${time}`).getTime() / 1000,
+    );
+    return `<t:${unixTimestamp}:f>`;
+  } else {
+    const d = new Date(date);
+    const day = d.getDate();
+    const ordinal = getOrdinal(day);
+    const month = d.toLocaleString("en-US", { month: "long" });
+    const year = d.getFullYear();
+    return `${day}${ordinal} ${month} ${year}`;
+  }
 }
 
 function getOrdinal(day: number): string {

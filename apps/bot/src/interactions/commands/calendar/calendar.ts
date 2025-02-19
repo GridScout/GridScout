@@ -1,7 +1,6 @@
 import SlashCommand from "@/bot/structures/slashCommand";
 import countryEmojis from "@/lang/emojis/countries.json";
 import numberEmojis from "@/lang/emojis/numbers.json";
-import messages from "@/lang/locales/en.json";
 
 import { ErgastClient } from "@/api";
 
@@ -9,7 +8,8 @@ import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
 } from "discord.js";
-import { primaryEmbed } from "@/utils";
+import { errorEmbed, primaryEmbed } from "@/utils";
+import i18next from "@/lang";
 
 const ergast = new ErgastClient();
 
@@ -18,19 +18,32 @@ export default class Command extends SlashCommand {
     super("calendar", "View the upcoming or historical F1 calendar");
   }
 
-  override async execute(interaction: ChatInputCommandInteraction) {
+  override async execute(
+    interaction: ChatInputCommandInteraction,
+    locale: string,
+  ) {
     await interaction.deferReply();
 
     // Grab the season specified, or current year if not
     const season =
-      interaction.options.getString("season") ??
+      interaction.options.getInteger("season")?.toString() ??
       new Date().getFullYear().toString();
 
     // Fetch data
     const calendar = await ergast.calendar.getCalendar(season);
 
     if (calendar.isErr()) {
-      return interaction.editReply(messages.calendar.error);
+      return interaction.editReply({
+        embeds: [
+          errorEmbed(
+            "",
+            i18next.t("commands.calendar.error.description", {
+              year: season,
+              lng: locale,
+            }),
+          ),
+        ],
+      });
     }
 
     const races = calendar.unwrap().races;
@@ -65,12 +78,30 @@ export default class Command extends SlashCommand {
       const upcomingRace = races[upcomingIndex];
 
       const sessions = [
-        { key: "firstPractice", label: "> **FP1**" },
-        { key: "secondPractice", label: "> **FP2**" },
-        { key: "thirdPractice", label: "> **FP3**" },
-        { key: "sprintQualifying", label: "> **Sprint Qualifying**" },
-        { key: "sprint", label: "> **Sprint**" },
-        { key: "qualifying", label: "> **Qualifying**" },
+        {
+          key: "firstPractice",
+          label: `> ${i18next.t("commands.calendar.sessions.fp1", { lng: locale })}`,
+        },
+        {
+          key: "secondPractice",
+          label: `> ${i18next.t("commands.calendar.sessions.fp2", { lng: locale })}`,
+        },
+        {
+          key: "thirdPractice",
+          label: `> ${i18next.t("commands.calendar.sessions.fp3", { lng: locale })}`,
+        },
+        {
+          key: "sprintQualifying",
+          label: `> ${i18next.t("commands.calendar.sessions.sprintQualifying", { lng: locale })}`,
+        },
+        {
+          key: "sprint",
+          label: `> ${i18next.t("commands.calendar.sessions.sprint", { lng: locale })}`,
+        },
+        {
+          key: "qualifying",
+          label: `> ${i18next.t("commands.calendar.sessions.qualifying", { lng: locale })}`,
+        },
       ];
 
       const detailsLines = sessions
@@ -91,14 +122,17 @@ export default class Command extends SlashCommand {
       }
     }
 
-    const title = messages.calendar.seasonTitle.replace("{season}", season);
+    const title = i18next.t("commands.calendar.success.title", {
+      season,
+      lng: locale,
+    });
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
-      name: messages.calendar.title,
+      name: i18next.t("commands.calendar.success.author", { lng: locale }),
     });
 
     if (races.some((race) => race.dates.race.time)) {
       embed.setFooter({
-        text: messages.calendar.footer,
+        text: i18next.t("commands.calendar.success.footer", { lng: locale }),
       });
     }
 
@@ -109,11 +143,12 @@ export default class Command extends SlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
-      .addStringOption((option) =>
+      .addIntegerOption((option) =>
         option
           .setName("season")
           .setDescription("The season to lookup")
           // TODO: Add autocomplete for available seasons
+          .setMinValue(1950)
           .setRequired(false),
       )
       .toJSON();

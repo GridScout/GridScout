@@ -47,7 +47,7 @@ export default class ChatInteractionEvent extends Event {
       },
       async () => {
         try {
-          await command.execute(interaction);
+          await command.execute(interaction, interaction.locale);
         } catch (error) {
           Logger.error(
             `Error executing command ${interaction.commandName} by ${interaction.user.username}`,

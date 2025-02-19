@@ -26,7 +26,7 @@ export default class SlashCommand {
     this.options = options;
   }
 
-  execute(_: ChatInputCommandInteraction) {
+  execute(_: ChatInputCommandInteraction, locale: string) {
     throw new Error("Method not implemented.");
   }
 

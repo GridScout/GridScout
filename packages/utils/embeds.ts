@@ -1,11 +1,23 @@
-import { EmbedBuilder } from "discord.js";
+import { ColorResolvable, EmbedBuilder, resolveColor } from "discord.js";
 
 export const primaryEmbed = (
   title: string,
   description: string,
-): EmbedBuilder => {
+  color: ColorResolvable = resolveColor("#df3939"),
+) => {
   return new EmbedBuilder()
-    .setTitle(title)
-    .setDescription(description)
-    .setColor(14629177);
+    .setTitle(title || null)
+    .setDescription(description || null)
+    .setColor(color);
+};
+
+export const errorEmbed = (
+  title: string,
+  description: string,
+  color: ColorResolvable = resolveColor("#cc0000"),
+) => {
+  return new EmbedBuilder()
+    .setTitle(title || null)
+    .setDescription(description || null)
+    .setColor(color);
 };

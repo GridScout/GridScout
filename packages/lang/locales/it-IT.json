@@ -1,0 +1,27 @@
+{
+  "genericError": {
+    "description": "An error occurred while processing your request. Please try again later.",
+    "button": "{{ID}}"
+  },
+  "commands": {
+    "calendar": {
+      "description": "View the upcoming or historical F1 calendar",
+      "error": {
+        "description": "**Error!** Unable to find the calendar for the season: `{{year}}`."
+      },
+      "success": {
+        "author": "Race Calendar",
+        "title": "{{season}} Season",
+        "footer": "⏰ All dates above have been converted to your local timezone"
+      },
+      "sessions": {
+        "fp1": "Free Practice 1",
+        "fp2": "Free Practice 2",
+        "fp3": "Free Practice 3",
+        "qualifying": "Qualifying",
+        "sprint_qualifying": "Sprint Qualifying",
+        "sprint_race": "Sprint Race"
+      }
+    }
+  }
+}

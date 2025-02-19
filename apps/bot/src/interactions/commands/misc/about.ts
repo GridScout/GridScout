@@ -1,5 +1,5 @@
 import SlashCommand from "@/bot/structures/slashCommand";
-import { client } from "@/bot/index";
+import i18next from "@/lang";
 
 import {
   SlashCommandBuilder,
@@ -11,9 +11,13 @@ export default class Command extends SlashCommand {
     super("about", "Info about GridScout");
   }
 
-  override async execute(interaction: ChatInputCommandInteraction) {
+  override async execute(
+    interaction: ChatInputCommandInteraction,
+    locale: string,
+  ) {
     await interaction.reply({
-      content: `${client.ws.ping}ms`,
+      content: i18next.t("commands.about.content", { lng: locale }),
+      ephemeral: true,
     });
   }
 

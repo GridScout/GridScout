@@ -34,7 +34,6 @@ export default class ChatInteractionEvent extends Event {
         op: "command",
         name: `${interaction.commandName}`,
         attributes: {
-          subcommand: interaction.options.getSubcommand() ?? "none",
           arguments: JSON.stringify(interaction.options.data),
           guild: interaction.guild?.name,
           guild_id: interaction.guild?.id,

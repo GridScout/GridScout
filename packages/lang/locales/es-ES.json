@@ -36,7 +36,12 @@
         "points": "Points",
         "footer": "⏱️ Last Update"
       },
-      "constructor": {}
+      "constructor": {
+        "author": "Constructor Standings",
+        "title": "{{season}} Season",
+        "points": "Points",
+        "footer": "⏱️ Last Update"
+      }
     }
   }
 }

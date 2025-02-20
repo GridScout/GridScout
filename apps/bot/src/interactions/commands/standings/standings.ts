@@ -123,7 +123,7 @@ export default class Command extends SlashCommand {
 
         const teamName = teamInfo?.name || "Unknown Team";
 
-        return `${numEmoji} ‎ ${logoEmoji} ‎ **${teamName}** – ${cs.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
+        return `${numEmoji}‎ ‎ ‎ ‎ ${logoEmoji}‎ ‎ **${teamName}** – ${cs.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
       });
 
       const title =

@@ -1,0 +1,7 @@
+{
+  "name": "meilisearch-updater",
+  "private": true,
+  "scripts": {
+    "dev": "doppler run -- bun --watch ./src/index.ts"
+  }
+}

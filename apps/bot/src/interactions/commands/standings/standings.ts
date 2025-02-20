@@ -1,10 +1,10 @@
 import { ErgastClient } from "@/api";
 import SlashCommand from "@/bot/structures/slashCommand";
 import i18next from "@/lang";
-import { errorEmbed, primaryEmbed } from "@/utils";
+import { errorEmbed, primaryEmbed, nationalityToCountry } from "@/utils";
 import numberEmojis from "@/lang/emojis/numbers.json";
 import countryEmojis from "@/lang/emojis/countries.json";
-import teamEmojis from "@/lang/emojis/teams.json"; // new import for constructor logos
+import teamEmojis from "@/lang/emojis/teams.json";
 
 import {
   SlashCommandBuilder,
@@ -180,46 +180,3 @@ export default class Command extends SlashCommand {
       .toJSON();
   }
 }
-
-const nationalityToCountry: Record<string, string> = {
-  Italian: "Italy",
-  British: "United Kingdom",
-  Belgian: "Belgium",
-  American: "United States of America",
-  German: "Germany",
-  Dutch: "Netherlands",
-  Thai: "Thailand",
-  French: "France",
-  Spanish: "Spain",
-  "New Zealander": "New Zealand",
-  Swedish: "Sweden",
-  Brazilian: "Brazil",
-  Hungarian: "Hungary",
-  Danish: "Denmark",
-  Monegasque: "Monaco",
-  Canadian: "Canada",
-  Austrian: "Austria",
-  Argentinian: "Argentina",
-  "South African": "South Africa",
-  Finnish: "Finland",
-  Swiss: "Switzerland",
-  Portuguese: "Portugal",
-  Uruguayan: "Uruguay",
-  Venezuelan: "Venezuela",
-  Indian: "India",
-  Irish: "Ireland",
-  Colombian: "Colombia",
-  Mexican: "Mexico",
-  Japanese: "Japan",
-  Indonesian: "Indonesia",
-  Czech: "Czech Republic",
-  Rhodesian: "Rhodesia",
-  Russian: "Russian Federation",
-  Polish: "Poland",
-  Chinese: "People's Republic of China",
-  Liechtensteiner: "Liechtenstein",
-  Malaysian: "Malaysia",
-  Chilean: "Chile",
-  Argentine: "Argentina",
-  Australian: "Australia",
-};

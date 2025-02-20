@@ -8,7 +8,7 @@ import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
 } from "discord.js";
-import { errorEmbed, primaryEmbed } from "@/utils";
+import { errorEmbed, primaryEmbed, formatDate } from "@/utils";
 import i18next from "@/lang";
 
 const ergast = new ErgastClient();
@@ -152,35 +152,5 @@ export default class Command extends SlashCommand {
           .setRequired(false),
       )
       .toJSON();
-  }
-}
-
-function formatDate(date: string, time?: string): string {
-  if (time) {
-    const unixTimestamp = Math.floor(
-      new Date(`${date}T${time}`).getTime() / 1000,
-    );
-    return `<t:${unixTimestamp}:f>`;
-  } else {
-    const d = new Date(date);
-    const day = d.getDate();
-    const ordinal = getOrdinal(day);
-    const month = d.toLocaleString("en-US", { month: "long" });
-    const year = d.getFullYear();
-    return `${day}${ordinal} ${month} ${year}`;
-  }
-}
-
-function getOrdinal(day: number): string {
-  if (day > 3 && day < 21) return "th";
-  switch (day % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
   }
 }

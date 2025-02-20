@@ -2,6 +2,7 @@ import SlashCommand from "@/bot/structures/slashCommand";
 import i18next from "@/lang";
 
 import {
+  MessageFlags,
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
 } from "discord.js";
@@ -17,7 +18,7 @@ export default class Command extends SlashCommand {
   ) {
     await interaction.reply({
       content: i18next.t("commands.about.content", { lng: locale }),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 

@@ -9,7 +9,8 @@ i18next.use(Backend).init(
       loadPath: path.join(__dirname, "./locales/{{lng}}.json"),
     },
     fallbackLng: "en",
-    preload: ["en", "it"],
+    // removed "it" from preload, will re-add later
+    preload: ["en"],
   },
   (err) => {
     if (err) {

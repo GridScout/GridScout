@@ -7,8 +7,11 @@ import {
   ESeasonsResponse,
   Race,
 } from "@/types";
-import { Logger } from "@/utils";
+import { Logger, nationalityToCountry } from "@/utils";
 import { Result, err, ok } from "@sapphire/result";
+
+import countries from "i18n-iso-countries";
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 
 export class DriverService {
   constructor(private readonly client: ErgastClient) {}
@@ -22,6 +25,8 @@ export class DriverService {
     if (!id) {
       return err("Missing driver ID");
     }
+
+    id = id.replace(/[^a-zA-Z0-9_]/g, "");
 
     const [driverResponse, resultsResponse] = await Promise.all([
       this.client.fetch<EDriverResponse>(`drivers/${id}`),
@@ -146,7 +151,7 @@ export class DriverService {
       dob: driver.dateOfBirth || null,
       nationality: {
         name: driver.nationality || null,
-        country: null,
+        country: nationalityToCountry[driver.nationality] || null,
       },
       wikipedia_url: driver.url || null,
       poster: headshotUrl.isErr() ? null : headshotUrl.unwrap(),
@@ -266,7 +271,8 @@ export class DriverService {
         name: race.raceName,
         country: {
           name: race.Circuit.Location.country,
-          code: "",
+          code:
+            countries.getAlpha3Code(race.Circuit.Location.country, "en") || "",
         },
         date: race.date,
         position: parseInt(race.Results[0]?.position ?? "0", 10),
@@ -353,9 +359,7 @@ export class DriverService {
    * @param {number} [year] - The year to fetch drivers for. If not provided, fetches all drivers.
    * @returns {Promise<EDriver[]>} - A promise that resolves to an array of driver information.
    */
-  async getAllDrivers(
-    year?: number,
-  ): Promise<Result<EDriverResponse[], string>> {
+  async getAllDrivers(year?: number): Promise<Result<EDriverResponse, string>> {
     try {
       if (year) {
         const response = await this.client.fetchAllPaginated<EDriverResponse>(

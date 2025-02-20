@@ -9,5 +9,16 @@ services:
     # volumes:
     #   - dragonflydata:/data
 
+  meilisearch:
+    image: 'getmeili/meilisearch'
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearchdata:/data.ms
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_MASTER_KEY=masterKey
+
 volumes:
   dragonflydata:
+  meilisearchdata:

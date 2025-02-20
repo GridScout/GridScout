@@ -9,6 +9,9 @@ export const config = createEnv({
     DEV_SERVER_ID: z.string(),
 
     SENTRY_DSN: z.string(),
+
+    MEILISEARCH_HOST: z.string(),
+    MEILISEARCH_API_KEY: z.string(),
   },
 
   /**

@@ -11,6 +11,9 @@ i18next.use(Backend).init(
     fallbackLng: "en",
     // removed "it" from preload, will re-add later
     preload: ["en"],
+    interpolation: {
+      escapeValue: false,
+    },
   },
   (err) => {
     if (err) {

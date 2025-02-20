@@ -63,7 +63,7 @@ export default class Command extends SlashCommand {
               ] as keyof typeof countryEmojis
             ] || ""
           : "";
-        return `${numEmoji}‎ ‎ ${flagEmoji}‎ ‎ **${driver.name.first} ${driver.name.last}** – ${driver.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
+        return `${numEmoji}‎ ‎ ‎ ‎ ${flagEmoji}‎ ‎ **${driver.name.first} ${driver.name.last}** — ${driver.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
       });
 
       const title = i18next.t("commands.standings.driver.title", {

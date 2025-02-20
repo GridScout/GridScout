@@ -62,7 +62,7 @@ export default class Command extends SlashCommand {
         race.dates.race.time,
       );
 
-      return `${numEmoji}‎ ‎ ${flagEmoji}‎ ‎ **${raceName}** — ${formattedDate}`;
+      return `${numEmoji}‎ ‎ ‎ ‎ ${flagEmoji}‎ ‎ **${raceName}** — ${formattedDate}`;
     });
 
     // Find the upcoming race index
@@ -96,7 +96,7 @@ export default class Command extends SlashCommand {
         },
         {
           key: "sprint",
-          label: `> ${i18next.t("commands.calendar.sessions.sprint", { lng: locale })}`,
+          label: `> <:qualifying:1341925237519810591> ${i18next.t("commands.calendar.sessions.sprint", { lng: locale })}`,
         },
         {
           key: "qualifying",

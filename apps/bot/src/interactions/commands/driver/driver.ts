@@ -91,7 +91,7 @@ export default class Command extends SlashCommand {
     const embed = primaryEmbed(
       "",
       `${i18next.t("commands.driver.acronym", { acronym: driverData.acronym !== null ? driverData.acronym : i18next.t("commands.driver.n/a", { lng: locale }), lng: locale })}\n` +
-        `${i18next.t("commands.driver.constructor", { emoji: teamEmoji, name: driverData.constructors[driverData.constructors.length - 1]?.name, url: driverData.constructors[0]?.wikipedia_url, lng: locale })}\n` +
+        `${driverData.constructors.length > 0 ? i18next.t("commands.driver.constructor", { emoji: teamEmoji, name: driverData.constructors[driverData.constructors.length - 1]?.name, url: driverData.constructors[0]?.wikipedia_url, lng: locale }) + "\n" : ""}` +
         `${i18next.t("commands.driver.dob", { dob: driverData.dob ? formatDate(driverData.dob) : i18next.t("commands.driver.n/a", { lng: locale }), timetag: dobTimeTag, lng: locale })}\n` +
         `${i18next.t("commands.driver.nationality", {
           flag: flagEmoji || "",
@@ -163,5 +163,5 @@ function getOrdinalSuffix(n: number, locale: string): string {
   if (mod10 === 2) return i18next.t("commands.driver.nd", { lng: locale });
   if (mod10 === 3) return i18next.t("commands.driver.rd", { lng: locale });
 
-  return i18next.t("commands.driver.th");
+  return i18next.t("commands.driver.th", { lng: locale });
 }

@@ -1,0 +1,71 @@
+{
+  "genericError": {
+    "description": "An error occurred while processing your request. Please try again later.",
+    "button": "{{ID}}"
+  },
+  "commands": {
+    "calendar": {
+      "description": "View the upcoming or historical F1 calendar",
+      "error": {
+        "description": "**Error!** Unable to find the calendar for the season: `{{year}}`."
+      },
+      "success": {
+        "author": "Race Calendar",
+        "title": "{{season}} Season",
+        "footer": "⏰ All dates above have been converted to your local timezone"
+      },
+      "sessions": {
+        "fp1": "Free Practice 1",
+        "fp2": "Free Practice 2",
+        "fp3": "Free Practice 3",
+        "qualifying": "Qualifying",
+        "sprint_qualifying": "Sprint Qualifying",
+        "sprint_race": "Sprint Race"
+      }
+    },
+    "about": {
+      "content": "# GridScout is here! <:racingcar:1341846279486963854>\n\nGridScout is a Discord bot designed for motorsport enthusiasts.\nWhether you're looking for driver stats, race schedules, or past results, GridScout delivers the latest information right in your server.\n## **How to Use**\nTo get started, type `/` in a chat to see a list of available commands.\nIf you need more help, head to [docs.gridscout.ex](https://docs.gridscout.ex).\n## **Useful Links**\n- <:web:1341845985512652850> **Website**: [gridscout.ex](https://gridscout.ex)\n- <:help:1341845993418788954> **Support & Feedback**: [gridscout.ex](https://gridscout.ex)\n- <:terms:1341845978860355634> **Terms & Privacy**: [gridscout.ex](https://gridscout.ex)\n- <:invite:1341845971822186648> **Invite GridScout to Your Server**: [gridscout.ex](https://gridscout.ex)\n\nIf you enjoy using GridScout, please consider voting for it on top.gg to help more people discover it!"
+    },
+    "standings": {
+      "error": {
+        "description": "**Error!** Unable to find the standings for the season: `{{year}}`."
+      },
+      "driver": {
+        "author": "Driver Standings",
+        "title": "{{season}} Season",
+        "points": "Points",
+        "footer": "⏱️ Last Update"
+      },
+      "constructor": {
+        "author": "Constructor Standings",
+        "title": "{{season}} Season",
+        "points": "Points",
+        "footer": "⏱️ Last Update"
+      }
+    },
+    "driver": {
+      "error": {
+        "description": "**Error!** Unable to find the driver: `{{name}}`."
+      },
+      "n/a": "N/A",
+      "acronym": "**Acronym**: `{{acronym}}`",
+      "constructor": "**Constructor**: {{emoji}} [**{{name}}**](<{{url}}>)",
+      "dob": "**Date of Birth**: {{dob}} ({{timetag}})",
+      "nationality": "**Nationality**: {{flag}} {{nationality}}",
+      "statistics": "Statitics",
+      "wdc": "**World Championships**: {{amount}}",
+      "highest_race_finish": "**Highest Race Finish**: {{position}} (x{{amount}})",
+      "highest_grid_position": "**Highest Grid Position**: {{position}} (x{{amount}})",
+      "grand_prix_entered": "**Grand Prix Entered**: {{amount}}",
+      "podiums": "**Podiums**: {{amount}}",
+      "points": "**Points**: {{amount}}",
+      "last_races": "Last Races ({{count}})",
+      "fastest": "fastest",
+      "position": "Finished {{pos}}",
+      "st": "st",
+      "nd": "nd",
+      "rd": "rd",
+      "th": "th"
+    }
+  }
+}

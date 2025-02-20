@@ -64,7 +64,67 @@ export default class ReadyEvent extends Event {
         }
       }
 
-      // TODO: Production slash command deployment
+      if (config.DOPPLER_ENVIRONMENT === "prod") {
+        const globalCommands = await client.application?.commands.fetch();
+
+        if (!globalCommands) {
+          Logger.error(`Could not fetch global commands`);
+          return;
+        }
+
+        const globalCommandNames = globalCommands.map(
+          (command) => command.name,
+        );
+
+        const commandsToAdd = commandData.filter(
+          (command) => !globalCommandNames.includes(command.name),
+        );
+
+        const commandsToRemove = globalCommands.filter(
+          (command) =>
+            !commandData.map((command) => command.name).includes(command.name),
+        );
+
+        const commandsToUpdate = commandData.filter((command) =>
+          globalCommandNames.includes(command.name),
+        );
+
+        Logger.debug(
+          `Commands to add: ${commandsToAdd.map((command) => command.name)}`,
+        );
+        Logger.debug(
+          `Commands to remove: ${commandsToRemove.map((command) => command.name)}`,
+        );
+        Logger.debug(
+          `Commands to update: ${commandsToUpdate.map((command) => command.name)}`,
+        );
+
+        await Promise.all(
+          commandsToAdd.map(async (command) => {
+            await client.application?.commands.create(command);
+          }),
+        );
+
+        await Promise.all(
+          commandsToRemove.map(async (command) => {
+            await client.application?.commands.delete(command);
+          }),
+        );
+
+        await Promise.all(
+          commandsToUpdate.map(async (command) => {
+            const globalCommand = globalCommands.find(
+              (globalCommand) => globalCommand.name === command.name,
+            );
+            if (!globalCommand) return;
+            await client.application?.commands.edit(globalCommand.id, command);
+          }),
+        );
+
+        Logger.debug(
+          `Deployed all global slash commands (${commandsToAdd.length} added, ${commandsToRemove.size} removed, ${commandsToUpdate.length} updated)`,
+        );
+      }
     }
   }
 }

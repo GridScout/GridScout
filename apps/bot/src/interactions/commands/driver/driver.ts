@@ -117,14 +117,19 @@ export default class Command extends SlashCommand {
           `${i18next.t("commands.driver.points", { amount: driverData.statistics.points, lng: locale })}\n`,
         inline: true,
       },
-      {
-        name: i18next.t("commands.driver.last_races", {
-          count: driverData.recent_races.length,
-          lng: locale,
-        }),
-        value: "```ansi\n" + lastRacesANSI + "\n```",
-      },
     ]);
+
+    if (driverData.recent_races.length > 0) {
+      embed.addFields([
+        {
+          name: i18next.t("commands.driver.last_races", {
+            count: driverData.recent_races.length,
+            lng: locale,
+          }),
+          value: "```ansi\n" + lastRacesANSI + "\n```",
+        },
+      ]);
+    }
 
     embed.setThumbnail(driverData.poster);
 

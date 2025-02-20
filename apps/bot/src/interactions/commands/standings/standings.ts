@@ -4,6 +4,7 @@ import i18next from "@/lang";
 import { errorEmbed, primaryEmbed } from "@/utils";
 import numberEmojis from "@/lang/emojis/numbers.json";
 import countryEmojis from "@/lang/emojis/countries.json";
+import teamEmojis from "@/lang/emojis/teams.json"; // new import for constructor logos
 
 import {
   SlashCommandBuilder,
@@ -79,11 +80,13 @@ export default class Command extends SlashCommand {
         text: i18next.t("commands.standings.driver.footer", { lng: locale }),
       });
 
+      // TODO: Fetch from API to get the last updated date
+      embed.setTimestamp(Date.now());
+
       await interaction.editReply({ embeds: [embed] });
     } else if (subcommand === "constructor") {
       const constructorStandings =
         await ergast.standings.getConstructorStandings(season);
-
       if (constructorStandings.isErr()) {
         return interaction.editReply({
           embeds: [
@@ -97,6 +100,50 @@ export default class Command extends SlashCommand {
           ],
         });
       }
+
+      const standingsData = constructorStandings.unwrap();
+      const constructors = standingsData.standings;
+
+      const lines = constructors.map((cs, index: number) => {
+        const numEmoji =
+          numberEmojis[(index + 1).toString() as keyof typeof numberEmojis] ||
+          `${index + 1}`;
+
+        const teamInfo = cs.team[0];
+        const teamId = teamInfo?.id.toLowerCase();
+
+        let logoEmoji = teamEmojis[teamId as keyof typeof teamEmojis] || "";
+        if (!logoEmoji && cs.nationality) {
+          // fallback to country flag if team logo is not found
+          const country = nationalityToCountry[cs.nationality];
+          logoEmoji = country
+            ? countryEmojis[country as keyof typeof countryEmojis] || ""
+            : "";
+        }
+
+        const teamName = teamInfo?.name || "Unknown Team";
+
+        return `${numEmoji} ‎ ${logoEmoji} ‎ **${teamName}** – ${cs.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
+      });
+
+      const title =
+        i18next.t("commands.standings.constructor.title", {
+          season,
+          lng: locale,
+        }) || `${season} Constructor Standings`;
+
+      const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
+        name: "Constructor Standings",
+      });
+
+      embed.setFooter({
+        text: i18next.t("commands.standings.driver.footer", { lng: locale }),
+      });
+
+      // TODO: Fetch from API to get the last updated date
+      embed.setTimestamp(Date.now());
+
+      await interaction.editReply({ embeds: [embed] });
     }
   }
 

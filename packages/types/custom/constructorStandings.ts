@@ -4,6 +4,7 @@ export interface ConstructorStanding {
   position: string;
   points: string;
   wins: string;
+  nationality: string;
   team: {
     id: string;
     wikipedia_url: string;

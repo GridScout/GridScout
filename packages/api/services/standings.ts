@@ -75,6 +75,7 @@ export class StandingsService {
         position: standing.positionText,
         points: standing.points,
         wins: standing.wins,
+        nationality: standing.Constructor.nationality,
         team: [
           {
             id: standing.Constructor.constructorId,

@@ -8,7 +8,7 @@ export class StandingsService {
   constructor(private readonly client: ErgastClient) {}
 
   async getDriverStandings(
-    season: number = new Date().getFullYear(),
+    season: string = new Date().getFullYear().toString(),
     round?: number,
   ): Promise<Result<DriverStandings, string>> {
     const response = await this.client.fetch<EDriverStandingsResponse>(
@@ -35,6 +35,7 @@ export class StandingsService {
           first: standing.Driver.givenName,
           last: standing.Driver.familyName,
         },
+        nationality: standing.Driver.nationality,
         points: standing.points,
         constructors: standing.Constructors.map((constructor) => ({
           id: constructor.constructorId,
@@ -47,7 +48,7 @@ export class StandingsService {
   }
 
   async getConstructorStandings(
-    season: number = new Date().getFullYear(),
+    season: string = new Date().getFullYear().toString(),
     round?: number,
   ): Promise<Result<ConstructorStandings, string>> {
     // Fetch constructor standings

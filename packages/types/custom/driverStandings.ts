@@ -6,6 +6,7 @@ export interface DriverStanding {
     first: string;
     last: string;
   };
+  nationality: string;
   points: string;
   constructors: {
     id: string;

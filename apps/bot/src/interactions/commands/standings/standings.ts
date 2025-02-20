@@ -1,0 +1,178 @@
+import { ErgastClient } from "@/api";
+import SlashCommand from "@/bot/structures/slashCommand";
+import i18next from "@/lang";
+import { errorEmbed, primaryEmbed } from "@/utils";
+import numberEmojis from "@/lang/emojis/numbers.json";
+import countryEmojis from "@/lang/emojis/countries.json";
+
+import {
+  SlashCommandBuilder,
+  type ChatInputCommandInteraction,
+} from "discord.js";
+
+const ergast = new ErgastClient();
+
+export default class Command extends SlashCommand {
+  constructor() {
+    super(
+      "standings",
+      "View the standings for the current or a specific season",
+    );
+  }
+
+  override async execute(
+    interaction: ChatInputCommandInteraction,
+    locale: string,
+  ) {
+    await interaction.deferReply();
+
+    const season =
+      interaction.options.getInteger("year")?.toString() ||
+      new Date().getFullYear().toString();
+
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommand === "driver") {
+      const driverStandings = await ergast.standings.getDriverStandings(season);
+      if (driverStandings.isErr()) {
+        return interaction.editReply({
+          embeds: [
+            errorEmbed(
+              "",
+              i18next.t("commands.standings.error.description", {
+                year: season,
+                lng: locale,
+              }),
+            ),
+          ],
+        });
+      }
+
+      const standingsData = driverStandings.unwrap();
+
+      const drivers = standingsData.standings.slice(0, 40);
+
+      const lines = drivers.map((driver, index: number) => {
+        const numEmoji =
+          numberEmojis[(index + 1).toString() as keyof typeof numberEmojis] ||
+          `${index + 1}`;
+        const flagEmoji = nationalityToCountry[driver.nationality]
+          ? countryEmojis[
+              nationalityToCountry[
+                driver.nationality
+              ] as keyof typeof countryEmojis
+            ] || ""
+          : "";
+        return `${numEmoji}‎ ‎ ${flagEmoji}‎ ‎ **${driver.name.first} ${driver.name.last}** – ${driver.points} ${i18next.t("commands.standings.driver.points", { lng: locale })}`;
+      });
+
+      const title = i18next.t("commands.standings.driver.title", {
+        season,
+        lng: locale,
+      });
+
+      const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
+        name: i18next.t("commands.standings.driver.author", { lng: locale }),
+      });
+
+      embed.setFooter({
+        text: i18next.t("commands.standings.driver.footer", { lng: locale }),
+      });
+
+      await interaction.editReply({ embeds: [embed] });
+    } else if (subcommand === "constructor") {
+      const constructorStandings =
+        await ergast.standings.getConstructorStandings(season);
+
+      if (constructorStandings.isErr()) {
+        return interaction.editReply({
+          embeds: [
+            errorEmbed(
+              "",
+              i18next.t("commands.standings.error.description", {
+                year: season,
+                lng: locale,
+              }),
+            ),
+          ],
+        });
+      }
+    }
+  }
+
+  override async build() {
+    return new SlashCommandBuilder()
+      .setName(this.name)
+      .setDescription(this.description)
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("driver")
+          .setDescription(
+            "View the driver standings for the current or a specific season",
+          )
+          .addIntegerOption((option) =>
+            option
+              .setName("year")
+              .setDescription("The season to lookup")
+              .setRequired(false),
+          ),
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("constructor")
+          .setDescription(
+            "View the constructor standings for the current or a specific season",
+          )
+          .addIntegerOption((option) =>
+            option
+              .setName("year")
+              .setDescription("The season to lookup")
+              .setRequired(false),
+          ),
+      )
+      .toJSON();
+  }
+}
+
+const nationalityToCountry: Record<string, string> = {
+  Italian: "Italy",
+  British: "United Kingdom",
+  Belgian: "Belgium",
+  American: "United States of America",
+  German: "Germany",
+  Dutch: "Netherlands",
+  Thai: "Thailand",
+  French: "France",
+  Spanish: "Spain",
+  "New Zealander": "New Zealand",
+  Swedish: "Sweden",
+  Brazilian: "Brazil",
+  Hungarian: "Hungary",
+  Danish: "Denmark",
+  Monegasque: "Monaco",
+  Canadian: "Canada",
+  Austrian: "Austria",
+  Argentinian: "Argentina",
+  "South African": "South Africa",
+  Finnish: "Finland",
+  Swiss: "Switzerland",
+  Portuguese: "Portugal",
+  Uruguayan: "Uruguay",
+  Venezuelan: "Venezuela",
+  Indian: "India",
+  Irish: "Ireland",
+  Colombian: "Colombia",
+  Mexican: "Mexico",
+  Japanese: "Japan",
+  Indonesian: "Indonesia",
+  Czech: "Czech Republic",
+  Rhodesian: "Rhodesia",
+  Russian: "Russian Federation",
+  Polish: "Poland",
+  Chinese: "People's Republic of China",
+  Liechtensteiner: "Liechtenstein",
+  Malaysian: "Malaysia",
+  Chilean: "Chile",
+  Argentine: "Argentina",
+  Australian: "Australia",
+};

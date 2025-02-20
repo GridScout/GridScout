@@ -42,6 +42,30 @@
         "points": "Points",
         "footer": "⏱️ Last Update"
       }
+    },
+    "driver": {
+      "error": {
+        "description": "**Error!** Unable to find the driver: `{{name}}`."
+      },
+      "n/a": "N/A",
+      "acronym": "**Acronym**: `{{acronym}}`",
+      "constructor": "**Constructor**: {{emoji}} [**{{name}}**](<{{url}}>)",
+      "dob": "**Date of Birth**: {{dob}} ({{timetag}})",
+      "nationality": "**Nationality**: {{flag}} {{nationality}}",
+      "statistics": "Statitics",
+      "wdc": "**World Championships**: {{amount}}",
+      "highest_race_finish": "**Highest Race Finish**: {{position}} (x{{amount}})",
+      "highest_grid_position": "**Highest Grid Position**: {{position}} (x{{amount}})",
+      "grand_prix_entered": "**Grand Prix Entered**: {{amount}}",
+      "podiums": "**Podiums**: {{amount}}",
+      "points": "**Points**: {{amount}}",
+      "last_races": "Last Races ({{count}})",
+      "fastest": "fastest",
+      "position": "Finished {{pos}}",
+      "st": "st",
+      "nd": "nd",
+      "rd": "rd",
+      "th": "th"
     }
   }
 }

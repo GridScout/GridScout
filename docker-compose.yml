@@ -1,4 +1,10 @@
 services:
+  # gridscout:
+  #   image: ghcr.io/gridscout/gridscout:latest
+  #   environment:
+  #     - DOPPLER_TOKEN=
+  #   restart: unless-stopped
+
   # Redis (dragonflydb)
   dragonfly:
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'

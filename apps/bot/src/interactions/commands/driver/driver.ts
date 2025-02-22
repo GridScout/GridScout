@@ -26,13 +26,12 @@ export default class Command extends SlashCommand {
     await interaction.deferReply();
 
     const query = interaction.options.getString("driver");
-    const safeQuery = query ? query.replace("([*_`~])", "\\\\$1") : query;
-    if (!safeQuery) return;
+    if (!query) return;
+
+    const safeQuery = query.replace(/`/g, "");
 
     const foundDriver = await meilisearch.searchDriverByName(safeQuery);
     const driver = await ergast.driver.getDriver(foundDriver[0]?.id!);
-
-    const driverData = driver.unwrap();
 
     if (driver.isErr()) {
       return interaction.editReply({
@@ -47,6 +46,8 @@ export default class Command extends SlashCommand {
         ],
       });
     }
+
+    const driverData = driver.unwrap();
 
     const flagEmoji = driverData.nationality.country
       ? countryEmojis[

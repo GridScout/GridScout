@@ -28,6 +28,20 @@ export default class Command extends SlashCommand {
       interaction.options.getInteger("season")?.toString() ??
       new Date().getFullYear().toString();
 
+    if (parseInt(season) > new Date().getFullYear() + 1) {
+      return interaction.editReply({
+        embeds: [
+          errorEmbed(
+            "",
+            i18next.t("commands.calendar.error.description", {
+              year: season,
+              lng: locale,
+            }),
+          ),
+        ],
+      });
+    }
+
     // Fetch data
     const calendar = await ergast.calendar.getCalendar(season);
 

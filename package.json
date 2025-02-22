@@ -1,0 +1,30 @@
+{
+  "name": "gridscout",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GridScout/GridScout"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --filter !meilisearch-updater",
+    "dev:bot": "turbo run dev --filter bot",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0",
+    "turbo": "^2.4.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.2.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {}
+}

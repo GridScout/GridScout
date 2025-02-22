@@ -1,0 +1,21 @@
+{
+  "name": "meilisearch-updater",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "doppler run -- bun --no-clear-screen --watch ./src/index.ts",
+    "build": "tsc --project tsconfig.json",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gridscout/logger": "*",
+    "@gridscout/api": "*",
+    "@gridscout/meilisearch": "*"
+  },
+  "devDependencies": {
+    "@gridscout/typescript-config": "*",
+    "@types/node": "^22",
+    "eslint": "^9.20.0",
+    "typescript": "5.7.3"
+  }
+}

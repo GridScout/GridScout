@@ -24,11 +24,9 @@ export default class Command extends SlashCommand {
     await interaction.deferReply();
 
     // Grab the season specified, or current year if not
-    const season =
-      interaction.options.getInteger("season")?.toString() ??
-      new Date().getFullYear().toString();
+    const season = interaction.options.getInteger("season")?.toString();
 
-    if (parseInt(season) > new Date().getFullYear() + 1) {
+    if (season && parseInt(season) > new Date().getFullYear() + 1) {
       return interaction.editReply({
         embeds: [
           errorEmbed(
@@ -93,27 +91,27 @@ export default class Command extends SlashCommand {
       const sessions = [
         {
           key: "firstPractice",
-          label: `> ${i18next.t("commands.calendar.sessions.fp1", { lng: locale })}`,
+          label: `> ${i18next.t("sessions.fp1", { lng: locale })}`,
         },
         {
           key: "secondPractice",
-          label: `> ${i18next.t("commands.calendar.sessions.fp2", { lng: locale })}`,
+          label: `> ${i18next.t("sessions.fp2", { lng: locale })}`,
         },
         {
           key: "thirdPractice",
-          label: `> ${i18next.t("commands.calendar.sessions.fp3", { lng: locale })}`,
+          label: `> ${i18next.t("sessions.fp3", { lng: locale })}`,
         },
         {
           key: "sprintQualifying",
-          label: `> ${i18next.t("commands.calendar.sessions.sprintQualifying", { lng: locale })}`,
+          label: `> ${i18next.t("sprintQualifying", { lng: locale })}`,
         },
         {
           key: "sprint",
-          label: `> <:qualifying:1341925237519810591> ${i18next.t("commands.calendar.sessions.sprint", { lng: locale })}`,
+          label: `> <:qualifying:1341925237519810591> ${i18next.t("sessions.sprint", { lng: locale })}`,
         },
         {
           key: "qualifying",
-          label: `> ${i18next.t("commands.calendar.sessions.qualifying", { lng: locale })}`,
+          label: `> ${i18next.t("sessions.qualifying", { lng: locale })}`,
         },
       ];
 
@@ -136,7 +134,8 @@ export default class Command extends SlashCommand {
     }
 
     const title = i18next.t("commands.calendar.success.title", {
-      season,
+      // TODO: Fetch season number from ergast response (add to API)
+      season: season || new Date().getFullYear(),
       lng: locale,
     });
 

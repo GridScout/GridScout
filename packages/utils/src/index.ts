@@ -1,5 +1,8 @@
 import { ColorResolvable, EmbedBuilder, resolveColor } from "discord.js";
 
+import errorEmojis from "@gridscout/lang/emojis/errors" with { type: "json" };
+import { randomInt } from "node:crypto";
+
 export const nationalityToCountry: Record<string, string> = {
   Italian: "Italy",
   British: "United Kingdom",
@@ -59,9 +62,12 @@ export const errorEmbed = (
   description: string,
   color: ColorResolvable = resolveColor("#843438"),
 ) => {
+  const keys = Object.keys(errorEmojis);
+  const randomKey = keys[randomInt(keys.length)];
+  const emoji = errorEmojis[randomKey as keyof typeof errorEmojis] || "";
   return new EmbedBuilder()
     .setTitle(title || null)
-    .setDescription(description || null)
+    .setDescription(description ? `${emoji} ${description}` : null)
     .setColor(color);
 };
 

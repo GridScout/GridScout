@@ -1,5 +1,9 @@
 {
-  "name": "GridScout",
+  "name": "bot",
+  "repository": {
+    "url": "https://github.com/GridScout/GridScout"
+  },
+  "license": "AGPL-3.0-only",
   "private": true,
   "scripts": {
     "build": "turbo run build",

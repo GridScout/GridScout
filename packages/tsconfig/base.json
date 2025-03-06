@@ -1,8 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "incremental": false,
-
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,

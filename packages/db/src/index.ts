@@ -3,7 +3,7 @@ import { Database } from "bun:sqlite";
 
 import path from "path";
 
-const sqlite = new Database(path.resolve(__dirname, "f1db.db"), {
+const sqlite = new Database(path.resolve(__dirname, "../../../f1db.db"), {
   readonly: true,
 });
-export const db = drizzle({ client: sqlite });
+export default drizzle({ client: sqlite });

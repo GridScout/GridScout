@@ -1,5 +1,5 @@
 {
-  "name": "@gridscout/db",
+  "name": "@gridscout/api",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,10 +7,6 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./dist/index.js"
-    },
-    "./schema": {
-      "types": "./src/schema.ts",
-      "default": "./dist/schema.js"
     }
   },
   "scripts": {
@@ -21,13 +17,12 @@
   "devDependencies": {
     "@gridscout/tsconfig": "*",
     "@gridscout/types": "*",
-    "@types/better-sqlite3": "^7.6.12",
-    "better-sqlite3": "^11.8.1",
-    "drizzle-kit": "^0.30.5",
     "eslint": "^9.20.0",
     "typescript": "5.7.3"
   },
   "dependencies": {
-    "drizzle-orm": "^0.40.0"
+    "@gridscout/db": "*",
+    "drizzle-orm": "^0.40.0",
+    "@sapphire/result": "^2.7.2"
   }
 }

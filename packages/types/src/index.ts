@@ -6,7 +6,7 @@ export interface Driver {
   dateOfBirth: string;
   dateOfDeath: string | null;
   placeOfBirth: string;
-  countryOfBirth: DriverCountry;
+  countryOfBirth: Country;
   team: DriverConstructor[];
   statistics: DriverStatistics;
   recentRaces: DriverRecentRaces[];
@@ -28,7 +28,7 @@ interface DriverStatistics {
   grandSlams: number;
 }
 
-interface DriverCountry {
+interface Country {
   name: string;
   alpha3: string;
 }
@@ -36,8 +36,55 @@ interface DriverCountry {
 interface DriverRecentRaces {
   id: string;
   name: string;
-  country: DriverCountry;
+  country: Country;
   date: string;
   position: string;
   raceGap: string;
+}
+
+export interface Calendar {
+  season: number;
+  races: CalendarRace[];
+}
+
+interface CalendarRace {
+  id: string;
+  name: string;
+  country: Country;
+  freePracticeOne?: Event;
+  freePracticeTwo?: Event;
+  freePracticeThree?: Event;
+  sprintQualifying?: Event;
+  sprintRace?: Event;
+  qualifying: Event;
+  grandPrix: Event;
+}
+
+interface Event {
+  date: string;
+  time: string;
+}
+
+export interface DriverStandings {
+  season: number;
+  standings: DriverStanding[];
+}
+
+interface DriverStanding {
+  position: number;
+  driver: DriverConstructor;
+  team: DriverConstructor;
+  points: number;
+}
+
+export interface ConstructorStandings {
+  season: number;
+  standings: ConstructorStanding[];
+}
+
+interface ConstructorStanding {
+  position: number;
+  constructor: DriverConstructor;
+  engineManufacturer: string;
+  points: number;
 }

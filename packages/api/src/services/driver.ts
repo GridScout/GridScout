@@ -1,5 +1,4 @@
 import type { API } from "../index.js";
-
 import type { Driver } from "@gridscout/types";
 
 import db from "@gridscout/db";
@@ -20,8 +19,10 @@ export class DriverService {
   constructor(private readonly client: API) {}
 
   async get(id: string): Promise<Result<Driver, string>> {
+    // Sanitise the input
     const idSanitised = this.client.sanitiseInput(id);
 
+    // Fetch driver data from database
     const driverData = await db
       .select({
         id: driver.id,
@@ -49,11 +50,14 @@ export class DriverService {
         },
       })
       .from(driver)
+      // Join the country table to get the country of birth
       .innerJoin(country, eq(driver.country_of_birth_country_id, country.id))
       .where(eq(driver.id, idSanitised));
 
+    // If there was no data found, driver is not in database, return err
     if (!driverData.length) return err("No driver found");
 
+    // Fetch the 3 most recent races for the driver
     const recentRaces = await db
       .select({
         id: race.id,
@@ -79,6 +83,7 @@ export class DriverService {
       .orderBy(desc(race.date))
       .limit(3);
 
+    // Fetch the latest constructor
     const latestConstructor = await db
       .select({
         id: constructor.id,
@@ -93,12 +98,61 @@ export class DriverService {
       .orderBy(desc(season_entrant_driver.year))
       .limit(1);
 
+    const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
+
     const combinedData = {
       ...driverData[0],
+      image: image.unwrapOr(null),
       team: latestConstructor[0],
       recentRaces,
     } as unknown as Driver;
 
     return ok(combinedData);
+  }
+
+  private async getWikipediaHeadshot(
+    driverName: string
+  ): Promise<Result<string, string>> {
+    try {
+      // Get the wikipedia page url for the driver
+      const title = driverName.replace(" ", "_");
+
+      const encodedTitle = encodeURIComponent(title);
+      const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodedTitle}&prop=pageimages&format=json&pithumbsize=500`;
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        return err("Error fetching data");
+      }
+
+      interface WikipediaApiResponse {
+        query: {
+          pages: {
+            [pageId: string]: {
+              pageid: number;
+              ns: number;
+              title: string;
+              thumbnail?: {
+                source: string;
+                width: number;
+                height: number;
+              };
+            };
+          };
+        };
+      }
+
+      const data = (await response.json()) as WikipediaApiResponse;
+      const pages = data.query.pages;
+      const page = Object.values(pages)[0];
+
+      if (page && page.thumbnail && page.thumbnail.source) {
+        return ok(page.thumbnail.source);
+      } else {
+        return err("No headshot found");
+      }
+    } catch {
+      return err("Error fetching data");
+    }
   }
 }

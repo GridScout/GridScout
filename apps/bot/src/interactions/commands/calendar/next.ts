@@ -1,13 +1,11 @@
-import i18next from "@gridscout/lang";
-
-import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
-
 import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
+import { API } from "@gridscout/api";
+import i18next from "@gridscout/lang";
+import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { API } from "@gridscout/api";
 
 const api = new API();
 
@@ -25,6 +23,7 @@ export default class Command extends SlashCommand {
     // Get the latest calendar data
     const calendar = await api.calendar.get();
 
+    // if an error occurred, return an error message
     if (calendar.isErr()) {
       return await interaction.editReply({
         embeds: [
@@ -38,6 +37,7 @@ export default class Command extends SlashCommand {
 
     const calendarUnwrapped = calendar.unwrap();
 
+    // Find the upcoming event
     const nextRace = calendarUnwrapped.races.filter(
       (gp) => new Date(gp.grandPrix.date) > new Date()
     )[0];
@@ -55,6 +55,7 @@ export default class Command extends SlashCommand {
       `${nextRace.grandPrix.date}T${nextRace.grandPrix.time}`
     ).getTime();
 
+    // Get the country emoji
     const countryEmoji =
       countryEmojis[nextRace.country.alpha3 as keyof typeof countryEmojis];
 
@@ -66,15 +67,15 @@ export default class Command extends SlashCommand {
     const sessions = [
       {
         key: "freePracticeOne",
-        label: i18next.t("sessions.fp1", { lng: locale }),
+        label: i18next.t("sessions.freePracticeOne", { lng: locale }),
       },
       {
         key: "freePracticeTwo",
-        label: i18next.t("sessions.fp2", { lng: locale }),
+        label: i18next.t("sessions.freePracticeTwo", { lng: locale }),
       },
       {
         key: "freePracticeThree",
-        label: i18next.t("sessions.fp3", { lng: locale }),
+        label: i18next.t("sessions.freePracticeThree", { lng: locale }),
       },
       {
         key: "sprintQualifying",
@@ -90,7 +91,7 @@ export default class Command extends SlashCommand {
       },
       {
         key: "grandPrix",
-        label: `<:chequeredflag:1342900214687600740> **${i18next.t("sessions.grandPrix", { lng: locale })}**`,
+        label: `<:chequeredflag:1342900214687600740> **${i18next.t("sessions.gp", { lng: locale })}**`,
       },
     ];
 
@@ -108,6 +109,7 @@ export default class Command extends SlashCommand {
           `${raceSession.date}T${raceSession.time}`
         ).getTime();
 
+        // Add the event to the list
         events.push(`${session.label}: <t:${date / 1000}:f>`);
       }
     }
@@ -117,7 +119,6 @@ export default class Command extends SlashCommand {
     );
 
     await interaction.editReply({ embeds: [embed] });
-    console.log(nextRace);
   }
 
   override async build() {

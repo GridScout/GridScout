@@ -1,7 +1,7 @@
-import i18next from "@gridscout/lang";
-
 import SlashCommand from "../../../structures/slashCommand.js";
 import { client } from "../../../index.js";
+
+import i18next from "@gridscout/lang";
 
 import {
   ActionRowBuilder,

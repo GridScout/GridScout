@@ -67,15 +67,15 @@ export default class Command extends SlashCommand {
     const sessions = [
       {
         key: "freePracticeOne",
-        label: i18next.t("sessions.freePracticeOne", { lng: locale }),
+        label: i18next.t("sessions.freePractice1", { lng: locale }),
       },
       {
         key: "freePracticeTwo",
-        label: i18next.t("sessions.freePracticeTwo", { lng: locale }),
+        label: i18next.t("sessions.freePractice2", { lng: locale }),
       },
       {
         key: "freePracticeThree",
-        label: i18next.t("sessions.freePracticeThree", { lng: locale }),
+        label: i18next.t("sessions.freePractice3", { lng: locale }),
       },
       {
         key: "sprintQualifying",

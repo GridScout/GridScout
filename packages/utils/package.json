@@ -7,6 +7,10 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./dist/index.js"
+    },
+    "./github": {
+      "types": "./src/githubApi.ts",
+      "default": "./dist/githubApi.js"
     }
   },
   "scripts": {
@@ -17,5 +21,8 @@
   "devDependencies": {
     "@gridscout/tsconfig": "*"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@gridscout/env": "*",
+    "@sapphire/result": "^2.7.2"
+  }
 }

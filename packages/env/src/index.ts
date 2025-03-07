@@ -16,6 +16,8 @@ export default createEnv({
 
     MEILISEARCH_HOST: z.string().min(1),
     MEILISEARCH_API_KEY: z.string().min(1),
+
+    GITHUB_API_KEY: z.string().min(1),
   },
 
   /**

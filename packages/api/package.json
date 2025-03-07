@@ -16,13 +16,11 @@
   },
   "devDependencies": {
     "@gridscout/tsconfig": "*",
-    "@gridscout/types": "*",
-    "eslint": "^9.20.0",
-    "typescript": "5.7.3"
+    "@gridscout/types": "*"
   },
   "dependencies": {
     "@gridscout/db": "*",
-    "drizzle-orm": "^0.40.0",
-    "@sapphire/result": "^2.7.2"
+    "@sapphire/result": "^2.7.2",
+    "drizzle-orm": "^0.40.0"
   }
 }

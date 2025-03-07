@@ -21,13 +21,11 @@
   "devDependencies": {
     "@gridscout/tsconfig": "*",
     "@gridscout/types": "*",
-    "@types/better-sqlite3": "^7.6.12",
-    "better-sqlite3": "^11.8.1",
-    "drizzle-kit": "^0.30.5",
-    "eslint": "^9.20.0",
-    "typescript": "5.7.3"
+    "@types/bun": "^1.2.4",
+    "drizzle-kit": "^0.30.5"
   },
   "dependencies": {
-    "drizzle-orm": "^0.40.0"
+    "drizzle-orm": "^0.40.0",
+    "jszip": "^3.10.1"
   }
 }

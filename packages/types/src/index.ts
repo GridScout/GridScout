@@ -7,7 +7,8 @@ export interface Driver {
   dateOfDeath: string | null;
   placeOfBirth: string;
   countryOfBirth: Country;
-  team: DriverConstructor[];
+  image?: string;
+  team: DriverConstructor;
   statistics: DriverStatistics;
   recentRaces: DriverRecentRaces[];
 }

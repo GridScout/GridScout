@@ -6,9 +6,9 @@ export interface Driver {
   dateOfBirth: string;
   dateOfDeath: string | null;
   placeOfBirth: string;
-  countryOfBirth: Country;
-  image?: string;
+  nationality: Nationality;
   team: DriverConstructor;
+  image: string;
   statistics: DriverStatistics;
   recentRaces: DriverRecentRaces[];
 }
@@ -34,13 +34,20 @@ interface Country {
   alpha3: string;
 }
 
+interface Nationality {
+  id: string;
+  alpha3: string;
+  demonym: string;
+}
+
 interface DriverRecentRaces {
   id: string;
   name: string;
   country: Country;
   date: string;
   position: string;
-  raceGap: string;
+  raceGap: string | null;
+  raceTime: string | null;
 }
 
 export interface Calendar {

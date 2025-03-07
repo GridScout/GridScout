@@ -43,6 +43,7 @@
     "grandslams": "[**Grand Slams**](https://en.wikipedia.org/wiki/Grand_slam_(Formula_One)): {{amount}}",
     "fastestLaps": "**Fastest Laps**: {{amount}}",
     "lastRaces": "Last Races ({{count}})",
-    "position": "Finished {{pos}}."
+    "finished": "Finished",
+    "position": "{{pos}}"
   }
 }

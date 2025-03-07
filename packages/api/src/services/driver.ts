@@ -31,11 +31,10 @@ export class DriverService {
         permanentNumber: driver.permanent_number,
         dateOfBirth: driver.date_of_birth,
         dateOfDeath: driver.date_of_death,
-        placeOfBirth: driver.place_of_birth,
-
-        countryOfBirth: {
-          name: country.name,
+        nationality: {
+          id: country.id,
           alpha3: country.alpha3_code,
+          demonym: country.demonym,
         },
 
         statistics: {
@@ -51,7 +50,7 @@ export class DriverService {
       })
       .from(driver)
       // Join the country table to get the country of birth
-      .innerJoin(country, eq(driver.country_of_birth_country_id, country.id))
+      .innerJoin(country, eq(driver.nationality_country_id, country.id))
       .where(eq(driver.id, idSanitised));
 
     // If there was no data found, driver is not in database, return err
@@ -68,7 +67,8 @@ export class DriverService {
           alpha3: country.alpha3_code,
         },
         position: race_data.position_text,
-        raceGap: race_data.race_gap || "0",
+        raceGap: race_data.race_gap || null,
+        raceTime: race_data.race_time || null,
       })
       .from(race_data)
       .innerJoin(race, eq(race_data.race_id, race.id))

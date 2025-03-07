@@ -64,9 +64,9 @@ export default class Command extends SlashCommand {
 
     embed.setDescription(
       `${i18next.t("driver.acronym", { lng: locale, acronym: driverInfo.abbreviation })}\n` +
-        `${i18next.t("driver.constructor", { lng: locale, emoji: constructorEmoji, name: driverInfo.team.name })}\n` +
+        `${i18next.t("driver.constructor", { lng: locale, constructorEmoji, name: driverInfo.team.name })}\n` +
         `${i18next.t("driver.dob", { lng: locale, dob: driverInfo.dateOfBirth, timetag })}\n` +
-        `${i18next.t("driver.nationality", { lng: locale, flag: countryEmojis[driverInfo.countryOfBirth.alpha3 as keyof typeof countryEmojis], nationality: driverInfo.countryOfBirth.name })}\n`
+        `${i18next.t("driver.nationality", { lng: locale, flag: countryEmojis[driverInfo.nationality.alpha3 as keyof typeof countryEmojis], nationality: `${driverInfo.nationality.demonym}` })}\n`
     );
 
     embed.addFields([
@@ -74,8 +74,8 @@ export default class Command extends SlashCommand {
         name: i18next.t("driver.statistics", { lng: locale }),
         value:
           `${i18next.t("driver.wdc", { lng: locale, amount: driverInfo.statistics.worldChampionships })}\n` +
-          `${i18next.t("driver.highestRaceFinish", { lng: locale, position: driverInfo.statistics.highestRaceFinish })}\n` +
-          `${i18next.t("driver.highestGridPosition", { lng: locale, position: driverInfo.statistics.highestGridPosition })}\n` +
+          `${i18next.t("driver.highestRaceFinish", { lng: locale, position: driverInfo.statistics.highestRaceFinish || 0 })}\n` +
+          `${i18next.t("driver.highestGridPosition", { lng: locale, position: driverInfo.statistics.highestGridPosition || 0 })}\n` +
           `${i18next.t("driver.racesEntered", { lng: locale, amount: driverInfo.statistics.racesEntered })}\n`,
         inline: true,
       },
@@ -91,15 +91,19 @@ export default class Command extends SlashCommand {
     ]);
 
     // Set the thumbnail to the driver image from wikipedia
-    embed.setThumbnail(driverInfo.image || "");
+    embed.setThumbnail(driverInfo.image);
 
     // Generated the ANSI-styled recent races code block
     const generateLastRacesANSI = (races: Driver["recentRaces"]): string => {
       return races
         .map((race) => {
           const position = `${i18next.t("driver.position", { lng: locale, pos: getOrdinalSuffix(race.position, locale) })} ${race.raceGap ? `(${race.raceGap})` : ""}`;
+          const raceTime =
+            race.raceTime == null
+              ? i18next.t("driver.notAvailable", { lng: locale })
+              : race.raceTime;
 
-          return `\u001b[2;34m\u001b[1;34m${race.country.alpha3} ${race.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${race.date}\u001b[0m\n   \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m ⏰ \u001b[2;36m${race.date || i18next.t("commands.driver.n/a", { lng: locale })}\u001b[0m\n   \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
+          return `\u001b[2;34m\u001b[1;34m${race.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${race.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m ⏰ \u001b[2;36m${raceTime}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
         })
         .join("\n\n");
     };
@@ -137,16 +141,20 @@ export default class Command extends SlashCommand {
 }
 
 function getOrdinalSuffix(n: string, locale: string) {
+  if (isNaN(parseInt(n))) {
+    return n;
+  }
+
   const s = [
       i18next.t("ordinal.rules.default", { lng: locale }),
-      i18next.t("ordinal.rules.st", { lng: locale }),
-      i18next.t("ordinal.rules.nd", { lng: locale }),
-      i18next.t("ordinal.rules.rd", { lng: locale }),
+      i18next.t("ordinal.rules.1", { lng: locale }),
+      i18next.t("ordinal.rules.2", { lng: locale }),
+      i18next.t("ordinal.rules.3", { lng: locale }),
     ],
     v = parseInt(n) % 100;
   const index = (v - 20) % 10;
   const suffix =
     s[index] !== undefined ? s[index] : s[v] !== undefined ? s[v] : s[0];
-  if (!suffix) return "";
-  return n + suffix;
+  if (!suffix) return n;
+  return `${i18next.t("driver.finished", { lng: locale })} ${n}${suffix}`;
 }

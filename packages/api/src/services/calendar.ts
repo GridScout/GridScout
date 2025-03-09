@@ -5,14 +5,14 @@ import { ok, err, type Result } from "@sapphire/result";
 import { eq } from "drizzle-orm";
 import { country, grand_prix, race } from "@gridscout/db/schema";
 
-import db from "@gridscout/db";
-
 export class CalendarService {
   constructor(private readonly client: API) {}
 
   async get(year?: number): Promise<Result<Calendar, string>> {
     const seasonYear = year || new Date().getFullYear();
     if (isNaN(seasonYear)) return err(`Invalid season year: ${year}`);
+
+    const db = await this.client.db();
 
     const races = await db
       .select({

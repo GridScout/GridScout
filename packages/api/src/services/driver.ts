@@ -1,7 +1,6 @@
 import type { API } from "../index.js";
 import type { Driver } from "@gridscout/types";
 
-import db from "@gridscout/db";
 import {
   driver,
   country,
@@ -21,6 +20,8 @@ export class DriverService {
   async get(id: string): Promise<Result<Driver, string>> {
     // Sanitise the input
     const idSanitised = this.client.sanitiseInput(id);
+
+    const db = await this.client.db();
 
     // Fetch driver data from database
     const driverData = await db
@@ -54,7 +55,7 @@ export class DriverService {
       .where(eq(driver.id, idSanitised));
 
     // If there was no data found, driver is not in database, return err
-    if (!driverData.length) return err("No driver found");
+    if (!driverData) return err("No driver found");
 
     // Fetch the 3 most recent races for the driver
     const recentRaces = await db
@@ -98,7 +99,8 @@ export class DriverService {
       .orderBy(desc(season_entrant_driver.year))
       .limit(1);
 
-    const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
+    // const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
+    const image = ok(null);
 
     const combinedData = {
       ...driverData[0],

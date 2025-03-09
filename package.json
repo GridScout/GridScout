@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --concurrency 15",
     "dev:bot": "turbo run dev --filter bot",
     "dev:cron": "turbo run dev --filter cron",
     "lint": "turbo run lint",

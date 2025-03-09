@@ -55,7 +55,7 @@ export class DriverService {
       .where(eq(driver.id, idSanitised));
 
     // If there was no data found, driver is not in database, return err
-    if (!driverData) return err("No driver found");
+    if (driverData.length == 0) return err("No driver found");
 
     // Fetch the 3 most recent races for the driver
     const recentRaces = await db

@@ -11,6 +11,7 @@ import { meilisearch } from "@gridscout/search";
 import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
+  type AutocompleteInteraction,
 } from "discord.js";
 
 const api = new API();
@@ -128,6 +129,19 @@ export default class Command extends SlashCommand {
     }
 
     await interaction.editReply({ embeds: [embed] });
+  }
+
+  async handleAutocomplete(interaction: AutocompleteInteraction) {
+    const focusedOption = interaction.options.getFocused(true);
+
+    const drivers = await meilisearch.searchDriverByName(focusedOption.value);
+
+    const options = drivers.map((driver) => ({
+      name: driver.name,
+      value: driver.id,
+    }));
+
+    await interaction.respond(options);
   }
 
   override async build() {

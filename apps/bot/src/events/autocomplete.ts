@@ -1,8 +1,6 @@
 import Event from "../structures/event.js";
 import { commands } from "../index.js";
 
-import { meilisearch } from "@gridscout/search";
-
 import { AutocompleteInteraction } from "discord.js";
 
 // Define a type for commands that can handle autocomplete

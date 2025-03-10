@@ -99,8 +99,7 @@ export class DriverService {
       .orderBy(desc(season_entrant_driver.year))
       .limit(1);
 
-    // const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
-    const image = ok(null);
+    const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
 
     const combinedData = {
       ...driverData[0],
@@ -116,14 +115,23 @@ export class DriverService {
     driverName: string
   ): Promise<Result<string, string>> {
     try {
+      const cache = await this.client.cache();
+      const cacheKey = `image:${driverName}`;
+
+      const cachedImage = await cache.get(cacheKey);
+      if (cachedImage) {
+        return ok(cachedImage);
+      }
+
       // Get the wikipedia page url for the driver
       const title = driverName.replace(" ", "_");
-
       const encodedTitle = encodeURIComponent(title);
-      const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodedTitle}&prop=pageimages&format=json&pithumbsize=500`;
 
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
+      // First get the normalized/redirected title
+      const normalizeUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodedTitle}&redirects=true&format=json`;
+
+      const normalizeResponse = await fetch(normalizeUrl);
+      if (!normalizeResponse.ok) {
         return err("Error fetching data");
       }
 
@@ -131,8 +139,8 @@ export class DriverService {
         query: {
           pages: {
             [pageId: string]: {
-              pageid: number;
-              ns: number;
+              pageid?: number;
+              ns?: number;
               title: string;
               thumbnail?: {
                 source: string;
@@ -144,11 +152,29 @@ export class DriverService {
         };
       }
 
+      const normalizeData =
+        (await normalizeResponse.json()) as WikipediaApiResponse;
+      const pages = Object.values(normalizeData.query.pages);
+
+      if (!pages.length || !pages[0]) {
+        return err("No page found for driver");
+      }
+
+      const normalizedTitle = pages[0].title.replace(" ", "_");
+
+      // Now get the image using the normalized title
+      const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(normalizedTitle)}&prop=pageimages&format=json&pithumbsize=500`;
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        return err("Error fetching data");
+      }
+
       const data = (await response.json()) as WikipediaApiResponse;
-      const pages = data.query.pages;
-      const page = Object.values(pages)[0];
+      const page = Object.values(data.query.pages)[0];
 
       if (page && page.thumbnail && page.thumbnail.source) {
+        await cache.set(cacheKey, page.thumbnail.source, 60 * 60 * 24 * 3);
         return ok(page.thumbnail.source);
       } else {
         return err("No headshot found");

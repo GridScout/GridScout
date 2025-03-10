@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@gridscout/db": "*",
+    "@gridscout/cache": "*",
     "@sapphire/result": "^2.7.2",
     "drizzle-orm": "^0.40.0"
   }

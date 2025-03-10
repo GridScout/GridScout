@@ -6,14 +6,14 @@ services:
   #   restart: unless-stopped
 
   # Redis (dragonflydb)
-  # dragonfly:
-  #   image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
-  #   ulimits:
-  #     memlock: -1
-  #   ports:
-  #     - "6379:6379"
-    # volumes:
-    #   - dragonflydata:/data
+  dragonfly:
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    volumes:
+      - dragonflydata:/data
 
   meilisearch:
     image: 'getmeili/meilisearch'
@@ -26,5 +26,5 @@ services:
       - MEILI_MASTER_KEY=masterKey
 
 volumes:
-  # dragonflydata:
+  dragonflydata:
   meilisearchdata:

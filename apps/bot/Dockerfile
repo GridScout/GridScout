@@ -43,11 +43,7 @@ COPY --chown=node:node . .
 RUN bun install --frozen-lockfile
 RUN bun run build
 
-# Remove existing node_modules
-RUN rm -rf /app/node_modules
-
-# Reinstall only production dependencies
-RUN bun install --frozen-lockfile --production
+RUN bun install --production --frozen-lockfile
 
 # Remove any unnecessary files
 RUN rm -rf /app/node_modules/.cache

@@ -6,10 +6,8 @@ import {
   driver,
   season_entrant_driver,
 } from "@gridscout/db/schema";
-import { MeilisearchClient } from "@gridscout/search";
+import { meilisearch } from "@gridscout/search";
 import { eq, sql } from "drizzle-orm";
-
-const search = new MeilisearchClient();
 
 export default new CronJob(
   "MeilisearchUpdater",
@@ -51,7 +49,7 @@ export default new CronJob(
 
     console.log(`Found ${drivers.length} drivers in the database`);
 
-    const uploadedDrivers = await search.getAllDocuments();
+    const uploadedDrivers = await meilisearch.getAllDocuments();
     console.log(`Found ${uploadedDrivers.length} drivers in Meilisearch`);
 
     const searchDriverMap = new Map(uploadedDrivers.map((d) => [d.id, d]));
@@ -76,7 +74,7 @@ export default new CronJob(
     // apply changes
     if (driversToAdd.length > 0) {
       console.log(`Adding ${driversToAdd.length} new drivers to Meilisearch`);
-      await search.updateDriverDocuments(driversToAdd);
+      await meilisearch.updateDriverDocuments(driversToAdd);
     }
   }
 );

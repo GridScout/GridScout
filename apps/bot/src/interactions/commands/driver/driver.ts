@@ -6,7 +6,7 @@ import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json"
 import i18next from "@gridscout/lang";
 import { API } from "@gridscout/api";
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
-import { MeilisearchClient } from "@gridscout/search";
+import { meilisearch } from "@gridscout/search";
 
 import {
   SlashCommandBuilder,
@@ -14,7 +14,6 @@ import {
 } from "discord.js";
 
 const api = new API();
-const search = new MeilisearchClient();
 
 export default class Command extends SlashCommand {
   constructor() {
@@ -38,7 +37,7 @@ export default class Command extends SlashCommand {
     }
 
     // Search for the driver in Meilisearch
-    const driverSearch = await search.searchDriverByName(driver);
+    const driverSearch = await meilisearch.searchDriverByName(driver);
     if (driverSearch.length > 0) driver = driverSearch[0]?.id ?? driver;
 
     // Get the driver data from the API

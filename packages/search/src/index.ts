@@ -11,7 +11,7 @@ interface Driver {
   current_grid: boolean;
 }
 
-export class MeilisearchClient {
+class MeilisearchClient {
   private client: MeiliSearch;
   private indexName: string;
 
@@ -40,7 +40,7 @@ export class MeilisearchClient {
       if (name === "") {
         response = await index.search<Driver>(name, {
           limit: limit,
-          filter: "current_grid=true",
+          filter: "current_grid=1",
         });
       } else {
         response = await index.search<Driver>(name, {
@@ -100,3 +100,5 @@ export class MeilisearchClient {
     }
   }
 }
+
+export const meilisearch = new MeilisearchClient();

@@ -1,10 +1,8 @@
 import Event from "../structures/event.js";
 
-import { MeilisearchClient } from "@gridscout/search";
+import { meilisearch } from "@gridscout/search";
 
 import { AutocompleteInteraction } from "discord.js";
-
-const meilisearch = new MeilisearchClient();
 
 export default class AutocompleteInteractionEvent extends Event {
   constructor() {

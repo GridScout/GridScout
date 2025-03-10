@@ -16,7 +16,7 @@
       "default": "th"
     }
   },
-  "genericError": "An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
+  "genericError": "**Error!** An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
   "next": {
     "error": {
       "description": "There are no more events this season."
@@ -27,7 +27,7 @@
     "content": "# GridScout is here! <:racingcar:1341846279486963854>\n\nGridScout is a Discord bot designed for motorsport enthusiasts.\nWhether you're looking for driver stats, race schedules, or past results, GridScout delivers the latest information right in your server.\n## **How to Use**\nTo get started, type / in a chat to see a list of available commands.\nIf you need more help, head to [docs.gridscout.ex](https://docs.gridscout.ex).\n## **Useful Links**\n- <:web:1341845985512652850> **Website**: [gridscout.ex](https://gridscout.ex)\n- <:help:1341845993418788954> **Support & Feedback**: [gridscout.ex](https://gridscout.ex)\n- <:terms:1341845978860355634> **Terms & Privacy Policy**: [gridscout.ex](https://gridscout.ex)\n- <:invite:1341845971822186648> **Invite GridScout to Your Server**: [gridscout.ex](https://gridscout.ex)\n\nIf you enjoy using GridScout, please consider voting for it on top.gg to help more people discover it!"
   },
   "driver": {
-    "error": "Driver not found. Please check the spelling or try another name.",
+    "error": "**Error!** Driver not found. Please check the spelling or try another name.",
     "notAvailable": "N/A",
     "acronym": "**Acronym**: `{{acronym}}`",
     "constructor": "**Constructor**: {{constructorEmoji}} **{{name}}**",
@@ -45,5 +45,22 @@
     "lastRaces": "Last Races ({{count}})",
     "finished": "Finished",
     "position": "{{pos}}"
+  },
+  "calendar": {
+    "error": "**Error!** Unable to find the calendar for the season: `{{year}}`.",
+    "author": "Race Calendar",
+    "title": "{{season}} Season",
+    "footer": "⏰ All dates above are shown in your local timezone"
+  },
+  "standings": {
+    "error": "**Error!** Unable to find standings for the season: `{{year}}`.",
+    "drivers": {
+      "title": "{{season}} Season",
+      "author": "Driver Standings"
+    },
+    "constructors": {
+      "title": "{{season}} Season",
+      "author": "Constructor Standings"
+    }
   }
 }

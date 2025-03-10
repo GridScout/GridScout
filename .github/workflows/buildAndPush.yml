@@ -50,8 +50,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Build the image
-      - name: Build and push
+      # Build and push the bot image
+      - name: Build and push bot
         uses: docker/build-push-action@v3
         with:
           push: true
@@ -60,5 +60,18 @@ jobs:
           build-args: COMMIT_HASH=${{ github.sha }}
           context: .
           file: ./apps/bot/Dockerfile
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=bot
+          cache-to: type=gha,scope=bot,mode=max
+
+      # Build and push the cron image
+      - name: Build and push cron
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: ghcr.io/gridscout/cron:latest
+          platforms: linux/amd64
+          build-args: COMMIT_HASH=${{ github.sha }}
+          context: .
+          file: ./apps/cron/Dockerfile
+          cache-from: type=gha,scope=cron
+          cache-to: type=gha,scope=cron,mode=max

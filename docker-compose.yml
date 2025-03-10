@@ -1,9 +1,19 @@
 services:
-  # gridscout:
-  #   image: ghcr.io/gridscout/gridscout:latest
-  #   environment:
-  #     - DOPPLER_TOKEN=
-  #   restart: unless-stopped
+  gridscout:
+    image: ghcr.io/gridscout/gridscout:latest
+    environment:
+      - DOPPLER_TOKEN=
+    volumes:
+      - /path/to/db:/apps/bot/dist/f1db.db
+    restart: unless-stopped
+
+  cron:
+    image: ghcr.io/gridscout/cron:latest
+    environment:
+      - DOPPLER_TOKEN=
+    volumes:
+      - /path/to/db:/apps/cron/dist/f1db.db
+    restart: unless-stopped
 
   # Redis (dragonflydb)
   dragonfly:

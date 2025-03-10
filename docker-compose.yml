@@ -4,15 +4,17 @@ services:
     environment:
       - DOPPLER_TOKEN=
     volumes:
-      - /path/to/db:/apps/bot/dist/f1db.db
+      - /path/to/db:/app/f1db.db
     restart: unless-stopped
+    depends_on:
+      - cron
 
   cron:
     image: ghcr.io/gridscout/cron:latest
     environment:
       - DOPPLER_TOKEN=
     volumes:
-      - /path/to/db:/apps/cron/dist/f1db.db
+      - /path/to/db:/app/f1db.db
     restart: unless-stopped
 
   # Redis (dragonflydb)

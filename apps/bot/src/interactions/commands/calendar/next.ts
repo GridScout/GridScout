@@ -19,6 +19,7 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
+    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
 
     // Get the latest calendar data
     const calendar = await api.calendar.get();
@@ -27,10 +28,7 @@ export default class Command extends SlashCommand {
     if (calendar.isErr()) {
       return await interaction.editReply({
         embeds: [
-          errorEmbed(
-            "",
-            i18next.t("genericError.description", { lng: locale })
-          ),
+          errorEmbed("", t("genericError.description")),
         ],
       });
     }
@@ -46,7 +44,7 @@ export default class Command extends SlashCommand {
     if (!nextRace) {
       return await interaction.editReply({
         embeds: [
-          errorEmbed("", i18next.t("next.error.description", { lng: locale })),
+          errorEmbed("", t("next.error.description")),
         ],
       });
     }
@@ -60,38 +58,38 @@ export default class Command extends SlashCommand {
       countryEmojis[nextRace.country.alpha3 as keyof typeof countryEmojis];
 
     const embed = primaryEmbed(
-      i18next.t("next.title", { lng: locale }),
+      t("next.title"),
       `${countryEmoji} **${nextRace.name}** (<t:${date / 1000}:R>)`
     );
 
     const sessions = [
       {
         key: "freePracticeOne",
-        label: i18next.t("sessions.freePractice1", { lng: locale }),
+        label: t("sessions.freePractice1"),
       },
       {
         key: "freePracticeTwo",
-        label: i18next.t("sessions.freePractice2", { lng: locale }),
+        label: t("sessions.freePractice2"),
       },
       {
         key: "freePracticeThree",
-        label: i18next.t("sessions.freePractice3", { lng: locale }),
+        label: t("sessions.freePractice3"),
       },
       {
         key: "sprintQualifying",
-        label: i18next.t("sessions.sprintQualifying", { lng: locale }),
+        label: t("sessions.sprintQualifying"),
       },
       {
         key: "sprintRace",
-        label: i18next.t("sessions.sprintRace", { lng: locale }),
+        label: t("sessions.sprintRace"),
       },
       {
         key: "qualifying",
-        label: i18next.t("sessions.qualifying", { lng: locale }),
+        label: t("sessions.qualifying"),
       },
       {
         key: "grandPrix",
-        label: `<:chequeredflag:1342900214687600740> **${i18next.t("sessions.gp", { lng: locale })}**`,
+        label: `<:chequeredflag:1342900214687600740> **${t("sessions.gp")}**`,
       },
     ];
 

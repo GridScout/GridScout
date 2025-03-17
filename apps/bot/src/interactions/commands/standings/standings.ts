@@ -25,6 +25,7 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
+    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
 
     const subcommand = interaction.options.getSubcommand();
     const season = interaction.options.getInteger("season") ?? undefined;
@@ -34,10 +35,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            i18next.t("standings.error", {
-              year: season,
-              lng: locale,
-            })
+            t("standings.error", { year: season }),
           ),
         ],
       });
@@ -55,6 +53,8 @@ export default class Command extends SlashCommand {
     locale: string,
     season?: number
   ) {
+    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+
     const result = await api.standings.getDriverStandings(season);
 
     if (result.isErr()) {
@@ -62,10 +62,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            i18next.t("standings.error", {
-              year: season || new Date().getFullYear(),
-              lng: locale,
-            })
+            t("standings.error", { year: season || new Date().getFullYear() }),
           ),
         ],
       });
@@ -91,13 +88,10 @@ export default class Command extends SlashCommand {
       return `${posEmoji}‎ ‎ ‎ ‎ ${driverCountryEmoji ? `${driverCountryEmoji}‎ ‎ ` : ""}**${standing.driver.name}** — ${standing.points} pts`;
     });
 
-    const title = i18next.t("standings.drivers.title", {
-      season: data.season,
-      lng: locale,
-    });
+    const title = t("standings.drivers.title", { season: data.season });
 
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
-      name: i18next.t("standings.drivers.author", { lng: locale }),
+      name: t("standings.drivers.author"),
     });
 
     await interaction.editReply({ embeds: [embed] });
@@ -108,6 +102,8 @@ export default class Command extends SlashCommand {
     locale: string,
     season?: number
   ) {
+    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+
     const result = await api.standings.getConstructorStandings(season);
 
     if (result.isErr()) {
@@ -115,10 +111,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            i18next.t("standings.error", {
-              year: season || new Date().getFullYear(),
-              lng: locale,
-            })
+            t("standings.error", { year: season || new Date().getFullYear() }),
           ),
         ],
       });
@@ -139,13 +132,10 @@ export default class Command extends SlashCommand {
       return `${posEmoji}‎ ‎ ‎ ‎ ${teamEmoji ? `${teamEmoji}‎ ‎ ` : ""}**${standing.constructor.name}** — ${standing.points} pts`;
     });
 
-    const title = i18next.t("standings.constructors.title", {
-      season: standings.season,
-      lng: locale,
-    });
+    const title = t("standings.constructors.title", { season: standings.season });
 
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
-      name: i18next.t("standings.constructors.author", { lng: locale }),
+      name: t("standings.constructors.author"),
     });
 
     await interaction.editReply({ embeds: [embed] });

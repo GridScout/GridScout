@@ -20,6 +20,7 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
+    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
 
     // Get the season specified, or current year if not
     const season = interaction.options.getInteger("season") ?? undefined;
@@ -27,13 +28,7 @@ export default class Command extends SlashCommand {
     if (season && season > new Date().getFullYear() + 1) {
       return interaction.editReply({
         embeds: [
-          errorEmbed(
-            "",
-            i18next.t("calendar.error", {
-              year: season,
-              lng: locale,
-            })
-          ),
+          errorEmbed("", t("calendar.error", { year: season })),
         ],
       });
     }
@@ -44,13 +39,7 @@ export default class Command extends SlashCommand {
     if (calendar.isErr()) {
       return interaction.editReply({
         embeds: [
-          errorEmbed(
-            "",
-            i18next.t("calendar.error", {
-              year: season,
-              lng: locale,
-            })
-          ),
+          errorEmbed("", t("calendar.error", { year: season })),
         ],
       });
     }
@@ -90,27 +79,27 @@ export default class Command extends SlashCommand {
       const sessions = [
         {
           key: "freePracticeOne",
-          label: `> ${i18next.t("sessions.freePractice1", { lng: locale })}`,
+          label: `> ${t("sessions.freePractice1")}`,
         },
         {
           key: "freePracticeTwo",
-          label: `> ${i18next.t("sessions.freePractice2", { lng: locale })}`,
+          label: `> ${t("sessions.freePractice2")}`,
         },
         {
           key: "freePracticeThree",
-          label: `> ${i18next.t("sessions.freePractice3", { lng: locale })}`,
+          label: `> ${t("sessions.freePractice3")}`,
         },
         {
           key: "sprintQualifying",
-          label: `> ${i18next.t("sessions.sprintQualifying", { lng: locale })}`,
+          label: `> ${t("sessions.sprintQualifying")}`,
         },
         {
           key: "sprintRace",
-          label: `> ${i18next.t("sessions.sprintRace", { lng: locale })}`,
+          label: `> ${t("sessions.sprintRace")}`,
         },
         {
           key: "qualifying",
-          label: `> ${i18next.t("sessions.qualifying", { lng: locale })}`,
+          label: `> ${t("sessions.qualifying")}`,
         },
       ];
 
@@ -143,18 +132,15 @@ export default class Command extends SlashCommand {
       }
     }
 
-    const title = i18next.t("calendar.title", {
-      season: season || new Date().getFullYear(),
-      lng: locale,
-    });
+    const title = t("calendar.title", { season: season || new Date().getFullYear() });
 
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
-      name: i18next.t("calendar.author", { lng: locale }),
+      name: t("calendar.author"),
     });
 
     if (races.some((race) => race.grandPrix.time)) {
       embed.setFooter({
-        text: i18next.t("calendar.footer", { lng: locale }),
+        text: t("calendar.footer"),
       });
     }
 

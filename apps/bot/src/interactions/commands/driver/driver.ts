@@ -26,8 +26,9 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
-    
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     // Get the driver name from the interaction options
     let driver = interaction.options.getString("driver");
@@ -146,23 +147,29 @@ export default class Command extends SlashCommand {
   }
 }
 
-function generateLastRacesANSI(races: Driver["recentRaces"], locale: string, t: (key: string, options?: object) => string): string {
+function generateLastRacesANSI(
+  races: Driver["recentRaces"],
+  locale: string,
+  t: (key: string, options?: object) => string
+): string {
   return races
     .map((race) => {
       const position = isNaN(parseInt(race.position))
         ? `${t("driver.position", { pos: getOrdinalSuffix(race.position, locale, t) })} ${race.raceGap ? `(${race.raceGap})` : ""}`
         : `${t("driver.position", { pos: `${t("driver.finished")} ${getOrdinalSuffix(race.position, locale, t)}` })} ${race.raceGap ? `(${race.raceGap})` : ""}`;
       const raceTime =
-        race.raceTime == null
-          ? t("driver.notAvailable")
-          : race.raceTime;
+        race.raceTime == null ? t("driver.notAvailable") : race.raceTime;
 
       return `\u001b[2;34m\u001b[1;34m${race.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${race.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m ⏰ \u001b[2;36m${raceTime}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
     })
     .join("\n\n");
 }
 
-function getOrdinalSuffix(n: string, locale: string, t: (key: string, options?: object) => string): string {
+function getOrdinalSuffix(
+  n: string,
+  locale: string,
+  t: (key: string, options?: object) => string
+): string {
   const num = parseInt(n);
   if (isNaN(num)) {
     return n;
@@ -171,15 +178,20 @@ function getOrdinalSuffix(n: string, locale: string, t: (key: string, options?: 
     t("ordinal.rules.default"),
     t("ordinal.rules.1"),
     t("ordinal.rules.2"),
-    t("ordinal.rules.3")
+    t("ordinal.rules.3"),
   ];
   const v = num % 100;
   const index = (v - 20) % 10;
-  const suffix = s[index] !== undefined ? s[index] : s[v] !== undefined ? s[v] : s[0];
+  const suffix =
+    s[index] !== undefined ? s[index] : s[v] !== undefined ? s[v] : s[0];
   return `${n}${suffix}`;
 }
 
-function formatDate(date: string, locale: string, t: (key: string, options?: object) => string): string {
+function formatDate(
+  date: string,
+  locale: string,
+  t: (key: string, options?: object) => string
+): string {
   const dateObj = new Date(date);
   const day = dateObj.getDate();
   const ordinalDay = getOrdinalSuffix(day.toString(), locale, t);

@@ -20,16 +20,15 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     // Get the season specified, or current year if not
     const season = interaction.options.getInteger("season") ?? undefined;
 
     if (season && season > new Date().getFullYear() + 1) {
       return interaction.editReply({
-        embeds: [
-          errorEmbed("", t("calendar.error", { year: season })),
-        ],
+        embeds: [errorEmbed("", t("calendar.error", { year: season }))],
       });
     }
 
@@ -38,9 +37,7 @@ export default class Command extends SlashCommand {
 
     if (calendar.isErr()) {
       return interaction.editReply({
-        embeds: [
-          errorEmbed("", t("calendar.error", { year: season })),
-        ],
+        embeds: [errorEmbed("", t("calendar.error", { year: season }))],
       });
     }
 
@@ -132,7 +129,9 @@ export default class Command extends SlashCommand {
       }
     }
 
-    const title = t("calendar.title", { season: season || new Date().getFullYear() });
+    const title = t("calendar.title", {
+      season: season || new Date().getFullYear(),
+    });
 
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
       name: t("calendar.author"),

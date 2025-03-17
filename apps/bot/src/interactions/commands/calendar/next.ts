@@ -19,7 +19,8 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     // Get the latest calendar data
     const calendar = await api.calendar.get();
@@ -27,9 +28,7 @@ export default class Command extends SlashCommand {
     // if an error occurred, return an error message
     if (calendar.isErr()) {
       return await interaction.editReply({
-        embeds: [
-          errorEmbed("", t("genericError.description")),
-        ],
+        embeds: [errorEmbed("", t("genericError.description"))],
       });
     }
 
@@ -43,9 +42,7 @@ export default class Command extends SlashCommand {
     // if no upcoming events, return an error message
     if (!nextRace) {
       return await interaction.editReply({
-        embeds: [
-          errorEmbed("", t("next.error.description")),
-        ],
+        embeds: [errorEmbed("", t("next.error.description"))],
       });
     }
 

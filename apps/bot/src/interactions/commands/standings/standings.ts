@@ -25,19 +25,15 @@ export default class Command extends SlashCommand {
     locale: string
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     const subcommand = interaction.options.getSubcommand();
     const season = interaction.options.getInteger("season") ?? undefined;
 
     if (season && season > new Date().getFullYear() + 1) {
       return interaction.editReply({
-        embeds: [
-          errorEmbed(
-            "",
-            t("standings.error", { year: season }),
-          ),
-        ],
+        embeds: [errorEmbed("", t("standings.error", { year: season }))],
       });
     }
 
@@ -53,7 +49,8 @@ export default class Command extends SlashCommand {
     locale: string,
     season?: number
   ) {
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     const result = await api.standings.getDriverStandings(season);
 
@@ -62,7 +59,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            t("standings.error", { year: season || new Date().getFullYear() }),
+            t("standings.error", { year: season || new Date().getFullYear() })
           ),
         ],
       });
@@ -102,7 +99,8 @@ export default class Command extends SlashCommand {
     locale: string,
     season?: number
   ) {
-    const t = (key: string, options = {}) => i18next.t(key, { lng: locale, ...options });
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
 
     const result = await api.standings.getConstructorStandings(season);
 
@@ -111,7 +109,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            t("standings.error", { year: season || new Date().getFullYear() }),
+            t("standings.error", { year: season || new Date().getFullYear() })
           ),
         ],
       });
@@ -132,7 +130,9 @@ export default class Command extends SlashCommand {
       return `${posEmoji}‎ ‎ ‎ ‎ ${teamEmoji ? `${teamEmoji}‎ ‎ ` : ""}**${standing.constructor.name}** — ${standing.points} pts`;
     });
 
-    const title = t("standings.constructors.title", { season: standings.season });
+    const title = t("standings.constructors.title", {
+      season: standings.season,
+    });
 
     const embed = primaryEmbed(title, lines.join("\n")).setAuthor({
       name: t("standings.constructors.author"),

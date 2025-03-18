@@ -11,7 +11,7 @@ import { eq, sql } from "drizzle-orm";
 
 export default new CronJob(
   "MeilisearchUpdater",
-  { schedule: "0 * * * *", runOnStart: true },
+  { schedule: "0 10 * * *", runOnStart: true },
 
   async () => {
     const db = await getDrizzle();
@@ -26,7 +26,7 @@ export default new CronJob(
         team: sql<
           string | null
         >`MAX(CASE WHEN ${season_entrant_driver.year} = ${currentYear} THEN ${constructor.name} ELSE NULL END)`.as(
-          "team"
+          "team",
         ),
         current_grid: sql<boolean>`EXISTS (
           SELECT 1 FROM ${season_entrant_driver} 
@@ -38,11 +38,11 @@ export default new CronJob(
       .innerJoin(country, eq(driver.nationality_country_id, country.id))
       .leftJoin(
         season_entrant_driver,
-        eq(driver.id, season_entrant_driver.driver_id)
+        eq(driver.id, season_entrant_driver.driver_id),
       )
       .leftJoin(
         constructor,
-        eq(season_entrant_driver.constructor_id, constructor.id)
+        eq(season_entrant_driver.constructor_id, constructor.id),
       )
       .groupBy(driver.id, country.name)
       .all();
@@ -76,7 +76,7 @@ export default new CronJob(
       console.log(`Adding ${driversToAdd.length} new drivers to Meilisearch`);
       await meilisearch.updateDriverDocuments(driversToAdd);
     }
-  }
+  },
 );
 
 interface Driver {

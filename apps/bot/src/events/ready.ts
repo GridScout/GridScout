@@ -21,7 +21,7 @@ export default class ReadyEvent extends Event {
 
   override async execute(client: Client) {
     logger.info(
-      `${client.user?.tag} logged into Discord in ${Date.now() - start}ms`
+      `${client.user?.tag} logged into Discord in ${Date.now() - start}ms`,
     );
 
     const updateActivity = async () => {
@@ -38,15 +38,17 @@ export default class ReadyEvent extends Event {
           .sort(
             (a, b) =>
               new Date(a.grandPrix.date).getTime() -
-              new Date(b.grandPrix.date).getTime()
+              new Date(b.grandPrix.date).getTime(),
           )[0];
 
         if (upcomingGp) {
-          const daysRemaining = Math.floor(
+          const daysRemaining = Math.ceil(
             (new Date(upcomingGp.grandPrix.date).getTime() - now.getTime()) /
-              (1000 * 60 * 60 * 24)
+              (1000 * 60 * 60 * 24),
           );
-          activity = `the ${upcomingGp.name} in ${daysRemaining} days`;
+          activity = `the ${upcomingGp.name} in ${daysRemaining} day${
+            daysRemaining === 1 ? "" : "s"
+          }`;
         }
       }
 
@@ -63,7 +65,7 @@ export default class ReadyEvent extends Event {
 
     if (startupArgs.includes("--deploy")) {
       logger.debug(
-        `Deploying slash commands to Discord ${env.DOPPLER_ENVIRONMENT === "dev" ? "locally" : "globally"}`
+        `Deploying slash commands to Discord ${env.DOPPLER_ENVIRONMENT === "dev" ? "locally" : "globally"}`,
       );
       const commandData: any[] = [];
 
@@ -73,10 +75,10 @@ export default class ReadyEvent extends Event {
             await command.build(
               new SlashCommandBuilder()
                 .setName(command.name)
-                .setDescription(command.description)
-            )
+                .setDescription(command.description),
+            ),
           );
-        })
+        }),
       );
 
       if (env.DOPPLER_ENVIRONMENT === "dev") {
@@ -89,7 +91,7 @@ export default class ReadyEvent extends Event {
         try {
           await client.rest.put(
             Routes.applicationGuildCommands(client.user.id, devGuild.id),
-            { body: commandData }
+            { body: commandData },
           );
           logger.debug(`Deployed all local slash commands`);
         } catch (error) {

@@ -22,7 +22,7 @@ i18next.use(Backend).init(
     } else {
       logger.debug("i18next loaded successfully");
     }
-  }
+  },
 );
 
 export default i18next;

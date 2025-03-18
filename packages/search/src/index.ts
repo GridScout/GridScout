@@ -11,17 +11,32 @@ interface Driver {
   current_grid: boolean;
 }
 
+interface Race {
+  id: number;
+  name: string;
+  year: number;
+  official_name: string;
+  circuit_name: string;
+  circuit_place: string;
+  date: string | number;
+  round: number;
+  laps: number;
+}
+
 class MeilisearchClient {
   private client: MeiliSearch;
-  private indexName: string;
+  private driverIndexName: string;
+  private raceIndexName: string;
 
   constructor(
     host: string = env.MEILISEARCH_HOST,
     apiKey: string = env.MEILISEARCH_API_KEY,
-    indexName: string = "drivers"
+    driverIndexName: string = "drivers",
+    raceIndexName: string = "races",
   ) {
     this.client = new MeiliSearch({ host, apiKey });
-    this.indexName = indexName;
+    this.driverIndexName = driverIndexName;
+    this.raceIndexName = raceIndexName;
   }
 
   /**
@@ -32,10 +47,10 @@ class MeilisearchClient {
    */
   async searchDriverByName(
     name: string,
-    limit: number = 25
+    limit: number = 25,
   ): Promise<Driver[]> {
     try {
-      const index = this.client.index(this.indexName);
+      const index = this.client.index(this.driverIndexName);
       let response;
       if (name === "") {
         response = await index.search<Driver>(name, {
@@ -55,6 +70,30 @@ class MeilisearchClient {
   }
 
   /**
+   * Search for a race by name, circuit, or year
+   *
+   * @param query The search query
+   * @returns {Promise<Race[]>} Array of races that match the search query
+   */
+  async searchRace(
+    query: string,
+    year: number,
+    limit: number = 25,
+  ): Promise<Race[]> {
+    try {
+      const index = this.client.index(this.raceIndexName);
+      const response = await index.search<Race>(query, {
+        limit: limit,
+        sort: ["year:desc", "round:asc"],
+        filter: `year=${year}`,
+      });
+      return response.hits;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  /**
    * Update driver documents in the Meilisearch index
    *
    * @param drivers Array of driver objects to update in the index
@@ -62,14 +101,40 @@ class MeilisearchClient {
    */
   async updateDriverDocuments(drivers: Driver[]): Promise<void> {
     try {
-      const index = this.client.index(this.indexName);
+      const index = this.client.index(this.driverIndexName);
       const response = await index.addDocuments(drivers, { primaryKey: "id" });
       await index.updateFilterableAttributes(["name", "current_grid"]);
       await index.updateSortableAttributes(["current_grid"]);
       await index.updateSearchableAttributes(["id", "name", "country", "team"]);
-      logger.info(`Documents updated with task ID: ${response.taskUid}`);
+      logger.info(`Driver documents updated with task ID: ${response.taskUid}`);
     } catch (error) {
       logger.error(`Error updating driver documents: ${error}`);
+    }
+  }
+
+  /**
+   * Update race documents in the Meilisearch index
+   *
+   * @param races Array of race objects to update in the index
+   * @returns {Promise<void>}
+   */
+  async updateRaceDocuments(races: Race[]): Promise<void> {
+    try {
+      const index = this.client.index(this.raceIndexName);
+      const response = await index.addDocuments(races, { primaryKey: "id" });
+      await index.updateFilterableAttributes(["year", "circuit_name"]);
+      await index.updateSortableAttributes(["year", "round"]);
+      await index.updateSearchableAttributes([
+        "id",
+        "name",
+        "official_name",
+        "circuit_name",
+        "circuit_place",
+        "year",
+      ]);
+      logger.info(`Race documents updated with task ID: ${response.taskUid}`);
+    } catch (error) {
+      logger.error(`Error updating race documents: ${error}`);
     }
   }
 
@@ -79,8 +144,22 @@ class MeilisearchClient {
    */
   async getAllDocuments(): Promise<Driver[]> {
     try {
-      const index = this.client.index(this.indexName);
+      const index = this.client.index(this.driverIndexName);
       const response = await index.getDocuments<Driver>({ limit: 10000 });
+      return response.results;
+    } catch (error) {
+      return [];
+    }
+  }
+
+  /**
+   * Get all race documents from the Meilisearch index
+   * @returns {Promise<Race[]>} Array of all race documents in the index
+   */
+  async getAllRaces(): Promise<Race[]> {
+    try {
+      const index = this.client.index(this.raceIndexName);
+      const response = await index.getDocuments<Race>({ limit: 10000 });
       return response.results;
     } catch (error) {
       return [];
@@ -93,10 +172,23 @@ class MeilisearchClient {
    */
   async deleteAllDocuments(): Promise<void> {
     try {
-      const index = this.client.index(this.indexName);
+      const index = this.client.index(this.driverIndexName);
       await index.deleteAllDocuments();
     } catch (error) {
       logger.error(`Error deleting all documents: ${error}`);
+    }
+  }
+
+  /**
+   * Delete all race documents from the Meilisearch index
+   * @returns {Promise<void>}
+   */
+  async deleteAllRaces(): Promise<void> {
+    try {
+      const index = this.client.index(this.raceIndexName);
+      await index.deleteAllDocuments();
+    } catch (error) {
+      logger.error(`Error deleting all race documents: ${error}`);
     }
   }
 }

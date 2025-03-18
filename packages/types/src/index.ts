@@ -96,3 +96,46 @@ interface ConstructorStanding {
   engineManufacturer: string;
   points: number;
 }
+
+export type ResultTypes =
+  | "FREE_PRACTICE_1_RESULT"
+  | "FREE_PRACTICE_2_RESULT"
+  | "FREE_PRACTICE_3_RESULT"
+  | "QUALIFYING_RESULT"
+  | "SPRINT_QUALIFYING_RESULT"
+  | "SPRINT_RACE_RESULT"
+  | "RACE_RESULT";
+
+export interface Results {
+  season: number;
+  id: number;
+  type: ResultTypes;
+  results: Result[];
+}
+
+interface Result {
+  driver: {
+    id: string;
+    name: string;
+    country_alpha3: string;
+  };
+  position: number;
+  position_text: string;
+  retired_reason: string | null;
+  sessions: {
+    race_time?: string;
+    race_gap?: string;
+    free_practice_1_time?: string;
+    free_practice_1_gap?: string;
+    free_practice_2_time?: string;
+    free_practice_2_gap?: string;
+    free_practice_3_time?: string;
+    free_practice_3_gap?: string;
+    qualifying_time?: string;
+    qualifying_gap?: string;
+    sprint_qualifying_time?: string;
+    sprint_qualifying_gap?: string;
+    sprint_race_time?: string;
+    sprint_race_gap?: string;
+  }[];
+}

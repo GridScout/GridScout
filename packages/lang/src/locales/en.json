@@ -62,5 +62,16 @@
       "title": "{{season}} Season",
       "author": "Constructor Standings"
     }
+  },
+  "results": {
+    "title": "{{season}} {{race}} — {{session}}",
+    "author": "Race Results",
+    "error": "**Error!** Cannot retrieve results data for the chosen race.",
+    "noSessions": "**Error!** No sessions available for this race.",
+    "selectSession": "Select a session",
+    "defaultLabel": "Results",
+    "points": " ({{count}} point)",
+    "points_plural": " ({{count}} points)",
+    "dnf": "DNF ({{reason}})"
   }
 }

@@ -23,7 +23,7 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string
+    locale: string,
   ) {
     await interaction.deferReply();
 
@@ -40,9 +40,13 @@ export default class Command extends SlashCommand {
       });
     }
 
-    if (!/^[a-z0-9]+$/.test(driver)) {
-      const driverSearch = await meilisearch.searchDriverByName(driver);
-      if (driverSearch.length > 0) driver = driverSearch[0]?.id ?? driver;
+    const driverSearch = await meilisearch.searchDriverByName(driver);
+    if (driverSearch.length > 0) {
+      driver = driverSearch[0]?.id ?? driver;
+    } else {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("driver.error"))],
+      });
     }
 
     // Get the driver data from the API
@@ -59,7 +63,7 @@ export default class Command extends SlashCommand {
 
     const embed = primaryEmbed(
       `${driverInfo.name} ${driverInfo.permanentNumber ? `[${driverInfo.permanentNumber}]` : ""}`,
-      ""
+      "",
     );
 
     const teamId = driverInfo.team.id;
@@ -76,7 +80,7 @@ export default class Command extends SlashCommand {
       `${t("driver.acronym", { acronym: driverInfo.abbreviation })}\n` +
         `${t("driver.constructor", { constructorEmoji, name: driverInfo.team.name })}\n` +
         `${t("driver.dob", { dob: formatDate(driverInfo.dateOfBirth, locale, t), timetag })}\n` +
-        `${t("driver.nationality", { flag: countryEmojis[driverInfo.nationality.alpha3 as keyof typeof countryEmojis], nationality: `${driverInfo.nationality.demonym}` })}\n`
+        `${t("driver.nationality", { flag: countryEmojis[driverInfo.nationality.alpha3 as keyof typeof countryEmojis], nationality: `${driverInfo.nationality.demonym}` })}\n`,
     );
 
     embed.addFields([
@@ -141,7 +145,7 @@ export default class Command extends SlashCommand {
           .setName("driver")
           .setDescription("The driver to view information on")
           .setAutocomplete(true)
-          .setRequired(true)
+          .setRequired(true),
       )
       .toJSON();
   }
@@ -150,7 +154,7 @@ export default class Command extends SlashCommand {
 function generateLastRacesANSI(
   races: Driver["recentRaces"],
   locale: string,
-  t: (key: string, options?: object) => string
+  t: (key: string, options?: object) => string,
 ): string {
   return races
     .map((race) => {
@@ -168,7 +172,7 @@ function generateLastRacesANSI(
 function getOrdinalSuffix(
   n: string,
   locale: string,
-  t: (key: string, options?: object) => string
+  t: (key: string, options?: object) => string,
 ): string {
   const num = parseInt(n);
   if (isNaN(num)) {
@@ -190,7 +194,7 @@ function getOrdinalSuffix(
 function formatDate(
   date: string,
   locale: string,
-  t: (key: string, options?: object) => string
+  t: (key: string, options?: object) => string,
 ): string {
   const dateObj = new Date(date);
   const day = dateObj.getDate();

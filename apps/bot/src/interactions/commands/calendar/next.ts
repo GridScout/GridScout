@@ -5,7 +5,15 @@ import { API } from "@gridscout/api";
 import i18next from "@gridscout/lang";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ComponentType,
+  ButtonInteraction,
+} from "discord.js";
 
 const api = new API();
 
@@ -16,7 +24,7 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string
+    locale: string,
   ) {
     await interaction.deferReply();
     const t = (key: string, options = {}) =>
@@ -34,29 +42,111 @@ export default class Command extends SlashCommand {
 
     const calendarUnwrapped = calendar.unwrap();
 
-    // Find the upcoming event
-    const nextRace = calendarUnwrapped.races.filter(
-      (gp) => new Date(gp.grandPrix.date) > new Date()
-    )[0];
+    // Get current season races
+    const currentYear = new Date().getFullYear();
+    const currentSeasonRaces = calendarUnwrapped.races.filter(
+      (gp) => new Date(gp.grandPrix.date).getFullYear() === currentYear,
+    );
 
-    // if no upcoming events, return an error message
-    if (!nextRace) {
-      return await interaction.editReply({
-        embeds: [errorEmbed("", t("next.error.description"))],
+    // Find the upcoming event
+    const nextRaceIndex = currentSeasonRaces.findIndex(
+      (gp) => new Date(gp.grandPrix.date) > new Date(),
+    );
+
+    // If no upcoming events, show the last race of the season
+    let currentIndex =
+      nextRaceIndex === -1 ? currentSeasonRaces.length - 1 : nextRaceIndex;
+
+    // Initial race display
+    const initialEmbed = this.createRaceEmbed(
+      currentSeasonRaces[currentIndex],
+      locale,
+    );
+    const initialRow = this.createNavigationRow(
+      currentIndex,
+      currentSeasonRaces.length,
+      false,
+      locale,
+    );
+
+    const message = await interaction.editReply({
+      embeds: [initialEmbed],
+      components: [initialRow],
+    });
+
+    // Create a collector for button interactions
+    const collector = message.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      filter: (i) => i.user.id === interaction.user.id,
+      time: 900000, // 15 minutes collector (token expires after 15 min)
+    });
+
+    collector.on("collect", async (i: ButtonInteraction) => {
+      await i.deferUpdate();
+
+      let newIndex = currentIndex;
+
+      if (i.customId === "prev") {
+        newIndex = Math.max(0, currentIndex - 1);
+      } else if (i.customId === "next") {
+        newIndex = Math.min(currentSeasonRaces.length - 1, currentIndex + 1);
+      }
+
+      // Get the race data for the new index
+      const race = currentSeasonRaces[newIndex];
+      const embed = this.createRaceEmbed(race, locale);
+      const row = this.createNavigationRow(
+        newIndex,
+        currentSeasonRaces.length,
+        false,
+        locale,
+      );
+
+      // Update the message with the new race data
+      await i.editReply({
+        embeds: [embed],
+        components: [row],
       });
+
+      // Update the current index for future navigation
+      currentIndex = newIndex;
+    });
+
+    collector.on("end", async () => {
+      // Disable buttons when collector expires
+      const disabledRow = this.createNavigationRow(
+        currentIndex,
+        currentSeasonRaces.length,
+        true,
+        locale,
+      );
+
+      await interaction
+        .editReply({ components: [disabledRow] })
+        .catch(() => {});
+    });
+  }
+
+  private createRaceEmbed(race: any, locale: string) {
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
+
+    // if no race found
+    if (!race) {
+      return errorEmbed("", t("next.error.description"));
     }
 
     const date = new Date(
-      `${nextRace.grandPrix.date}T${nextRace.grandPrix.time}`
+      `${race.grandPrix.date}T${race.grandPrix.time}`,
     ).getTime();
 
     // Get the country emoji
     const countryEmoji =
-      countryEmojis[nextRace.country.alpha3 as keyof typeof countryEmojis];
+      countryEmojis[race.country.alpha3 as keyof typeof countryEmojis];
 
     const embed = primaryEmbed(
       t("next.title"),
-      `${countryEmoji} **${nextRace.name}** (<t:${date / 1000}:R>)`
+      `${countryEmoji} **${race.name}** (<t:${date / 1000}:R>)`,
     );
 
     const sessions = [
@@ -93,7 +183,7 @@ export default class Command extends SlashCommand {
     const events: string[] = [];
 
     for (const session of sessions) {
-      const raceSession = nextRace[session.key as keyof typeof nextRace];
+      const raceSession = race[session.key as keyof typeof race];
       if (
         raceSession &&
         typeof raceSession !== "string" &&
@@ -101,7 +191,7 @@ export default class Command extends SlashCommand {
         "time" in raceSession
       ) {
         const date = new Date(
-          `${raceSession.date}T${raceSession.time}`
+          `${raceSession.date}T${raceSession.time}`,
         ).getTime();
 
         // Add the event to the list
@@ -110,10 +200,39 @@ export default class Command extends SlashCommand {
     }
 
     embed.setDescription(
-      embed.data.description + "\n\n>>> " + events.join("\n")
+      embed.data.description + "\n\n>>> " + events.join("\n"),
     );
 
-    await interaction.editReply({ embeds: [embed] });
+    return embed;
+  }
+
+  private createNavigationRow(
+    currentIndex: number,
+    totalRaces: number,
+    disabled = false,
+    locale = "en",
+  ) {
+    const t = (key: string, options = {}) =>
+      i18next.t(key, { lng: locale, ...options });
+
+    // create back button
+    const backButton = new ButtonBuilder()
+      .setCustomId("prev")
+      .setLabel(t("next.previous"))
+      .setStyle(ButtonStyle.Secondary)
+      .setDisabled(disabled || currentIndex <= 0);
+
+    // create next button
+    const nextButton = new ButtonBuilder()
+      .setCustomId("next")
+      .setLabel(t("next.next"))
+      .setStyle(ButtonStyle.Success)
+      .setDisabled(disabled || currentIndex >= totalRaces - 1);
+
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      backButton,
+      nextButton,
+    );
   }
 
   override async build() {

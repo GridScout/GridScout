@@ -22,7 +22,9 @@
     "error": {
       "description": "There are no more events this season."
     },
-    "title": "Upcoming F1 Event",
+    "author": "Race Schedule",
+    "title": "{{season}} Season",
+    "footer": "Round {{round}} of {{total}}",
     "previous": "Previous",
     "next": "Next"
   },

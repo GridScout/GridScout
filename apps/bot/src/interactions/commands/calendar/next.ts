@@ -62,6 +62,8 @@ export default class Command extends SlashCommand {
     const initialEmbed = this.createRaceEmbed(
       currentSeasonRaces[currentIndex],
       locale,
+      currentIndex,
+      currentSeasonRaces.length,
     );
     const initialRow = this.createNavigationRow(
       currentIndex,
@@ -111,7 +113,12 @@ export default class Command extends SlashCommand {
 
       // Get the race data for the new index
       const race = currentSeasonRaces[newIndex];
-      const embed = this.createRaceEmbed(race, locale);
+      const embed = this.createRaceEmbed(
+        race,
+        locale,
+        newIndex,
+        currentSeasonRaces.length,
+      );
       const row = this.createNavigationRow(
         newIndex,
         currentSeasonRaces.length,
@@ -144,7 +151,12 @@ export default class Command extends SlashCommand {
     });
   }
 
-  private createRaceEmbed(race: any, locale: string) {
+  private createRaceEmbed(
+    race: any,
+    locale: string,
+    currentIndex = 0,
+    totalRaces = 0,
+  ) {
     const t = (key: string, options = {}) =>
       i18next.t(key, { lng: locale, ...options });
 
@@ -153,18 +165,24 @@ export default class Command extends SlashCommand {
       return errorEmbed("", t("next.error.description"));
     }
 
-    const date = new Date(
-      `${race.grandPrix.date}T${race.grandPrix.time}`,
-    ).getTime();
+    const date = new Date(`${race.grandPrix.date}T${race.grandPrix.time}`);
 
     // Get the country emoji
     const countryEmoji =
       countryEmojis[race.country.alpha3 as keyof typeof countryEmojis];
 
     const embed = primaryEmbed(
-      t("next.title"),
-      `${countryEmoji} **${race.name}** (<t:${date / 1000}:R>)`,
-    );
+      t("next.title", {
+        season: date.getFullYear(),
+      }),
+      `${countryEmoji} **${race.name}** (<t:${date.getTime() / 1000}:R>)`,
+    )
+      .setFooter({
+        text: t("next.footer", { round: currentIndex + 1, total: totalRaces }),
+      })
+      .setAuthor({
+        name: t("next.author"),
+      });
 
     const sessions = [
       {

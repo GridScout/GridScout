@@ -193,10 +193,15 @@ export default class Command extends SlashCommand {
       // Check if the interaction is from the original user
       if (i.user.id !== interaction.user.id) {
         await i.reply({
-          content: t("notYourInteraction", {
-            user: interaction.user.toString(),
-            command: this.name,
-          }),
+          embeds: [
+            errorEmbed(
+              "",
+              t("notYourInteraction", {
+                user: interaction.user.toString(),
+                command: this.name,
+              }),
+            ),
+          ],
           flags: MessageFlags.Ephemeral,
         });
         return;

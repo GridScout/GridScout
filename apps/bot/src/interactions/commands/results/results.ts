@@ -16,6 +16,7 @@ import {
   StringSelectMenuOptionBuilder,
   ComponentType,
   AutocompleteInteraction,
+  MessageFlags,
 } from "discord.js";
 
 const api = new API();
@@ -185,11 +186,22 @@ export default class Command extends SlashCommand {
     // Create collector for session selection
     const collector = response.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
-      filter: (i) => i.user.id === interaction.user.id,
       time: 900000, // 15mins because token expires after 15m
     });
 
     collector.on("collect", async (i: StringSelectMenuInteraction) => {
+      // Check if the interaction is from the original user
+      if (i.user.id !== interaction.user.id) {
+        await i.reply({
+          content: t("notYourInteraction", {
+            user: interaction.user.toString(),
+            command: this.name,
+          }),
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
+      }
+
       const selectedSessionType = i.values[0] as string;
       await i.deferUpdate();
 

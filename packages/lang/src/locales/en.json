@@ -17,6 +17,7 @@
     }
   },
   "genericError": "**Error!** An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
+  "notYourInteraction": "This interaction belongs to {{user}}. Please run the /{{command}} command to use this feature yourself.",
   "next": {
     "error": {
       "description": "There are no more events this season."

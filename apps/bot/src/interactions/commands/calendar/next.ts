@@ -13,6 +13,7 @@ import {
   ButtonStyle,
   ComponentType,
   ButtonInteraction,
+  MessageFlags,
 } from "discord.js";
 
 const api = new API();
@@ -77,11 +78,22 @@ export default class Command extends SlashCommand {
     // Create a collector for button interactions
     const collector = message.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      filter: (i) => i.user.id === interaction.user.id,
       time: 900000, // 15 minutes collector (token expires after 15 min)
     });
 
     collector.on("collect", async (i: ButtonInteraction) => {
+      // Check if the interaction is from the original user
+      if (i.user.id !== interaction.user.id) {
+        await i.reply({
+          content: t("notYourInteraction", {
+            user: interaction.user.toString(),
+            command: this.name,
+          }),
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
+      }
+
       await i.deferUpdate();
 
       let newIndex = currentIndex;

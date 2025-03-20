@@ -97,6 +97,15 @@ export default class ReadyEvent extends Event {
         } catch (error) {
           logger.error(String(error));
         }
+      } else {
+        try {
+          await client.rest.put(Routes.applicationCommands(client.user.id), {
+            body: commandData,
+          });
+          logger.debug(`Deployed all global slash commands`);
+        } catch (error) {
+          logger.error(String(error));
+        }
       }
     }
   }

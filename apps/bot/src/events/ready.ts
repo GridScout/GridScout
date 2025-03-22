@@ -57,7 +57,7 @@ export default class ReadyEvent extends Event {
 
     updateActivity();
 
-    setInterval(updateActivity, 1000 * 60 * 60 * 24);
+    setInterval(updateActivity, 1000 * 60 * 60 * 1);
 
     if (!client.user) return;
 

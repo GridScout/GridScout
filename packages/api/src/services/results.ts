@@ -99,9 +99,20 @@ export class ResultsService {
         }
 
         sessionObj.qualifying_time = qualifying_time;
+        sessionObj.qualifying_gap = result.sessions.qualifying_gap || "";
       } else if (type === "SPRINT_QUALIFYING_RESULT") {
-        sessionObj.sprint_qualifying_time =
-          result.sessions.sprint_qualifying_time || "";
+        let sprint_qualifying_time = "";
+        if (result.sessions.qualifying_q3) {
+          sprint_qualifying_time = result.sessions.qualifying_q3;
+        } else if (result.sessions.qualifying_q2) {
+          sprint_qualifying_time = result.sessions.qualifying_q2;
+        } else if (result.sessions.qualifying_q1) {
+          sprint_qualifying_time = result.sessions.qualifying_q1;
+        } else {
+          sprint_qualifying_time = result.sessions.sprint_qualifying_time || "";
+        }
+
+        sessionObj.sprint_qualifying_time = sprint_qualifying_time;
         sessionObj.sprint_qualifying_gap =
           result.sessions.sprint_qualifying_gap || "";
       } else if (type === "SPRINT_RACE_RESULT") {

@@ -335,19 +335,40 @@ export default class Command extends SlashCommand {
   ): string {
     const keys = sessionTimingKeys[sessionType] ?? [];
 
-    // For race winner (first position), use race_time if available
-    if (sessionType === "RACE_RESULT" && index === 0) {
-      const raceTime = result.sessions[0]?.["race_time"];
-      if (raceTime) return raceTime;
+    // handle sprint races
+    if (sessionType === "SPRINT_RACE_RESULT") {
+      if (index === 0 && keys.length >= 2) {
+        // For P1, show the actual time
+        const timeKey = keys[1];
+        if (timeKey && result.sessions[0]?.[timeKey]) {
+          return result.sessions[0][timeKey];
+        }
+      } else if (keys.length > 0) {
+        // For p2+ show the gap to p1
+        const gapKey = keys[0];
+        if (gapKey && result.sessions[0]?.[gapKey]) {
+          return result.sessions[0][gapKey];
+        }
+      }
+    } else {
+      // for all other session types, prioritise showing absolute time values
+      if (keys.length >= 2) {
+        const timeKey = keys[1];
+        if (timeKey && result.sessions[0]?.[timeKey]) {
+          return result.sessions[0][timeKey];
+        }
+      }
     }
 
-    const timingKey = keys.find(
-      (key) => result.sessions[0]?.[key] !== undefined,
-    );
+    // fallback if no time or gap value is available
+    if (keys.length > 0) {
+      const gapKey = keys[0];
+      if (gapKey && result.sessions[0]?.[gapKey]) {
+        return result.sessions[0][gapKey];
+      }
+    }
 
-    if (!timingKey) return "";
-
-    return result.sessions[0][timingKey];
+    return "";
   }
 
   private getPointsInfo(

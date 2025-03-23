@@ -38,17 +38,12 @@ const sessionTypeToI18nKey: Record<string, string> = {
   QUALIFYING_RESULT: "qualifying",
   SPRINT_QUALIFYING_RESULT: "sprintQualifying",
   SPRINT_RACE_RESULT: "sprintRace",
-  RACE_RESULT: "gp",
+  RACE_RESULT: "grandPrix",
 };
 
 export default class Command extends SlashCommand {
   constructor() {
     super("results", "View results for a specific race");
-  }
-
-  private getTranslation(locale: string) {
-    return (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
   }
 
   override async execute(
@@ -268,7 +263,7 @@ export default class Command extends SlashCommand {
       // Format timing information
       let timingInfo = result.retired_reason
         ? t("results.dnf", { reason: result.retired_reason })
-        : this.getTimingInfo(result, sessionType);
+        : this.getTimingInfo(result, sessionType, index);
 
       const pointsInfo = this.getPointsInfo(result, sessionType, locale);
 
@@ -333,8 +328,18 @@ export default class Command extends SlashCommand {
     return Object.keys(sessionTypeToI18nKey).includes(session);
   }
 
-  private getTimingInfo(result: any, sessionType: string): string {
+  private getTimingInfo(
+    result: any,
+    sessionType: string,
+    index: number,
+  ): string {
     const keys = sessionTimingKeys[sessionType] ?? [];
+
+    // For race winner (first position), use race_time if available
+    if (sessionType === "RACE_RESULT" && index === 0) {
+      const raceTime = result.sessions[0]?.["race_time"];
+      if (raceTime) return raceTime;
+    }
 
     const timingKey = keys.find(
       (key) => result.sessions[0]?.[key] !== undefined,

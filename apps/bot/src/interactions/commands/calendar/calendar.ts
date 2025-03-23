@@ -17,7 +17,7 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string
+    locale: string,
   ) {
     await interaction.deferReply();
     const t = (key: string, options = {}) =>
@@ -54,7 +54,7 @@ export default class Command extends SlashCommand {
 
       const raceName = race.name || "Unknown race";
       const raceDate = new Date(
-        `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`
+        `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`,
       );
       const timestamp = Math.floor(raceDate.getTime() / 1000);
 
@@ -65,7 +65,7 @@ export default class Command extends SlashCommand {
     const now = new Date();
     const upcomingIndex = races.findIndex((race) => {
       const raceDate = new Date(
-        `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`
+        `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`,
       );
       return raceDate > now;
     });
@@ -112,7 +112,7 @@ export default class Command extends SlashCommand {
 
           if ("date" in session && "time" in session) {
             const sessionDate = new Date(
-              `${session.date}T${session.time || "00:00:00Z"}`
+              `${session.date}T${session.time || "00:00:00Z"}`,
             );
             const timestamp = Math.floor(sessionDate.getTime() / 1000);
 
@@ -155,7 +155,7 @@ export default class Command extends SlashCommand {
           .setName("season")
           .setDescription("The season to lookup")
           .setMinValue(1950)
-          .setRequired(false)
+          .setRequired(false),
       )
       .toJSON();
   }

@@ -6,7 +6,7 @@
     "sprintQualifying": "Sprint Qualifying",
     "sprintRace": "Sprint Race",
     "qualifying": "Qualifying",
-    "gp": "Grand Prix"
+    "grandPrix": "Grand Prix"
   },
   "ordinal": {
     "rules": {
@@ -16,8 +16,12 @@
       "default": "th"
     }
   },
+  "permissions": {
+    "manageGuild": "Manage Guild"
+  },
   "genericError": "**Error!** An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
   "notYourInteraction": "This interaction belongs to {{user}}. \nPlease run the `/{{command}}` command to use this feature yourself.",
+  "missingPermissions": "**Error!** You are missing the permission: `{{permission}}`.",
   "next": {
     "error": {
       "description": "There are no more events this season."

@@ -211,7 +211,7 @@ export default class Command extends SlashCommand {
       },
       {
         key: "grandPrix",
-        label: `<:chequeredflag:1342900214687600740> **${t("sessions.gp")}**`,
+        label: `<:chequeredflag:1342900214687600740> **${t("sessions.grandPrix")}**`,
       },
     ];
 

@@ -40,3 +40,4 @@ yarn-error.log*
 
 # Database
 *.db
+db_version.txt

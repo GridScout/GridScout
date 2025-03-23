@@ -7,10 +7,37 @@ const ghAPI = new GitHub();
 
 export default new CronJob(
   "DatabaseUpdater",
-  { schedule: "0 * * * *", runOnStart: false },
+  { schedule: "0 * * * *", runOnStart: true },
 
   async () => {
     const latestRelease = await ghAPI.getLatestRelease();
+    // Check if we already have a version file
+    let currentVersion;
+    try {
+      const versionFile = Bun.file("../../db_version.txt");
+      currentVersion = (await versionFile.exists())
+        ? await versionFile.text()
+        : await Bun.write("../../db_version.txt", "0.0.0").then(() => "0.0.0");
+    } catch {
+      currentVersion = "0.0.0";
+    }
+
+    // Update version file with latest version from GitHub
+    if (!latestRelease.isErr()) {
+      await Bun.write("../../db_version.txt", latestRelease.unwrap().tag_name);
+    }
+
+    // Get latest version
+    if (latestRelease.isErr()) return;
+    const latestVersion = latestRelease.unwrap().tag_name;
+
+    // Skip if already on latest version
+    if (currentVersion === latestVersion) {
+      console.log("Database already at latest version:", latestVersion);
+      return;
+    }
+
+    console.log(`Updating database from ${currentVersion} to ${latestVersion}`);
 
     if (latestRelease.isErr()) return;
 
@@ -20,7 +47,7 @@ export default new CronJob(
 
     if (!file.ok) {
       throw new Error(
-        `Failed to download the latest database: ${file.statusText}`
+        `Failed to download the latest database: ${file.statusText}`,
       );
     }
 
@@ -40,5 +67,5 @@ export default new CronJob(
     await Bun.write("../../f1db.db", dbFile.data);
 
     console.log("Database updated successfully.");
-  }
+  },
 );

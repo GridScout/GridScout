@@ -21,7 +21,6 @@
     "@gridscout/search": "*",
     "@gridscout/utils": "*",
     "decompress": "^4.2.1",
-    "drizzle-orm": "^0.40.0",
     "node-cron": "^3.0.3"
   }
 }

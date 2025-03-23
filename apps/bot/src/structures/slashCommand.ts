@@ -6,8 +6,6 @@ import type {
   SlashCommandBuilder,
 } from "discord.js";
 
-import pg from "@gridscout/db/postgres";
-
 export type SlashCommandOptions = {
   requiredPermissions?: PermissionResolvable[];
   cooldown?: number;
@@ -27,10 +25,6 @@ export default class SlashCommand {
     this.name = name;
     this.description = description;
     this.options = options;
-  }
-
-  public async db() {
-    return await pg;
   }
 
   execute(_: ChatInputCommandInteraction, locale: string) {

@@ -25,7 +25,8 @@
     "drizzle-kit": "^0.30.5"
   },
   "dependencies": {
+    "@gridscout/env": "*",
     "@gridscout/logger": "*",
-    "drizzle-orm": "^0.40.0"
+    "drizzle-orm": "^0.40.1"
   }
 }

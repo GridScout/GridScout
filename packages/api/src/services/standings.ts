@@ -22,7 +22,7 @@ export class StandingsService {
    * @returns Result containing driver standings or error message
    */
   async getDriverStandings(
-    year?: number
+    year?: number,
   ): Promise<Result<DriverStandings, string>> {
     const seasonYear = year || new Date().getFullYear();
     if (isNaN(seasonYear)) return err(`Invalid season year: ${year}`);
@@ -62,14 +62,14 @@ export class StandingsService {
             .from(season_entrant_driver)
             .innerJoin(
               constructorTable,
-              eq(season_entrant_driver.constructor_id, constructorTable.id)
+              eq(season_entrant_driver.constructor_id, constructorTable.id),
             )
             .where(
               and(
                 eq(season_entrant_driver.year, seasonYear),
                 eq(season_entrant_driver.driver_id, standing.driverId),
-                eq(season_entrant_driver.test_driver, 0 as unknown as boolean)
-              )
+                eq(season_entrant_driver.test_driver, 0 as unknown as boolean),
+              ),
             )
             .limit(1);
 
@@ -92,7 +92,7 @@ export class StandingsService {
                   },
             points: Number(standing.points),
           };
-        })
+        }),
       );
 
       return ok({
@@ -111,7 +111,7 @@ export class StandingsService {
    * @returns Result containing constructor standings or error message
    */
   async getConstructorStandings(
-    year?: number
+    year?: number,
   ): Promise<Result<ConstructorStandings, string>> {
     const seasonYear = year || new Date().getFullYear();
     if (isNaN(seasonYear)) return err(`Invalid season year: ${year}`);
@@ -132,14 +132,14 @@ export class StandingsService {
         .from(season_constructor_standing)
         .innerJoin(
           constructorTable,
-          eq(season_constructor_standing.constructor_id, constructorTable.id)
+          eq(season_constructor_standing.constructor_id, constructorTable.id),
         )
         .innerJoin(
           engine_manufacturer,
           eq(
             season_constructor_standing.engine_manufacturer_id,
-            engine_manufacturer.id
-          )
+            engine_manufacturer.id,
+          ),
         )
         .where(eq(season_constructor_standing.year, seasonYear))
         .orderBy(season_constructor_standing.position_display_order);
@@ -165,7 +165,7 @@ export class StandingsService {
     } catch (error) {
       console.error("Error fetching constructor standings:", error);
       return err(
-        `Failed to fetch constructor standings for season ${seasonYear}`
+        `Failed to fetch constructor standings for season ${seasonYear}`,
       );
     }
   }

@@ -37,7 +37,7 @@ async function refreshConnection() {
     } catch (error) {
       logger.error("Failed to refresh database connection:", error);
       logger.warn(
-        "Keeping the existing database connection to avoid breaking the app."
+        "Keeping the existing database connection to avoid breaking the app.",
       );
     } finally {
       refreshInProgress = null;

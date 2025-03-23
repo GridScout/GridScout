@@ -23,7 +23,7 @@ export const chassis = sqliteTable(
       columns: [chassis.constructor_id],
       foreignColumns: [constructor.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const circuit = sqliteTable(
@@ -49,7 +49,7 @@ export const circuit = sqliteTable(
       columns: [circuit.country_id],
       foreignColumns: [country.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const constructor = sqliteTable(
@@ -81,7 +81,7 @@ export const constructor = sqliteTable(
       columns: [constructor.country_id],
       foreignColumns: [country.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const constructor_chronology = sqliteTable(
@@ -108,12 +108,12 @@ export const constructor_chronology = sqliteTable(
       }).onUpdate("cascade"),
     constructor_chronology_constructor_id_other_constructor_id_year_from_year_to_unique_idx:
       uniqueIndex(
-        "constructor_chronology_constructor_id_other_constructor_id_year_from_year_to_key"
+        "constructor_chronology_constructor_id_other_constructor_id_year_from_year_to_key",
       ).on(
         constructor_chronology.constructor_id,
         constructor_chronology.other_constructor_id,
         constructor_chronology.year_from,
-        constructor_chronology.year_to
+        constructor_chronology.year_to,
       ),
     constructor_chronology_cpk: primaryKey({
       name: "constructor_chronology_cpk",
@@ -122,7 +122,7 @@ export const constructor_chronology = sqliteTable(
         constructor_chronology.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const continent = sqliteTable("continent", {
@@ -148,7 +148,7 @@ export const country = sqliteTable(
       columns: [country.continent_id],
       foreignColumns: [continent.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const driver = sqliteTable(
@@ -201,9 +201,9 @@ export const driver = sqliteTable(
         name: "driver_country_driver_country_of_birth_country_idTocountry_fkey",
         columns: [driver.country_of_birth_country_id],
         foreignColumns: [country.id],
-      }
+      },
     ).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const driver_family_relationship = sqliteTable(
@@ -229,11 +229,11 @@ export const driver_family_relationship = sqliteTable(
       }).onUpdate("cascade"),
     driver_family_relationship_driver_id_other_driver_id_type_unique_idx:
       uniqueIndex(
-        "driver_family_relationship_driver_id_other_driver_id_type_key"
+        "driver_family_relationship_driver_id_other_driver_id_type_key",
       ).on(
         driver_family_relationship.driver_id,
         driver_family_relationship.other_driver_id,
-        driver_family_relationship.type
+        driver_family_relationship.type,
       ),
     driver_family_relationship_cpk: primaryKey({
       name: "driver_family_relationship_cpk",
@@ -242,7 +242,7 @@ export const driver_family_relationship = sqliteTable(
         driver_family_relationship.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const engine = sqliteTable(
@@ -262,7 +262,7 @@ export const engine = sqliteTable(
       columns: [engine.engine_manufacturer_id],
       foreignColumns: [engine_manufacturer.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const engine_manufacturer = sqliteTable(
@@ -292,7 +292,7 @@ export const engine_manufacturer = sqliteTable(
       columns: [engine_manufacturer.country_id],
       foreignColumns: [country.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const entrant = sqliteTable("entrant", {
@@ -317,7 +317,7 @@ export const grand_prix = sqliteTable(
       columns: [grand_prix.country_id],
       foreignColumns: [country.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const race = sqliteTable(
@@ -346,7 +346,7 @@ export const race = sqliteTable(
     }),
     constructors_championship_decider: int(
       "constructors_championship_decider",
-      { mode: "boolean" }
+      { mode: "boolean" },
     ),
     pre_qualifying_date: numeric("pre_qualifying_date"),
     pre_qualifying_time: text("pre_qualifying_time"),
@@ -389,9 +389,9 @@ export const race = sqliteTable(
     }).onUpdate("cascade"),
     race_year_round_unique_idx: uniqueIndex("race_year_round_key").on(
       race.year,
-      race.round
+      race.round,
     ),
-  })
+  }),
 );
 
 export const race_constructor_standing = sqliteTable(
@@ -429,7 +429,7 @@ export const race_constructor_standing = sqliteTable(
         race_constructor_standing.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const race_data = sqliteTable(
@@ -466,20 +466,20 @@ export const race_data = sqliteTable(
     qualifying_interval_millis: int("qualifying_interval_millis"),
     qualifying_laps: int("qualifying_laps"),
     starting_grid_position_qualification_position_number: int(
-      "starting_grid_position_qualification_position_number"
+      "starting_grid_position_qualification_position_number",
     ),
     starting_grid_position_qualification_position_text: text(
-      "starting_grid_position_qualification_position_text"
+      "starting_grid_position_qualification_position_text",
     ),
     starting_grid_position_grid_penalty: text(
-      "starting_grid_position_grid_penalty"
+      "starting_grid_position_grid_penalty",
     ),
     starting_grid_position_grid_penalty_positions: int(
-      "starting_grid_position_grid_penalty_positions"
+      "starting_grid_position_grid_penalty_positions",
     ),
     starting_grid_position_time: text("starting_grid_position_time"),
     starting_grid_position_time_millis: int(
-      "starting_grid_position_time_millis"
+      "starting_grid_position_time_millis",
     ),
     race_shared_car: int("race_shared_car", { mode: "boolean" }),
     race_laps: int("race_laps"),
@@ -496,7 +496,7 @@ export const race_data = sqliteTable(
     race_points: numeric("race_points"),
     race_pole_position: int("race_pole_position", { mode: "boolean" }),
     race_qualification_position_number: int(
-      "race_qualification_position_number"
+      "race_qualification_position_number",
     ),
     race_qualification_position_text: text("race_qualification_position_text"),
     race_grid_position_number: int("race_grid_position_number"),
@@ -553,7 +553,7 @@ export const race_data = sqliteTable(
         race_data.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const race_driver_standing = sqliteTable(
@@ -585,7 +585,7 @@ export const race_driver_standing = sqliteTable(
         race_driver_standing.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const season = sqliteTable("season", {
@@ -627,7 +627,7 @@ export const season_constructor = sqliteTable(
       name: "season_constructor_cpk",
       columns: [season_constructor.year, season_constructor.constructor_id],
     }),
-  })
+  }),
 );
 
 export const season_constructor_standing = sqliteTable(
@@ -664,7 +664,7 @@ export const season_constructor_standing = sqliteTable(
         season_constructor_standing.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const season_driver = sqliteTable(
@@ -702,7 +702,7 @@ export const season_driver = sqliteTable(
       name: "season_driver_cpk",
       columns: [season_driver.year, season_driver.driver_id],
     }),
-  })
+  }),
 );
 
 export const season_driver_standing = sqliteTable(
@@ -733,7 +733,7 @@ export const season_driver_standing = sqliteTable(
         season_driver_standing.position_display_order,
       ],
     }),
-  })
+  }),
 );
 
 export const season_engine_manufacturer = sqliteTable(
@@ -773,7 +773,7 @@ export const season_engine_manufacturer = sqliteTable(
         season_engine_manufacturer.engine_manufacturer_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_entrant = sqliteTable(
@@ -803,7 +803,7 @@ export const season_entrant = sqliteTable(
       name: "season_entrant_cpk",
       columns: [season_entrant.year, season_entrant.entrant_id],
     }),
-  })
+  }),
 );
 
 export const season_entrant_chassis = sqliteTable(
@@ -851,7 +851,7 @@ export const season_entrant_chassis = sqliteTable(
         season_entrant_chassis.chassis_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_entrant_constructor = sqliteTable(
@@ -892,7 +892,7 @@ export const season_entrant_constructor = sqliteTable(
         season_entrant_constructor.engine_manufacturer_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_entrant_driver = sqliteTable(
@@ -943,7 +943,7 @@ export const season_entrant_driver = sqliteTable(
         season_entrant_driver.driver_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_entrant_engine = sqliteTable(
@@ -991,7 +991,7 @@ export const season_entrant_engine = sqliteTable(
         season_entrant_engine.engine_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_entrant_tyre_manufacturer = sqliteTable(
@@ -1039,7 +1039,7 @@ export const season_entrant_tyre_manufacturer = sqliteTable(
         season_entrant_tyre_manufacturer.tyre_manufacturer_id,
       ],
     }),
-  })
+  }),
 );
 
 export const season_tyre_manufacturer = sqliteTable(
@@ -1076,7 +1076,7 @@ export const season_tyre_manufacturer = sqliteTable(
         season_tyre_manufacturer.tyre_manufacturer_id,
       ],
     }),
-  })
+  }),
 );
 
 export const tyre_manufacturer = sqliteTable(
@@ -1102,7 +1102,7 @@ export const tyre_manufacturer = sqliteTable(
       columns: [tyre_manufacturer.country_id],
       foreignColumns: [country.id],
     }).onUpdate("cascade"),
-  })
+  }),
 );
 
 export const chassisRelations = relations(chassis, ({ one, many }) => ({
@@ -1183,7 +1183,7 @@ export const constructor_chronologyRelations = relations(
           "constructor_chronology_other_constructor_idToconstructor",
         fields: [constructor_chronology.other_constructor_id],
         references: [constructor.id],
-      }
+      },
     ),
     constructor_constructor_chronology_constructor_idToconstructor: one(
       constructor,
@@ -1191,9 +1191,9 @@ export const constructor_chronologyRelations = relations(
         relationName: "constructor_chronology_constructor_idToconstructor",
         fields: [constructor_chronology.constructor_id],
         references: [constructor.id],
-      }
+      },
     ),
-  })
+  }),
 );
 
 export const continentRelations = relations(continent, ({ many }) => ({
@@ -1261,7 +1261,7 @@ export const driverRelations = relations(driver, ({ one, many }) => ({
     driver_family_relationship,
     {
       relationName: "driver_family_relationship_driver_idTodriver",
-    }
+    },
   ),
   race_data: many(race_data, {
     relationName: "driverTorace_data",
@@ -1293,7 +1293,7 @@ export const driver_family_relationshipRelations = relations(
       fields: [driver_family_relationship.driver_id],
       references: [driver.id],
     }),
-  })
+  }),
 );
 
 export const engineRelations = relations(engine, ({ one, many }) => ({
@@ -1345,7 +1345,7 @@ export const engine_manufacturerRelations = relations(
     season_entrant_tyre_manufacturer: many(season_entrant_tyre_manufacturer, {
       relationName: "engine_manufacturerToseason_entrant_tyre_manufacturer",
     }),
-  })
+  }),
 );
 
 export const entrantRelations = relations(entrant, ({ many }) => ({
@@ -1425,7 +1425,7 @@ export const race_constructor_standingRelations = relations(
       fields: [race_constructor_standing.race_id],
       references: [race.id],
     }),
-  })
+  }),
 );
 
 export const race_dataRelations = relations(race_data, ({ one }) => ({
@@ -1469,7 +1469,7 @@ export const race_driver_standingRelations = relations(
       fields: [race_driver_standing.race_id],
       references: [race.id],
     }),
-  })
+  }),
 );
 
 export const seasonRelations = relations(season, ({ many }) => ({
@@ -1527,7 +1527,7 @@ export const season_constructorRelations = relations(
       fields: [season_constructor.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_constructor_standingRelations = relations(
@@ -1548,7 +1548,7 @@ export const season_constructor_standingRelations = relations(
       fields: [season_constructor_standing.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_driverRelations = relations(season_driver, ({ one }) => ({
@@ -1577,7 +1577,7 @@ export const season_driver_standingRelations = relations(
       fields: [season_driver_standing.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_engine_manufacturerRelations = relations(
@@ -1593,7 +1593,7 @@ export const season_engine_manufacturerRelations = relations(
       fields: [season_engine_manufacturer.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_entrantRelations = relations(season_entrant, ({ one }) => ({
@@ -1642,7 +1642,7 @@ export const season_entrant_chassisRelations = relations(
       fields: [season_entrant_chassis.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_entrant_constructorRelations = relations(
@@ -1668,7 +1668,7 @@ export const season_entrant_constructorRelations = relations(
       fields: [season_entrant_constructor.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_entrant_driverRelations = relations(
@@ -1699,7 +1699,7 @@ export const season_entrant_driverRelations = relations(
       fields: [season_entrant_driver.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_entrant_engineRelations = relations(
@@ -1730,7 +1730,7 @@ export const season_entrant_engineRelations = relations(
       fields: [season_entrant_engine.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_entrant_tyre_manufacturerRelations = relations(
@@ -1761,7 +1761,7 @@ export const season_entrant_tyre_manufacturerRelations = relations(
       fields: [season_entrant_tyre_manufacturer.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const season_tyre_manufacturerRelations = relations(
@@ -1777,7 +1777,7 @@ export const season_tyre_manufacturerRelations = relations(
       fields: [season_tyre_manufacturer.year],
       references: [season.year],
     }),
-  })
+  }),
 );
 
 export const tyre_manufacturerRelations = relations(
@@ -1797,5 +1797,5 @@ export const tyre_manufacturerRelations = relations(
       fields: [tyre_manufacturer.country_id],
       references: [country.id],
     }),
-  })
+  }),
 );

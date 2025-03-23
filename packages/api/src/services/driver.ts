@@ -78,8 +78,8 @@ export class DriverService {
       .where(
         and(
           eq(race_data.driver_id, idSanitised),
-          eq(race_data.type, "RACE_RESULT")
-        )
+          eq(race_data.type, "RACE_RESULT"),
+        ),
       )
       .orderBy(desc(race.date))
       .limit(3);
@@ -93,7 +93,7 @@ export class DriverService {
       .from(season_entrant_driver)
       .innerJoin(
         constructor,
-        eq(season_entrant_driver.constructor_id, constructor.id)
+        eq(season_entrant_driver.constructor_id, constructor.id),
       )
       .where(eq(season_entrant_driver.driver_id, idSanitised))
       .orderBy(desc(season_entrant_driver.year))
@@ -112,7 +112,7 @@ export class DriverService {
   }
 
   private async getWikipediaHeadshot(
-    driverName: string
+    driverName: string,
   ): Promise<Result<string, string>> {
     try {
       const cache = await this.client.cache();

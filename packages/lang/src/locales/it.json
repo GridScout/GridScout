@@ -1,0 +1,86 @@
+{
+  "sessions": {
+    "freePractice1": "Prova Libera 1",
+    "freePractice2": "Prova Libera 2",
+    "freePractice3": "Prova Libera 3",
+    "sprintQualifying": "Qualifiche Sprint",
+    "sprintRace": "Gara Sprint",
+    "qualifying": "Qualifiche",
+    "grandPrix": "Gran Premio"
+  },
+  "ordinal": {
+    "rules": {
+      "1": "°",
+      "2": "°",
+      "3": "°",
+      "default": "°"
+    }
+  },
+  "permissions": {
+    "manageGuild": "Gestisci Server"
+  },
+  "genericError": "**Errore!** Si è verificato un errore durante l'elaborazione della tua richiesta. Riprova più tardi. Se il problema persiste, contatta il supporto.",
+  "notYourInteraction": "Questa interazione appartiene a {{user}}. \nEsegui il comando `/{{command}}` per utilizzare questa funzionalità tu stesso.",
+  "missingPermissions": "**Errore!** Non hai il permesso: `{{permission}}`.",
+  "next": {
+    "error": {
+      "description": "Non ci sono altri eventi in questa stagione."
+    },
+    "author": "Calendario Gare",
+    "title": "Stagione {{season}}",
+    "footer": "Giornata {{round}} di {{total}}",
+    "previous": "Precedente",
+    "next": "Successivo"
+  },
+  "about": {
+    "content": "# GridScout è qui! <:racingcar:1341846279486963854>\n\nGridScout è un bot Discord progettato per gli appassionati di motorsport.\nChe tu stia cercando statistiche dei piloti, calendari delle gare o risultati passati, GridScout fornisce le informazioni più recenti direttamente nel tuo server.\n## **Come Utilizzare**\nPer iniziare, digita / in una chat per visualizzare una lista dei comandi disponibili.\nSe hai bisogno di ulteriore assistenza, visita [docs.gridscout.xyz](<https://docs.gridscout.xyz>).\n## **Link Utili**\n- <:web:1341845985512652850> [**Sito Web**](<https://gridscout.xyz>)\n- <:help:1341845993418788954> [**Supporto e Feedback**](<https://discord.gg/SdK9QCquP4>)\n- <:terms:1341845978860355634> [**Termini di servizio**](<https://docs.gridscout.xyz/terms>) & [**Informativa sulla privacy**](<https://docs.gridscout.xyz/privacy>)\n- <:invite:1341845971822186648> [**Invita GridScout nel tuo server**](https://discord.com/oauth2/authorize?client_id=1239680594539974787&permissions=274878417984&integration_type=0&scope=bot+applications.commands)\n\nSe ti piace utilizzare GridScout, considera l'idea di [votarlo su top.gg](<https://top.gg/bot/1239680594539974787>) per aiutare più persone a scoprirlo!"
+  },
+  "driver": {
+    "error": "**Errore!** Pilota non trovato. Controlla l'ortografia o prova un altro nome.",
+    "notAvailable": "N/D",
+    "acronym": "**Acronimo**: `{{acronym}}`",
+    "constructor": "**Costruttore**: {{constructorEmoji}} **{{name}}**",
+    "dob": "**Data di nascita**: {{dob}} ({{timetag}})",
+    "nationality": "**Nazionalità**: {{flag}} {{nationality}}",
+    "statistics": "Statistiche",
+    "wdc": "**Campionati del Mondo**: {{amount}}",
+    "highestRaceFinish": "**Miglior risultato in gara**: {{position}}",
+    "highestGridPosition": "**Migliore posizione in griglia**: {{position}}",
+    "racesEntered": "**Gare disputate**: {{amount}}",
+    "podiums": "**Podi**: {{amount}}",
+    "points": "**Punti**: {{amount}}",
+    "grandslams": "[**Grand Slam**](https://en.wikipedia.org/wiki/Grand_slam_(Formula_One)): {{amount}}",
+    "fastestLaps": "**Giri veloci**: {{amount}}",
+    "lastRaces": "Ultime gare ({{count}})",
+    "finished": "Finito",
+    "position": "{{pos}}"
+  },
+  "calendar": {
+    "error": "**Errore!** Impossibile trovare il calendario per la stagione: `{{year}}`.",
+    "author": "Calendario Gare",
+    "title": "Stagione {{season}}",
+    "footer": "⏰ Tutte le date sopra sono visualizzate nel tuo fuso orario locale"
+  },
+  "standings": {
+    "error": "**Errore!** Impossibile trovare la classifica per la stagione: `{{year}}`.",
+    "drivers": {
+      "title": "Stagione {{season}}",
+      "author": "Classifica Piloti"
+    },
+    "constructors": {
+      "title": "Stagione {{season}}",
+      "author": "Classifica Costruttori"
+    }
+  },
+  "results": {
+    "title": "{{season}} {{race}} — {{session}}",
+    "author": "Risultati Gara",
+    "error": "**Errore!** Impossibile recuperare i dati dei risultati per la gara selezionata.",
+    "noSessions": "**Errore!** Nessuna sessione disponibile per questa gara.",
+    "selectSession": "Seleziona una sessione",
+    "defaultLabel": "Risultati",
+    "points": " ({{count}} punto)",
+    "points_plural": " ({{count}} punti)",
+    "dnf": "DNF ({{reason}})"
+  }
+}

@@ -11,7 +11,7 @@ i18next.use(Backend).init(
       loadPath: path.join(__dirname, "./locales/{{lng}}.json"),
     },
     fallbackLng: "en",
-    preload: ["en"],
+    preload: ["en", "it", "es"],
     interpolation: {
       escapeValue: false,
     },

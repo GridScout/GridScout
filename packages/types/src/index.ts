@@ -149,6 +149,7 @@ export interface Constructor {
     alpha3: string;
     demonym: string | null;
   };
+  active: boolean;
   statistics: {
     worldChampionships: number;
     totalRaceWins: number;
@@ -159,12 +160,13 @@ export interface Constructor {
     fastestLaps: number;
   };
   currentChassis: {
+    id: string;
     name: string;
     fullName: string;
   } | null;
   currentEngine: {
+    id: string;
     name: string;
-    fullName: string;
     manufacturer: string;
     country: string;
     capacity: number | null;
@@ -185,9 +187,11 @@ export interface Constructor {
       name: string;
       alpha3: string;
     };
-    position: string;
-    raceGap: string | null;
-    raceTime: string | null;
-    driverId: string;
+    results: {
+      driverId: string;
+      position: string;
+      raceGap: string | null;
+      raceTime: string | null;
+    }[];
   }[];
 }

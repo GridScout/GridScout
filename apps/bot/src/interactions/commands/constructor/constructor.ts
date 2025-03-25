@@ -80,7 +80,7 @@ export default class Command extends SlashCommand {
     const team = result.unwrap();
 
     const embed = primaryEmbed(
-      `${constructorEmojis[team.id as keyof typeof constructorEmojis] || ""} ${team.name} ${team.nationality.alpha3 ? countryEmojis[team.nationality.alpha3 as keyof typeof countryEmojis] || "" : ""}`,
+      `${constructorEmojis[team.id as keyof typeof constructorEmojis] || ""} ${team.name}`,
       `${t("constructor.name", { name: team.fullName })}\n` +
         `${t("constructor.nationality", { flag: team.nationality.alpha3 ? countryEmojis[team.nationality.alpha3 as keyof typeof countryEmojis] || "" : "", nationality: team.nationality.demonym || "" })}`,
     );
@@ -150,15 +150,17 @@ export default class Command extends SlashCommand {
       if (lastRace) {
         const driversResults = team.currentDrivers
           .map((driver) => {
-            const driverPosition =
-              lastRace.driverId === driver.id ? lastRace.position : null;
+            const driverResult = lastRace.results.find(
+              (result) => result.driverId === driver.id,
+            );
             const position = t("constructor.position", {
               pos:
-                !driverPosition || ["DNF", "DNS"].includes(driverPosition)
-                  ? driverPosition || "N/A"
-                  : isNaN(Number(driverPosition))
-                    ? driverPosition
-                    : `${t("constructor.finished")} ${driverPosition}`,
+                !driverResult ||
+                ["DNF", "DNS", "DQ"].includes(driverResult.position)
+                  ? driverResult?.position || "N/A"
+                  : isNaN(Number(driverResult.position))
+                    ? driverResult.position
+                    : `${t("constructor.finished")} ${driverResult.position}`,
             });
 
             return `\u001b[2;34m\u001b[1;34m${lastRace.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${lastRace.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m 🏎️ \u001b[38;5;203m${driver.name}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;

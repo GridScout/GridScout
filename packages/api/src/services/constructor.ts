@@ -128,10 +128,10 @@ export class ConstructorService {
           name: country.name,
           alpha3: country.alpha3_code,
         },
+        driverId: race_data.driver_id,
         position: race_data.position_text,
         raceGap: race_data.race_gap || null,
         raceTime: race_data.race_time || null,
-        driverId: race_data.driver_id,
       })
       .from(race_data)
       .innerJoin(race, eq(race_data.race_id, race.id))
@@ -144,12 +144,39 @@ export class ConstructorService {
         ),
       )
       .orderBy(desc(race.date))
-      .limit(2);
+      .limit(4); // make sure t here is enough data to work with
+
+    const groupedRaces = recentRaces.reduce(
+      (acc, race) => {
+        const date = race.date;
+        if (!acc[date]) {
+          acc[date] = {
+            id: race.id,
+            name: race.name,
+            date: race.date,
+            country: race.country,
+            results: [],
+          };
+        }
+        acc[date].results.push({
+          driverId: race.driverId,
+          position: race.position,
+          raceGap: race.raceGap,
+          raceTime: race.raceTime,
+        });
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
+
+    const formattedRaces = Object.values(groupedRaces)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 2);
 
     const combinedData = {
       ...constructorData[0],
       currentDrivers,
-      recentRaces,
+      recentRaces: formattedRaces,
       currentChassis: chassisData[0]?.chassis || null,
       currentEngine: chassisData[0]?.engine || null,
     } as unknown as Constructor;

@@ -187,18 +187,13 @@ class MeilisearchClient {
   async updateConstructorDocuments(constructors: Constructor[]): Promise<void> {
     try {
       const index = this.client.index(this.constructorIndexName);
+      await index.deleteAllDocuments();
       const response = await index.addDocuments(constructors, {
         primaryKey: "id",
       });
-      await index.updateSearchableAttributes([
-        "id",
-        "name",
-        "fullName",
-        "nationality.alpha3",
-        "nationality.demonym",
-      ]);
-      await index.updateFilterableAttributes(["active"]);
+      await index.updateFilterableAttributes(["name", "active"]);
       await index.updateSortableAttributes(["active"]);
+      await index.updateSearchableAttributes(["id", "name", "fullName"]);
       logger.info(
         `Constructor documents updated with task ID: ${response.taskUid}`,
       );
@@ -239,9 +234,9 @@ class MeilisearchClient {
    * Delete all driver documents from the Meilisearch index
    * @returns {Promise<void>}
    */
-  async deleteAllDocuments(): Promise<void> {
+  async deleteAllDocuments(indexName: string): Promise<void> {
     try {
-      const index = this.client.index(this.driverIndexName);
+      const index = this.client.index(indexName);
       await index.deleteAllDocuments();
     } catch (error) {
       logger.error(`Error deleting all documents: ${error}`);

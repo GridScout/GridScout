@@ -23,20 +23,34 @@ interface Race {
   laps: number;
 }
 
+interface Constructor {
+  id: string;
+  name: string;
+  fullName: string;
+  nationality: {
+    id: string;
+    alpha3: string;
+    demonym: string | null;
+  };
+}
+
 class MeilisearchClient {
   private client: MeiliSearch;
-  private driverIndexName: string;
-  private raceIndexName: string;
+  driverIndexName: string;
+  raceIndexName: string;
+  constructorIndexName: string;
 
   constructor(
     host: string = env.MEILISEARCH_HOST,
     apiKey: string = env.MEILISEARCH_API_KEY,
     driverIndexName: string = "drivers",
     raceIndexName: string = "races",
+    constructorIndexName: string = "constructors",
   ) {
     this.client = new MeiliSearch({ host, apiKey });
     this.driverIndexName = driverIndexName;
     this.raceIndexName = raceIndexName;
+    this.constructorIndexName = constructorIndexName;
   }
 
   /**
@@ -94,6 +108,32 @@ class MeilisearchClient {
   }
 
   /**
+   * Search for a constructor by name
+   *
+   * @param name The name of the constructor to search for
+   * @returns {Promise<Constructor[]>} Array of constructors that match the search query
+   */
+  async searchConstructorByName(
+    name: string,
+    limit: number = 25,
+  ): Promise<Constructor[]> {
+    const index = this.client.index(this.constructorIndexName);
+    let response;
+    if (name === "") {
+      response = await index.search<Constructor>(name, {
+        limit: limit,
+        sort: ["active:desc"],
+      });
+    } else {
+      response = await index.search<Constructor>(name, {
+        limit: limit,
+        sort: ["active:desc"],
+      });
+    }
+    return response.hits;
+  }
+
+  /**
    * Update driver documents in the Meilisearch index
    *
    * @param drivers Array of driver objects to update in the index
@@ -139,12 +179,41 @@ class MeilisearchClient {
   }
 
   /**
+   * Update constructor documents in the Meilisearch index
+   *
+   * @param constructors Array of constructor objects to update in the index
+   * @returns {Promise<void>}
+   */
+  async updateConstructorDocuments(constructors: Constructor[]): Promise<void> {
+    try {
+      const index = this.client.index(this.constructorIndexName);
+      const response = await index.addDocuments(constructors, {
+        primaryKey: "id",
+      });
+      await index.updateSearchableAttributes([
+        "id",
+        "name",
+        "fullName",
+        "nationality.alpha3",
+        "nationality.demonym",
+      ]);
+      await index.updateFilterableAttributes(["active"]);
+      await index.updateSortableAttributes(["active"]);
+      logger.info(
+        `Constructor documents updated with task ID: ${response.taskUid}`,
+      );
+    } catch (error) {
+      logger.error(`Error updating constructor documents: ${error}`);
+    }
+  }
+
+  /**
    * Get all driver documents from the Meilisearch index
    * @returns {Promise<Driver[]>} Array of all driver documents in the index
    */
-  async getAllDocuments(): Promise<Driver[]> {
+  async getAllDocuments(indexName: string): Promise<Driver[]> {
     try {
-      const index = this.client.index(this.driverIndexName);
+      const index = this.client.index(indexName);
       const response = await index.getDocuments<Driver>({ limit: 10000 });
       return response.results;
     } catch (error) {

@@ -139,3 +139,55 @@ interface Result {
     sprint_race_gap?: string;
   }[];
 }
+
+export interface Constructor {
+  id: string;
+  name: string;
+  fullName: string;
+  nationality: {
+    id: string;
+    alpha3: string;
+    demonym: string | null;
+  };
+  statistics: {
+    worldChampionships: number;
+    totalRaceWins: number;
+    racesEntered: number;
+    podiums: number;
+    points: number;
+    poles: number;
+    fastestLaps: number;
+  };
+  currentChassis: {
+    name: string;
+    fullName: string;
+  } | null;
+  currentEngine: {
+    name: string;
+    fullName: string;
+    manufacturer: string;
+    country: string;
+    capacity: number | null;
+    configuration: string | null;
+    aspiration: string | null;
+  } | null;
+  currentDrivers: {
+    id: string;
+    name: string;
+    number: number | null;
+    nationality: string;
+  }[];
+  recentRaces: {
+    id: number;
+    name: string;
+    date: string;
+    country: {
+      name: string;
+      alpha3: string;
+    };
+    position: string;
+    raceGap: string | null;
+    raceTime: string | null;
+    driverId: string;
+  }[];
+}

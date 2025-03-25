@@ -4,18 +4,21 @@ import { StandingsService } from "./services/standings.js";
 import { getDrizzle } from "@gridscout/db";
 import { RedisCache } from "@gridscout/cache";
 import { ResultsService } from "./services/results.js";
-
+import { ConstructorService } from "./services/constructor.js";
 export class API {
   public driver: DriverService;
   public calendar: CalendarService;
   public standings: StandingsService;
   public results: ResultsService;
+  public team: ConstructorService;
 
   constructor() {
     this.driver = new DriverService(this);
     this.calendar = new CalendarService(this);
     this.standings = new StandingsService(this);
     this.results = new ResultsService(this);
+    // Must be named team, as constructor is a reserved word in TypeScript
+    this.team = new ConstructorService(this);
   }
 
   public async db() {

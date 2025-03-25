@@ -93,7 +93,7 @@ export default class Command extends SlashCommand {
             ? `${team.currentEngine.capacity}cc`
             : null,
           team.currentEngine.configuration,
-          team.currentEngine.aspiration,
+          convertAspiration(team.currentEngine.aspiration ?? ""),
         ]
           .filter(Boolean)
           .join(" ")}`,
@@ -190,4 +190,11 @@ export default class Command extends SlashCommand {
       )
       .toJSON();
   }
+}
+
+function convertAspiration(aspiration: string) {
+  return aspiration
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }

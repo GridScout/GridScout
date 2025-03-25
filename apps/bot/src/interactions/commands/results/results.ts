@@ -247,28 +247,36 @@ export default class Command extends SlashCommand {
     const t = this.getTranslation(locale);
 
     // Map results to formatted lines
-    const lines = data.results.map((result: any, index: number) => {
-      const posEmoji =
-        numberEmojis[(index + 1).toString() as keyof typeof numberEmojis] ||
-        `${index + 1}`;
+    const lines = data.results
+      .map((result: any, index: number) => {
+        // get timing info, check if we should include this result (exists)
+        const timingInfo = result.retired_reason
+          ? t("results.dnf", { reason: result.retired_reason })
+          : this.getTimingInfo(result, sessionType, index);
 
-      // Get driver nationality emoji
-      const driverCountryEmoji =
-        (result.driver.country_alpha3 &&
-          countryEmojis[
-            result.driver.country_alpha3 as keyof typeof countryEmojis
-          ]) ||
-        "";
+        // skip this result if no timing info or DNF reason
+        if (!timingInfo) {
+          return null;
+        }
 
-      // Format timing information
-      let timingInfo = result.retired_reason
-        ? t("results.dnf", { reason: result.retired_reason })
-        : this.getTimingInfo(result, sessionType, index);
+        const posEmoji =
+          numberEmojis[(index + 1).toString() as keyof typeof numberEmojis] ||
+          `${index + 1}`;
 
-      const pointsInfo = this.getPointsInfo(result, sessionType, locale);
+        // Get driver nationality emoji
+        const driverCountryEmoji =
+          (result.driver.country_alpha3 &&
+            countryEmojis[
+              result.driver.country_alpha3 as keyof typeof countryEmojis
+            ]) ||
+          "";
 
-      return `${posEmoji}‎ ‎ ‎ ‎ ${driverCountryEmoji ? `${driverCountryEmoji}‎ ‎ ` : ""}**${result.driver.name}**${timingInfo ? ` — ${timingInfo}` : ""}${pointsInfo}`;
-    });
+        const pointsInfo = this.getPointsInfo(result, sessionType, locale);
+
+        return `${posEmoji}‎ ‎ ‎ ‎ ${driverCountryEmoji ? `${driverCountryEmoji}‎ ‎ ` : ""}**${result.driver.name}**${timingInfo ? ` — ${timingInfo}` : ""}${pointsInfo}`;
+      })
+      .filter((line: string | null): line is string => line !== null) // Remove null entries
+      .join("\n");
 
     // Create the session label for the title using i18n
     const sessionLabel = this.getSessionLabel(sessionType, locale);
@@ -278,7 +286,7 @@ export default class Command extends SlashCommand {
       session: sessionLabel,
     });
 
-    return primaryEmbed(title, lines.join("\n")).setAuthor({
+    return primaryEmbed(title, lines).setAuthor({
       name: t("results.author"),
     });
   }

@@ -1,6 +1,5 @@
 import SlashCommand from "../../../structures/slashCommand.js";
 
-import type { Constructor } from "@gridscout/types";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
 import i18next from "@gridscout/lang";
@@ -43,18 +42,29 @@ export default class Command extends SlashCommand {
 
     const t = this.getTranslation(locale);
 
-    const constructorId = interaction.options.getString("team", true);
+    let constructorId = interaction.options.getString("team", true);
 
     if (!constructorId) {
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [errorEmbed("", t("genericError"))],
+      });
+    }
+
+    const constructorSearch =
+      await meilisearch.searchConstructorByName(constructorId);
+
+    if (constructorSearch.length > 0) {
+      constructorId = constructorSearch[0]?.id ?? constructorId;
+    } else {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("constructor.error"))],
       });
     }
 
     const result = await api.team.get(constructorId);
 
     if (result.isErr()) {
-      await interaction.reply({
+      await interaction.editReply({
         embeds: [
           errorEmbed(
             "",
@@ -63,7 +73,6 @@ export default class Command extends SlashCommand {
             }),
           ),
         ],
-        ephemeral: true,
       });
       return;
     }
@@ -165,7 +174,7 @@ export default class Command extends SlashCommand {
       }
     }
 
-    await interaction.reply({ embeds: [embed] });
+    await interaction.editReply({ embeds: [embed] });
   }
 
   override async build() {

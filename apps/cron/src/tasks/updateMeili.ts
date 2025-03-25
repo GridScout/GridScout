@@ -151,4 +151,5 @@ interface Constructor {
   name: string;
   fullName: string;
   nationality: { id: string; alpha3: string; demonym: string | null };
+  active: boolean;
 }

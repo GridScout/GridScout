@@ -1,5 +1,6 @@
 import logger from "@gridscout/logger";
 import env from "@gridscout/env";
+import metrics from "@gridscout/metrics";
 
 import { commands, start } from "../index.js";
 import Event from "../structures/event.js";
@@ -28,6 +29,13 @@ export default class ReadyEvent extends Event {
     logger.info(
       `${client.user.tag} logged into Discord in ${Date.now() - start}ms`,
     );
+
+    // Initialise metrics
+    metrics.updateBotMetrics(client);
+
+    setInterval(() => {
+      metrics.updateBotMetrics(client);
+    }, 60 * 1000);
 
     const updateActivity = async () => {
       const nextGrandPrix = await api.calendar.get();

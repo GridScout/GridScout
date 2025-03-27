@@ -1,6 +1,7 @@
 import logger from "@gridscout/logger";
 import { errorEmbed } from "@gridscout/utils";
 import i18next from "@gridscout/lang";
+import metrics from "@gridscout/metrics";
 
 import Event from "../structures/event.js";
 import { commands } from "../index.js";
@@ -22,7 +23,14 @@ export default class ChatInteractionEvent extends Event {
   override async execute(interaction: ChatInputCommandInteraction) {
     if (!interaction.isChatInputCommand()) return;
 
-    const command = commands.get(interaction.commandName);
+    // Start timer
+    const commandName = interaction.commandName;
+    const endTimer = metrics.startInteractionTimer(commandName);
+
+    // Increment counterr
+    metrics.incrementChatInteraction(commandName);
+
+    const command = commands.get(commandName);
 
     const errEmbed = errorEmbed(
       "",
@@ -33,8 +41,9 @@ export default class ChatInteractionEvent extends Event {
 
     if (!command) {
       logger.error(
-        `Unknown command ${interaction.commandName} executed by ${interaction.user.username}`,
+        `Unknown command ${commandName} executed by ${interaction.user.username}`,
       );
+      endTimer("error");
       return void (await interaction.reply({
         embeds: [errEmbed],
         flags: MessageFlags.Ephemeral,
@@ -42,6 +51,7 @@ export default class ChatInteractionEvent extends Event {
     }
 
     if (command.options?.guildOnly && !interaction.guild) {
+      endTimer("error");
       return void (await interaction.reply({
         embeds: [
           errorEmbed(
@@ -58,7 +68,7 @@ export default class ChatInteractionEvent extends Event {
     await Sentry.startSpan(
       {
         op: "command",
-        name: interaction.commandName,
+        name: commandName,
         attributes: {
           arguments: JSON.stringify(interaction.options),
           user: interaction.user.username,
@@ -70,9 +80,10 @@ export default class ChatInteractionEvent extends Event {
       async (span) => {
         try {
           await command.execute(interaction, interaction.locale);
+          endTimer("success");
         } catch (error) {
           logger.error(
-            `Error executing command ${interaction.commandName} by ${interaction.user.username}`,
+            `Error executing command ${commandName} by ${interaction.user.username}`,
             error,
           );
 
@@ -93,6 +104,8 @@ export default class ChatInteractionEvent extends Event {
             )
             .setStyle(ButtonStyle.Danger)
             .setDisabled(true);
+
+          endTimer("error");
 
           // If interaction has not been deferred
           if (!interaction.deferred) {

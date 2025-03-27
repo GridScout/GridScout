@@ -16,6 +16,7 @@
     "@gridscout/env": "*",
     "@gridscout/logger": "*",
     "@gridscout/lang": "*",
+    "@gridscout/metrics": "*",
     "@gridscout/utils": "*",
     "@sentry/bun": "^9.5.0",
     "discord.js": "^14.18.0"

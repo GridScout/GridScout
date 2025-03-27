@@ -25,7 +25,9 @@ export const memoryUsage = new Gauge({
   registers: [register],
   collect() {
     const used = process.memoryUsage();
-    this.set(used.rss);
+    const totalMemory = os.totalmem();
+    const usedPercentage = (used.rss / totalMemory) * 100;
+    this.set(usedPercentage);
   },
 });
 

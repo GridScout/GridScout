@@ -2,7 +2,6 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
-import i18next from "@gridscout/lang";
 import { API } from "@gridscout/api";
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { meilisearch } from "@gridscout/search";
@@ -11,6 +10,7 @@ import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
   type AutocompleteInteraction,
+  Locale,
 } from "discord.js";
 
 const api = new API();
@@ -20,36 +20,23 @@ export default class Command extends SlashCommand {
     super("constructor", "View information about a constructor");
   }
 
-  async handleAutocomplete(interaction: AutocompleteInteraction) {
-    const focusedValue = interaction.options.getFocused();
-
-    const constructors =
-      await meilisearch.searchConstructorByName(focusedValue);
-
-    await interaction.respond(
-      constructors.map((constructor) => ({
-        name: constructor.name,
-        value: constructor.id,
-      })),
-    );
-  }
-
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    locale: Locale,
   ) {
     await interaction.deferReply();
-
     const t = this.getTranslation(locale);
 
     let constructorId = interaction.options.getString("team", true);
 
+    // If no constructor ID, return an error
     if (!constructorId) {
       return interaction.editReply({
         embeds: [errorEmbed("", t("genericError"))],
       });
     }
 
+    // Search for constructor on meilisearch
     const constructorSearch =
       await meilisearch.searchConstructorByName(constructorId);
 
@@ -61,18 +48,13 @@ export default class Command extends SlashCommand {
       });
     }
 
+    // Get constructor from API
     const result = await api.team.get(constructorId);
 
+    // If no constructor found, return an error
     if (result.isErr()) {
       await interaction.editReply({
-        embeds: [
-          errorEmbed(
-            "",
-            i18next.t("constructor.error", {
-              lng: locale,
-            }),
-          ),
-        ],
+        embeds: [errorEmbed("", t("constructor.error"))],
       });
       return;
     }
@@ -93,7 +75,7 @@ export default class Command extends SlashCommand {
             ? `${team.currentEngine.capacity}cc`
             : null,
           team.currentEngine.configuration,
-          convertAspiration(team.currentEngine.aspiration ?? ""),
+          this.convertAspiration(team.currentEngine.aspiration || ""),
         ]
           .filter(Boolean)
           .join(" ")}`,
@@ -146,24 +128,31 @@ export default class Command extends SlashCommand {
     );
 
     if (team.recentRaces.length > 0 && team.currentDrivers.length > 0) {
-      const [lastRace] = team.recentRaces;
+      const lastRace = team.recentRaces[0];
       if (lastRace) {
         const driversResults = team.currentDrivers
           .map((driver) => {
+            // Find the result for this driver
             const driverResult = lastRace.results.find(
               (result) => result.driverId === driver.id,
             );
-            const position = t("constructor.position", {
-              pos:
-                !driverResult ||
-                ["DNF", "DNS", "DQ"].includes(driverResult.position)
-                  ? driverResult?.position || "N/A"
-                  : isNaN(Number(driverResult.position))
-                    ? driverResult.position
-                    : `${t("constructor.finished")} ${driverResult.position}`,
-            });
 
-            return `\u001b[2;34m\u001b[1;34m${lastRace.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${lastRace.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m 🏎️ \u001b[38;5;203m${driver.name}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
+            // Format the position text
+            let positionText = "N/A";
+            if (driverResult) {
+              if (!isNaN(Number(driverResult.position))) {
+                positionText = `${t("constructor.finished")} ${driverResult.position}`;
+              } else {
+                positionText = driverResult.position;
+              }
+            }
+
+            // Format with ANSI colors for Discord
+            return [
+              `\u001b[1;34m${lastRace.name}\u001b[0m \u001b[2;33m${lastRace.date}\u001b[0m`,
+              ` \u001b[2;30m├\u001b[0m 🏎️ \u001b[38;5;203m${driver.name}\u001b[0m`,
+              ` \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${t("constructor.position", { pos: positionText })}\u001b[0m`,
+            ].join("\n");
           })
           .join("\n\n");
 
@@ -179,6 +168,20 @@ export default class Command extends SlashCommand {
     await interaction.editReply({ embeds: [embed] });
   }
 
+  override async handleAutocomplete(interaction: AutocompleteInteraction) {
+    const focusedValue = interaction.options.getFocused();
+
+    const constructors =
+      await meilisearch.searchConstructorByName(focusedValue);
+
+    await interaction.respond(
+      constructors.map((constructor) => ({
+        name: constructor.name,
+        value: constructor.id,
+      })),
+    );
+  }
+
   override async build() {
     return new SlashCommandBuilder()
       .setName(this.name)
@@ -192,11 +195,11 @@ export default class Command extends SlashCommand {
       )
       .toJSON();
   }
-}
 
-function convertAspiration(aspiration: string) {
-  return aspiration
-    .toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  private convertAspiration(aspiration: string) {
+    return aspiration
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
 }

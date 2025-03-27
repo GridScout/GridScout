@@ -20,8 +20,13 @@ export default class ReadyEvent extends Event {
   }
 
   override async execute(client: Client) {
+    if (!client.user) {
+      logger.warn("Client user is missing");
+      return;
+    }
+
     logger.info(
-      `${client.user?.tag} logged into Discord in ${Date.now() - start}ms`,
+      `${client.user.tag} logged into Discord in ${Date.now() - start}ms`,
     );
 
     const updateActivity = async () => {
@@ -59,11 +64,13 @@ export default class ReadyEvent extends Event {
 
     setInterval(updateActivity, 1000 * 60 * 60 * 1);
 
-    if (!client.user) return;
+    //
+    // SLASH COMMAND DEPLOYMENT
+    //
 
     const startupArgs = process.argv;
 
-    if (startupArgs.includes("--deploy")) {
+    if (startupArgs.includes("--deploy") || startupArgs.includes("-D")) {
       logger.debug(
         `Deploying slash commands to Discord ${env.DOPPLER_ENVIRONMENT === "dev" ? "locally" : "globally"}`,
       );
@@ -87,7 +94,11 @@ export default class ReadyEvent extends Event {
           logger.error(`Could not find guild with ID ${env.DEV_SERVER_ID}`);
           return;
         }
-        // const existingCommands = await devGuild.commands.fetch();
+        const existingCommands = await devGuild.commands.fetch();
+        if (existingCommands.size > 0) {
+          logger.debug(`Deleting existing commands from guild ${devGuild.id}`);
+          await devGuild.commands.set([]);
+        }
         try {
           await client.rest.put(
             Routes.applicationGuildCommands(client.user.id, devGuild.id),

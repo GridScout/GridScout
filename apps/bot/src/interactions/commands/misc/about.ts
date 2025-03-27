@@ -1,12 +1,12 @@
 import SlashCommand from "../../../structures/slashCommand.js";
 import { client } from "../../../index.js";
 
-import i18next from "@gridscout/lang";
-
 import {
   ActionRowBuilder,
+  ApplicationIntegrationType,
   ButtonBuilder,
   ButtonStyle,
+  Locale,
   MessageFlags,
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
@@ -19,8 +19,10 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string
+    locale: Locale,
   ) {
+    const t = this.getTranslation(locale);
+
     await interaction.deferReply({
       flags: MessageFlags.Ephemeral,
     });
@@ -33,7 +35,7 @@ export default class Command extends SlashCommand {
       .setDisabled(true);
 
     await interaction.editReply({
-      content: i18next.t("about.content", { lng: locale }),
+      content: t("about.content"),
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents(pingButton),
       ],

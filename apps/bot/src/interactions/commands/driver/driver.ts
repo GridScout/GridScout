@@ -3,7 +3,6 @@ import SlashCommand from "../../../structures/slashCommand.js";
 import type { Driver } from "@gridscout/types";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
-import i18next from "@gridscout/lang";
 import { API } from "@gridscout/api";
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { meilisearch } from "@gridscout/search";
@@ -12,6 +11,7 @@ import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
   type AutocompleteInteraction,
+  type Locale,
 } from "discord.js";
 
 const api = new API();
@@ -23,12 +23,11 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    locale: Locale,
   ) {
     await interaction.deferReply();
 
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
+    const t = this.getTranslation(locale);
 
     // Get the driver name from the interaction options
     let driver = interaction.options.getString("driver");
@@ -79,7 +78,7 @@ export default class Command extends SlashCommand {
     embed.setDescription(
       `${t("driver.acronym", { acronym: driverInfo.abbreviation })}\n` +
         `${t("driver.constructor", { constructorEmoji, name: driverInfo.team.name })}\n` +
-        `${t("driver.dob", { dob: formatDate(driverInfo.dateOfBirth, locale, t), timetag })}\n` +
+        `${t("driver.dob", { dob: this.formatDate(driverInfo.dateOfBirth, locale, t), timetag })}\n` +
         `${t("driver.nationality", { flag: countryEmojis[driverInfo.nationality.alpha3 as keyof typeof countryEmojis], nationality: `${driverInfo.nationality.demonym}` })}\n`,
     );
 
@@ -115,7 +114,7 @@ export default class Command extends SlashCommand {
           name: t("driver.lastRaces", {
             count: lastRaces.length,
           }),
-          value: `\`\`\`ansi\n${generateLastRacesANSI(lastRaces, locale, t)}\n\`\`\``,
+          value: `\`\`\`ansi\n${this.generateLastRacesANSI(lastRaces, locale, t)}\n\`\`\``,
         },
       ]);
     }
@@ -123,7 +122,7 @@ export default class Command extends SlashCommand {
     await interaction.editReply({ embeds: [embed] });
   }
 
-  async handleAutocomplete(interaction: AutocompleteInteraction) {
+  override async handleAutocomplete(interaction: AutocompleteInteraction) {
     const focusedOption = interaction.options.getFocused(true);
 
     const drivers = await meilisearch.searchDriverByName(focusedOption.value);
@@ -149,61 +148,60 @@ export default class Command extends SlashCommand {
       )
       .toJSON();
   }
-}
 
-function generateLastRacesANSI(
-  races: Driver["recentRaces"],
-  locale: string,
-  t: (key: string, options?: object) => string,
-): string {
-  return races
-    .map((race) => {
-      const position = isNaN(parseInt(race.position))
-        ? `${t("driver.position", { pos: getOrdinalSuffix(race.position, locale, t) })} ${race.raceGap ? `(${race.raceGap})` : ""}`
-        : `${t("driver.position", { pos: `${t("driver.finished")} ${getOrdinalSuffix(race.position, locale, t)}` })} ${race.raceGap ? `(${race.raceGap})` : ""}`;
-      const raceTime =
-        race.raceTime == null ? t("driver.notAvailable") : race.raceTime;
+  private generateLastRacesANSI(
+    races: Driver["recentRaces"],
+    locale: Locale,
+    t: (key: string, options?: object) => string,
+  ): string {
+    return races
+      .map((race) => {
+        const position = isNaN(parseInt(race.position))
+          ? `${t("driver.position", { pos: this.getOrdinalSuffix(race.position, t) })} ${race.raceGap ? `(${race.raceGap})` : ""}`
+          : `${t("driver.position", { pos: `${t("driver.finished")} ${this.getOrdinalSuffix(race.position, t)}` })} ${race.raceGap ? `(${race.raceGap})` : ""}`;
+        const raceTime =
+          race.raceTime == null ? t("driver.notAvailable") : race.raceTime;
 
-      return `\u001b[2;34m\u001b[1;34m${race.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${race.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m ⏰ \u001b[2;36m${raceTime}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
-    })
-    .join("\n\n");
-}
-
-function getOrdinalSuffix(
-  n: string,
-  locale: string,
-  t: (key: string, options?: object) => string,
-): string {
-  const num = parseInt(n);
-  if (isNaN(num)) {
-    return n;
+        return `\u001b[2;34m\u001b[1;34m${race.name}\u001b[0m\u001b[2;34m\u001b[0m \u001b[2;33m${race.date}\u001b[0m\n \u001b[2;42m\u001b[0m\u001b[2;30m├\u001b[0m ⏰ \u001b[2;36m${raceTime}\u001b[0m\n \u001b[2;30m└\u001b[0m 🏁 \u001b[2;36m${position}\u001b[0m`;
+      })
+      .join("\n\n");
   }
-  const s = [
-    t("ordinal.rules.default"),
-    t("ordinal.rules.1"),
-    t("ordinal.rules.2"),
-    t("ordinal.rules.3"),
-  ];
-  const v = num % 100;
-  const index = (v - 20) % 10;
-  const suffix =
-    s[index] !== undefined ? s[index] : s[v] !== undefined ? s[v] : s[0];
-  return `${n}${suffix}`;
-}
 
-function formatDate(
-  date: string,
-  locale: string,
-  t: (key: string, options?: object) => string,
-): string {
-  const dateObj = new Date(date);
-  const day = dateObj.getDate();
-  const ordinalDay = getOrdinalSuffix(day.toString(), locale, t);
-  return dateObj
-    .toLocaleDateString(locale, {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
-    .replace(day.toString(), ordinalDay);
+  private getOrdinalSuffix(
+    n: string,
+    t: (key: string, options?: object) => string,
+  ): string {
+    const num = parseInt(n);
+    if (isNaN(num)) {
+      return n;
+    }
+    const s = [
+      t("ordinal.rules.default"),
+      t("ordinal.rules.1"),
+      t("ordinal.rules.2"),
+      t("ordinal.rules.3"),
+    ];
+    const v = num % 100;
+    const index = (v - 20) % 10;
+    const suffix =
+      s[index] !== undefined ? s[index] : s[v] !== undefined ? s[v] : s[0];
+    return `${n}${suffix}`;
+  }
+
+  private formatDate(
+    date: string,
+    locale: string,
+    t: (key: string, options?: object) => string,
+  ): string {
+    const dateObj = new Date(date);
+    const day = dateObj.getDate();
+    const ordinalDay = this.getOrdinalSuffix(day.toString(), t);
+    return dateObj
+      .toLocaleDateString(locale, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+      .replace(day.toString(), ordinalDay);
+  }
 }

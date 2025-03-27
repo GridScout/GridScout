@@ -13,7 +13,7 @@ export const loadCommands = (): Promise<void> => {
         // Load all the files inside the commands folder recursively
         const commandFiles = await readdir(
           path.join(__dirname, "../interactions/commands"),
-          { recursive: true }
+          { recursive: true },
         );
 
         // For each file, import it, then add it to the commands collection

@@ -2,11 +2,16 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { API } from "@gridscout/api";
-import i18next from "@gridscout/lang";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import numberEmojis from "@gridscout/lang/emojis/numbers" with { type: "json" };
 
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Locale,
+  SlashCommandBuilder,
+  AutocompleteInteraction,
+} from "discord.js";
+import { meilisearch } from "@gridscout/search";
 
 const api = new API();
 
@@ -17,11 +22,10 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    locale: Locale,
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
+    const t = this.getTranslation(locale);
 
     // Get the season specified, or current year if not
     const season = interaction.options.getInteger("season") ?? undefined;
@@ -58,7 +62,10 @@ export default class Command extends SlashCommand {
       );
       const timestamp = Math.floor(raceDate.getTime() / 1000);
 
-      return `${numEmoji}‎ ‎ ‎ ‎ ${flagEmoji}‎ ‎ **${raceName}** — <t:${timestamp}:f>`;
+      // Use :R format if no time is specified, otherwise use :f
+      const timeFormat = race.grandPrix.time ? "f" : "D";
+
+      return `${numEmoji}‎ ‎ ‎ ‎ ${flagEmoji}‎ ‎ **${raceName}** — <t:${timestamp}:${timeFormat}>`;
     });
 
     // Find the upcoming race
@@ -116,7 +123,10 @@ export default class Command extends SlashCommand {
             );
             const timestamp = Math.floor(sessionDate.getTime() / 1000);
 
-            return `${label}: <t:${timestamp}:f>`;
+            // Use :R format if no time is specified, otherwise use :f
+            const timeFormat = session.time ? "f" : "D";
+
+            return `${label}: <t:${timestamp}:${timeFormat}>`;
           }
 
           return "";
@@ -146,6 +156,24 @@ export default class Command extends SlashCommand {
     await interaction.editReply({ embeds: [embed] });
   }
 
+  override async handleAutocomplete(interaction: AutocompleteInteraction) {
+    const focusedOption = interaction.options.getFocused(true);
+    const allRaces = await meilisearch.getAllRaces();
+
+    const searchTerm = focusedOption.value;
+    const years = [...new Set(allRaces.map((race) => race.year))]
+      .filter((year) => year.toString().includes(searchTerm))
+      .sort((a, b) => b - a)
+      .slice(0, 25);
+
+    const options = years.map((year) => ({
+      name: year.toString(),
+      value: year,
+    }));
+
+    await interaction.respond(options);
+  }
+
   override async build() {
     return new SlashCommandBuilder()
       .setName(this.name)
@@ -155,6 +183,7 @@ export default class Command extends SlashCommand {
           .setName("season")
           .setDescription("The season to lookup")
           .setMinValue(1950)
+          .setAutocomplete(true)
           .setRequired(false),
       )
       .toJSON();

@@ -1,12 +1,11 @@
-import Event from "../structures/event.js";
 import { commands } from "../index.js";
 
-import { AutocompleteInteraction } from "discord.js";
+import Event from "../structures/event.js";
+import type SlashCommand from "../structures/slashCommand.js";
 
-// Define a type for commands that can handle autocomplete
-interface CommandWithAutocomplete {
-  handleAutocomplete: (interaction: AutocompleteInteraction) => Promise<void>;
-}
+import logger from "@gridscout/logger";
+
+import { AutocompleteInteraction } from "discord.js";
 
 export default class AutocompleteInteractionEvent extends Event {
   constructor() {
@@ -19,21 +18,18 @@ export default class AutocompleteInteractionEvent extends Event {
     const commandName = interaction.commandName;
     const command = commands.get(commandName);
 
-    // Check if the command has a handleAutocomplete method
+    // If command has an autocomplete method
     if (
       command &&
       "handleAutocomplete" in command &&
-      typeof (command as unknown as CommandWithAutocomplete)
-        .handleAutocomplete === "function"
+      typeof (command as SlashCommand).handleAutocomplete === "function"
     ) {
       try {
-        // Call the command's handleAutocomplete method
-        await (
-          command as unknown as CommandWithAutocomplete
-        ).handleAutocomplete(interaction);
+        // Call handleAutocomplete method
+        await (command as SlashCommand).handleAutocomplete(interaction);
         return;
       } catch (error) {
-        console.error(`Error handling autocomplete for ${commandName}:`, error);
+        logger.error(`Error handling autocomplete for ${commandName}:`, error);
         await interaction.respond([]);
         return;
       }

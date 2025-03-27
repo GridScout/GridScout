@@ -2,7 +2,6 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { API } from "@gridscout/api";
-import i18next from "@gridscout/lang";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 
 import {
@@ -14,6 +13,7 @@ import {
   ComponentType,
   ButtonInteraction,
   MessageFlags,
+  Locale,
 } from "discord.js";
 
 const api = new API();
@@ -25,11 +25,10 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    locale: Locale,
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
+    const t = this.getTranslation(locale);
 
     // Get the latest calendar data
     const calendar = await api.calendar.get();
@@ -61,7 +60,7 @@ export default class Command extends SlashCommand {
     // Initial race display
     const initialEmbed = this.createRaceEmbed(
       currentSeasonRaces[currentIndex],
-      locale,
+      t,
       currentIndex,
       currentSeasonRaces.length,
     );
@@ -69,7 +68,7 @@ export default class Command extends SlashCommand {
       currentIndex,
       currentSeasonRaces.length,
       false,
-      locale,
+      t,
     );
 
     const message = await interaction.editReply({
@@ -115,7 +114,7 @@ export default class Command extends SlashCommand {
       const race = currentSeasonRaces[newIndex];
       const embed = this.createRaceEmbed(
         race,
-        locale,
+        t,
         newIndex,
         currentSeasonRaces.length,
       );
@@ -123,7 +122,7 @@ export default class Command extends SlashCommand {
         newIndex,
         currentSeasonRaces.length,
         false,
-        locale,
+        t,
       );
 
       // Update the message with the new race data
@@ -142,7 +141,7 @@ export default class Command extends SlashCommand {
         currentIndex,
         currentSeasonRaces.length,
         true,
-        locale,
+        t,
       );
 
       await interaction
@@ -153,16 +152,13 @@ export default class Command extends SlashCommand {
 
   private createRaceEmbed(
     race: any,
-    locale: string,
+    t: (key: string, options?: Record<string, any>) => string,
     currentIndex = 0,
     totalRaces = 0,
   ) {
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
-
     // if no race found
     if (!race) {
-      return errorEmbed("", t("next.error.description"));
+      return errorEmbed("", t("next.error"));
     }
 
     const date = new Date(`${race.grandPrix.date}T${race.grandPrix.time}`);
@@ -234,9 +230,7 @@ export default class Command extends SlashCommand {
       }
     }
 
-    embed.setDescription(
-      embed.data.description + "\n\n>>> " + events.join("\n"),
-    );
+    embed.setDescription(embed.data.description + "\n>>> " + events.join("\n"));
 
     return embed;
   }
@@ -245,11 +239,8 @@ export default class Command extends SlashCommand {
     currentIndex: number,
     totalRaces: number,
     disabled = false,
-    locale = "en",
+    t: (key: string, options?: Record<string, any>) => string,
   ) {
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
-
     // create back button
     const backButton = new ButtonBuilder()
       .setCustomId("prev")

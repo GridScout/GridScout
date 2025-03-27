@@ -2,7 +2,6 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { API } from "@gridscout/api";
-import i18next from "@gridscout/lang";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import numberEmojis from "@gridscout/lang/emojis/numbers" with { type: "json" };
 import { meilisearch } from "@gridscout/search";
@@ -17,28 +16,41 @@ import {
   ComponentType,
   AutocompleteInteraction,
   MessageFlags,
+  Locale,
 } from "discord.js";
 
 const api = new API();
 
-const sessionTimingKeys: Record<string, string[]> = {
-  RACE_RESULT: ["race_gap", "race_time"],
-  FREE_PRACTICE_1_RESULT: ["free_practice_1_gap", "free_practice_1_time"],
-  FREE_PRACTICE_2_RESULT: ["free_practice_2_gap", "free_practice_2_time"],
-  FREE_PRACTICE_3_RESULT: ["free_practice_3_gap", "free_practice_3_time"],
-  QUALIFYING_RESULT: ["qualifying_gap", "qualifying_time"],
-  SPRINT_QUALIFYING_RESULT: ["sprint_qualifying_gap", "sprint_qualifying_time"],
-  SPRINT_RACE_RESULT: ["sprint_race_gap", "sprint_race_time"],
-};
-
-const sessionTypeToI18nKey: Record<string, string> = {
-  FREE_PRACTICE_1_RESULT: "freePractice1",
-  FREE_PRACTICE_2_RESULT: "freePractice2",
-  FREE_PRACTICE_3_RESULT: "freePractice3",
-  QUALIFYING_RESULT: "qualifying",
-  SPRINT_QUALIFYING_RESULT: "sprintQualifying",
-  SPRINT_RACE_RESULT: "sprintRace",
-  RACE_RESULT: "grandPrix",
+// Map session types to their timing keys and i18n keys
+const SESSION_CONFIG = {
+  RACE_RESULT: {
+    timingKeys: ["race_gap", "race_time"],
+    i18nKey: "grandPrix",
+  },
+  FREE_PRACTICE_1_RESULT: {
+    timingKeys: ["free_practice_1_gap", "free_practice_1_time"],
+    i18nKey: "freePractice1",
+  },
+  FREE_PRACTICE_2_RESULT: {
+    timingKeys: ["free_practice_2_gap", "free_practice_2_time"],
+    i18nKey: "freePractice2",
+  },
+  FREE_PRACTICE_3_RESULT: {
+    timingKeys: ["free_practice_3_gap", "free_practice_3_time"],
+    i18nKey: "freePractice3",
+  },
+  QUALIFYING_RESULT: {
+    timingKeys: ["qualifying_gap", "qualifying_time"],
+    i18nKey: "qualifying",
+  },
+  SPRINT_QUALIFYING_RESULT: {
+    timingKeys: ["sprint_qualifying_gap", "sprint_qualifying_time"],
+    i18nKey: "sprintQualifying",
+  },
+  SPRINT_RACE_RESULT: {
+    timingKeys: ["sprint_race_gap", "sprint_race_time"],
+    i18nKey: "sprintRace",
+  },
 };
 
 export default class Command extends SlashCommand {
@@ -48,7 +60,7 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    locale: Locale,
   ) {
     await interaction.deferReply();
     const t = this.getTranslation(locale);
@@ -57,6 +69,7 @@ export default class Command extends SlashCommand {
       interaction.options.getInteger("season") ?? new Date().getFullYear();
     const raceId = interaction.options.getString("race");
 
+    // If no race ID, return an error
     if (!raceId) {
       return interaction.editReply({
         embeds: [errorEmbed("", t("genericError"))],
@@ -100,60 +113,20 @@ export default class Command extends SlashCommand {
 
     await this.displaySessionResults(
       interaction,
-      locale,
+      t,
       raceIdNumber,
-      initialSessionType as string,
+      initialSessionType ?? "",
       availableSessions,
     );
   }
 
-  async handleAutocomplete(interaction: AutocompleteInteraction) {
-    const focusedOption = interaction.options.getFocused(true);
-    const allRaces = await meilisearch.getAllRaces();
-
-    if (focusedOption.name === "season") {
-      const searchTerm = focusedOption.value;
-      const years = [...new Set(allRaces.map((race) => race.year))]
-        .filter((year) => year.toString().includes(searchTerm))
-        .sort((a, b) => b - a)
-        .slice(0, 25);
-
-      const options = years.map((year) => ({
-        name: year.toString(),
-        value: year,
-      }));
-
-      await interaction.respond(options);
-    } else if (focusedOption.name === "race") {
-      const selectedYear = interaction.options.getInteger("season");
-
-      if (!selectedYear) {
-        await interaction.respond([]);
-        return;
-      }
-
-      // Search races matching the year and any text in the race name
-      const searchTerm = `${selectedYear} ${focusedOption.value}`.trim();
-      const races = await meilisearch.searchRace(searchTerm, selectedYear);
-
-      const options = races.slice(0, 25).map((race) => ({
-        name: `${race.name}`,
-        value: race.id.toString(),
-      }));
-
-      await interaction.respond(options);
-    }
-  }
-
   private async displaySessionResults(
     interaction: ChatInputCommandInteraction,
-    locale: string,
+    t: (key: string, options?: Record<string, any>) => string,
     raceId: number,
     sessionType: string,
     availableSessions: string[],
   ) {
-    const t = this.getTranslation(locale);
-
     // Fetch the session results from the API
     const result = await api.results.get(raceId, sessionType as any);
 
@@ -167,8 +140,8 @@ export default class Command extends SlashCommand {
 
     const data = result.unwrap();
 
-    const embed = this.createResultsEmbed(data, sessionType, locale);
-    const row = this.createSessionMenu(availableSessions, sessionType, locale);
+    const embed = this.createResultsEmbed(data, sessionType, t);
+    const row = this.createSessionMenu(availableSessions, sessionType, t);
 
     const response = await interaction.editReply({
       embeds: [embed],
@@ -202,11 +175,11 @@ export default class Command extends SlashCommand {
         return;
       }
 
-      const selectedSessionType = i.values[0] as string;
+      const selectedSessionType = i.values[0];
       await i.deferUpdate();
 
       // store the new session type
-      currentSessionType = selectedSessionType;
+      currentSessionType = selectedSessionType ?? "";
 
       // Fetch the session results for the selected session
       const result = await api.results.get(raceId, selectedSessionType as any);
@@ -216,13 +189,13 @@ export default class Command extends SlashCommand {
       const newData = result.unwrap();
       const newEmbed = this.createResultsEmbed(
         newData,
-        selectedSessionType,
-        locale,
+        currentSessionType ?? "",
+        t,
       );
       const newRow = this.createSessionMenu(
         availableSessions,
-        selectedSessionType,
-        locale,
+        selectedSessionType ?? "",
+        t,
       );
 
       await interaction.editReply({ embeds: [newEmbed], components: [newRow] });
@@ -233,7 +206,7 @@ export default class Command extends SlashCommand {
       const disabledRow = this.createSessionMenu(
         availableSessions,
         currentSessionType,
-        locale,
+        t,
         true,
       );
 
@@ -243,9 +216,11 @@ export default class Command extends SlashCommand {
     });
   }
 
-  private createResultsEmbed(data: any, sessionType: string, locale: string) {
-    const t = this.getTranslation(locale);
-
+  private createResultsEmbed(
+    data: any,
+    sessionType: string,
+    t: (key: string, options?: Record<string, any>) => string,
+  ) {
     // Map results to formatted lines
     const lines = data.results
       .map((result: any, index: number) => {
@@ -271,15 +246,20 @@ export default class Command extends SlashCommand {
             ]) ||
           "";
 
-        const pointsInfo = this.getPointsInfo(result, sessionType, locale);
+        const pointsInfo =
+          sessionType === "RACE_RESULT" && result.points > 0
+            ? t("results.points", { count: result.points })
+            : "";
 
         return `${posEmoji}‎ ‎ ‎ ‎ ${driverCountryEmoji ? `${driverCountryEmoji}‎ ‎ ` : ""}**${result.driver.name}**${timingInfo ? ` — ${timingInfo}` : ""}${pointsInfo}`;
       })
-      .filter((line: string | null): line is string => line !== null) // Remove null entries
+      .filter(Boolean) // Remove null entries
       .join("\n");
 
     // Create the session label for the title using i18n
-    const sessionLabel = this.getSessionLabel(sessionType, locale);
+    const sessionLabel = t(
+      `sessions.${SESSION_CONFIG[sessionType as keyof typeof SESSION_CONFIG]?.i18nKey || "defaultLabel"}`,
+    );
     const title = t("results.title", {
       season: data.season,
       race: data.name,
@@ -291,49 +271,33 @@ export default class Command extends SlashCommand {
     });
   }
 
-  private getSessionLabel(sessionType: string, locale: string): string {
-    const t = this.getTranslation(locale);
-
-    // Get the session type key from the mapping
-    const sessionTypeKey = sessionTypeToI18nKey[sessionType];
-
-    // If we have a mapping, use it to get the label from the sessions namespace
-    if (sessionTypeKey) {
-      return t(`sessions.${sessionTypeKey}`);
-    }
-
-    // Fallback to default label
-    return t("results.defaultLabel");
-  }
-
   private createSessionMenu(
     availableSessions: string[],
     currentSession: string,
-    locale: string,
+    t: (key: string, options?: Record<string, any>) => string,
     disabled = false,
   ): ActionRowBuilder<StringSelectMenuBuilder> {
-    const t = this.getTranslation(locale);
-
     const menu = new StringSelectMenuBuilder()
       .setCustomId("session_selector")
       .setPlaceholder(t("results.selectSession"))
       .setDisabled(disabled)
       .addOptions(
         availableSessions
-          .filter((session) => this.isValidSessionType(session))
-          .map((session) =>
-            new StringSelectMenuOptionBuilder()
-              .setLabel(this.getSessionLabel(session, locale))
+          .filter(
+            (session) => SESSION_CONFIG[session as keyof typeof SESSION_CONFIG],
+          )
+          .map((session) => {
+            const i18nKey =
+              SESSION_CONFIG[session as keyof typeof SESSION_CONFIG]?.i18nKey ||
+              "defaultLabel";
+            return new StringSelectMenuOptionBuilder()
+              .setLabel(t(`sessions.${i18nKey}`))
               .setValue(session)
-              .setDefault(session === currentSession),
-          ),
+              .setDefault(session === currentSession);
+          }),
       );
 
     return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu);
-  }
-
-  private isValidSessionType(session: string): boolean {
-    return Object.keys(sessionTypeToI18nKey).includes(session);
   }
 
   private getTimingInfo(
@@ -341,61 +305,65 @@ export default class Command extends SlashCommand {
     sessionType: string,
     index: number,
   ): string {
-    const keys = sessionTimingKeys[sessionType] ?? [];
+    const config = SESSION_CONFIG[sessionType as keyof typeof SESSION_CONFIG];
+    if (!config) return "";
 
-    // handle sprint races
+    const keys = config.timingKeys;
+    const sessions = result.sessions?.[0] || {};
+
+    // For sprint races, show time for P1 and gap for others
     if (sessionType === "SPRINT_RACE_RESULT") {
       if (index === 0 && keys.length >= 2) {
-        // For P1, show the actual time
-        const timeKey = keys[1];
-        if (timeKey && result.sessions[0]?.[timeKey]) {
-          return result.sessions[0][timeKey];
-        }
-      } else if (keys.length > 0) {
-        // For p2+ show the gap to p1
-        const gapKey = keys[0];
-        if (gapKey && result.sessions[0]?.[gapKey]) {
-          return result.sessions[0][gapKey];
-        }
-      }
-    } else {
-      // for all other session types, prioritise showing absolute time values
-      if (keys.length >= 2) {
-        const timeKey = keys[1];
-        if (timeKey && result.sessions[0]?.[timeKey]) {
-          return result.sessions[0][timeKey];
-        }
+        return sessions[keys[1] as keyof typeof sessions] || "";
+      } else {
+        return sessions[keys[0] as keyof typeof sessions] || "";
       }
     }
 
-    // fallback if no time or gap value is available
-    if (keys.length > 0) {
-      const gapKey = keys[0];
-      if (gapKey && result.sessions[0]?.[gapKey]) {
-        return result.sessions[0][gapKey];
-      }
-    }
-
-    return "";
+    // For other sessions, prioritise time over gap
+    return (
+      sessions[keys[1] as keyof typeof sessions] ||
+      sessions[keys[0] as keyof typeof sessions] ||
+      ""
+    );
   }
 
-  private getPointsInfo(
-    result: any,
-    sessionType: string,
-    locale: string,
-  ): string {
-    if (
-      sessionType !== "RACE_RESULT" ||
-      result.points === undefined ||
-      result.points <= 0
-    ) {
-      return "";
-    }
+  override async handleAutocomplete(interaction: AutocompleteInteraction) {
+    const focusedOption = interaction.options.getFocused(true);
+    const allRaces = await meilisearch.getAllRaces();
 
-    const t = this.getTranslation(locale);
-    return t("results.points", {
-      count: result.points,
-    });
+    if (focusedOption.name === "season") {
+      const searchTerm = focusedOption.value;
+      const years = [...new Set(allRaces.map((race) => race.year))]
+        .filter((year) => year.toString().includes(searchTerm))
+        .sort((a, b) => b - a)
+        .slice(0, 25);
+
+      await interaction.respond(
+        years.map((year) => ({
+          name: year.toString(),
+          value: year,
+        })),
+      );
+    } else if (focusedOption.name === "race") {
+      const selectedYear = interaction.options.getInteger("season");
+
+      if (!selectedYear) {
+        await interaction.respond([]);
+        return;
+      }
+
+      // Search races matching the year and any text in the race name
+      const searchTerm = `${selectedYear} ${focusedOption.value}`.trim();
+      const races = await meilisearch.searchRace(searchTerm, selectedYear);
+
+      await interaction.respond(
+        races.slice(0, 25).map((race) => ({
+          name: race.name,
+          value: race.id.toString(),
+        })),
+      );
+    }
   }
 
   override async build() {
@@ -405,7 +373,7 @@ export default class Command extends SlashCommand {
       .addIntegerOption((option) =>
         option
           .setName("season")
-          .setDescription("The F1 season")
+          .setDescription("The season to view races for")
           .setAutocomplete(true)
           .setRequired(true),
       )

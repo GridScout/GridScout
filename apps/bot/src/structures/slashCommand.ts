@@ -1,9 +1,11 @@
 import i18next from "@gridscout/lang";
 import type {
   ChatInputCommandInteraction,
+  Locale,
   PermissionResolvable,
   RESTPostAPIApplicationCommandsJSONBody,
   SlashCommandBuilder,
+  AutocompleteInteraction,
 } from "discord.js";
 
 export type SlashCommandOptions = {
@@ -27,11 +29,15 @@ export default class SlashCommand {
     this.options = options;
   }
 
-  execute(_: ChatInputCommandInteraction, locale: string) {
+  execute(_: ChatInputCommandInteraction, locale: Locale) {
     throw new Error("Method not implemented.");
   }
 
-  getTranslation(locale: string) {
+  handleAutocomplete(_: AutocompleteInteraction) {
+    throw new Error("Method not implemented.");
+  }
+
+  getTranslation(locale: Locale) {
     return (key: string, options = {}) =>
       i18next.t(key, { lng: locale, ...options });
   }

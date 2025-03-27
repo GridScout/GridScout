@@ -2,7 +2,6 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { API } from "@gridscout/api";
-import i18next from "@gridscout/lang";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import teamEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
 import numberEmojis from "@gridscout/lang/emojis/numbers" with { type: "json" };
@@ -11,7 +10,10 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
+  Locale,
+  AutocompleteInteraction,
 } from "discord.js";
+import { meilisearch } from "@gridscout/search";
 
 const api = new API();
 
@@ -22,11 +24,10 @@ export default class Command extends SlashCommand {
 
   override async execute(
     interaction: ChatInputCommandInteraction,
-    locale: string
+    locale: Locale,
   ) {
     await interaction.deferReply();
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
+    const t = this.getTranslation(locale);
 
     const subcommand = interaction.options.getSubcommand();
     const season = interaction.options.getInteger("season") ?? undefined;
@@ -37,21 +38,23 @@ export default class Command extends SlashCommand {
       });
     }
 
-    if (subcommand === "driver") {
-      return this.handleDriverStandings(interaction, locale, season);
-    } else if (subcommand === "constructor") {
-      return this.handleConstructorStandings(interaction, locale, season);
+    switch (subcommand) {
+      case "driver":
+        return this.handleDriverStandings(interaction, t, season);
+      case "constructor":
+        return this.handleConstructorStandings(interaction, t, season);
+      default:
+        return interaction.editReply({
+          embeds: [errorEmbed("", t("standings.error", { year: season }))],
+        });
     }
   }
 
   private async handleDriverStandings(
     interaction: ChatInputCommandInteraction,
-    locale: string,
-    season?: number
+    t: (key: string, options?: Record<string, any>) => string,
+    season?: number,
   ) {
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
-
     const result = await api.standings.getDriverStandings(season);
 
     if (result.isErr()) {
@@ -59,14 +62,14 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            t("standings.error", { year: season || new Date().getFullYear() })
+            t("standings.error", { year: season || new Date().getFullYear() }),
           ),
         ],
       });
     }
 
     const data = result.unwrap();
-    const standings = data.standings as unknown as ExtendedDriverStanding[];
+    const standings = data.standings as ExtendedDriverStanding[];
 
     const lines = standings.map((standing, index) => {
       // Get position emoji (or use num if over 50)
@@ -96,12 +99,9 @@ export default class Command extends SlashCommand {
 
   private async handleConstructorStandings(
     interaction: ChatInputCommandInteraction,
-    locale: string,
-    season?: number
+    t: (key: string, options?: Record<string, any>) => string,
+    season?: number,
   ) {
-    const t = (key: string, options = {}) =>
-      i18next.t(key, { lng: locale, ...options });
-
     const result = await api.standings.getConstructorStandings(season);
 
     if (result.isErr()) {
@@ -109,7 +109,7 @@ export default class Command extends SlashCommand {
         embeds: [
           errorEmbed(
             "",
-            t("standings.error", { year: season || new Date().getFullYear() })
+            t("standings.error", { year: season || new Date().getFullYear() }),
           ),
         ],
       });
@@ -141,6 +141,31 @@ export default class Command extends SlashCommand {
     await interaction.editReply({ embeds: [embed] });
   }
 
+  override async handleAutocomplete(interaction: AutocompleteInteraction) {
+    const focusedOption = interaction.options.getFocused(true);
+    const allRaces = await meilisearch.getAllRaces();
+
+    if (focusedOption.name === "season") {
+      const searchTerm = focusedOption.value;
+      const subcommand = interaction.options.getSubcommand();
+      const minYear = subcommand === "constructor" ? 1958 : 1950;
+
+      const years = [...new Set(allRaces.map((race) => race.year))]
+        .filter(
+          (year) => year >= minYear && year.toString().includes(searchTerm),
+        )
+        .sort((a, b) => b - a)
+        .slice(0, 25);
+
+      await interaction.respond(
+        years.map((year) => ({
+          name: year.toString(),
+          value: year,
+        })),
+      );
+    }
+  }
+
   override async build() {
     return new SlashCommandBuilder()
       .setName(this.name)
@@ -154,8 +179,9 @@ export default class Command extends SlashCommand {
               .setName("season")
               .setDescription("The season to lookup")
               .setMinValue(1950)
-              .setRequired(false)
-          )
+              .setAutocomplete(true)
+              .setRequired(false),
+          ),
       )
       .addSubcommand(
         new SlashCommandSubcommandBuilder()
@@ -165,9 +191,10 @@ export default class Command extends SlashCommand {
             option
               .setName("season")
               .setDescription("The season to lookup")
-              .setMinValue(1950)
-              .setRequired(false)
-          )
+              .setMinValue(1958)
+              .setAutocomplete(true)
+              .setRequired(false),
+          ),
       )
       .toJSON();
   }

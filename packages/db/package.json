@@ -8,9 +8,13 @@
       "types": "./src/index.ts",
       "default": "./dist/index.js"
     },
-    "./schema": {
-      "types": "./src/schema.ts",
-      "default": "./dist/schema.js"
+    "./sqlite/schema": {
+      "types": "./src/sqlite-schema.ts",
+      "default": "./dist/sqlite-schema.js"
+    },
+    "./pg/schema": {
+      "types": "./src/pg-schema.ts",
+      "default": "./dist/pg-schema.js"
     }
   },
   "scripts": {

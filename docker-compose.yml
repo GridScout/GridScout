@@ -37,6 +37,17 @@ services:
       - MEILI_NO_ANALYTICS=true
       - MEILI_MASTER_KEY=masterKey
 
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=gridscout
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
 volumes:
   dragonflydata:
   meilisearchdata:
+  postgresdata:

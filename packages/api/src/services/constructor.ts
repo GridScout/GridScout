@@ -14,7 +14,7 @@ import {
   engine_manufacturer,
   season_entrant_engine,
   engine,
-} from "@gridscout/db/schema";
+} from "@gridscout/db/sqlite/schema";
 
 import { ok, err, type Result } from "@sapphire/result";
 import { eq, and, desc } from "drizzle-orm";

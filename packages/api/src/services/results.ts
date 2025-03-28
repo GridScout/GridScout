@@ -7,7 +7,7 @@ import {
   grand_prix,
   race,
   race_data,
-} from "@gridscout/db/schema";
+} from "@gridscout/db/sqlite/schema";
 import { and, eq } from "drizzle-orm";
 
 export class ResultsService {

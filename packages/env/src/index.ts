@@ -1,4 +1,4 @@
-const { createEnv } = await import("@t3-oss/env-core");
+import { createEnv } from "@t3-oss/env-core";
 import z from "zod";
 
 export default createEnv({
@@ -9,6 +9,8 @@ export default createEnv({
     DEV_SERVER_ID: z.string(),
 
     SENTRY_DSN: z.string().optional(),
+
+    DATABASE_URL: z.string().min(1),
 
     REDIS_HOST: z.string().optional(),
     REDIS_PORT: z.number().int().optional(),

@@ -3,7 +3,7 @@ import type { API } from "../index.js";
 
 import { ok, err, type Result } from "@sapphire/result";
 import { eq } from "drizzle-orm";
-import { country, grand_prix, race } from "@gridscout/db/schema";
+import { country, grand_prix, race } from "@gridscout/db/sqlite/schema";
 
 export class CalendarService {
   constructor(private readonly client: API) {}

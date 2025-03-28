@@ -11,7 +11,7 @@ import {
   season_constructor_standing,
   season_driver_standing,
   season_entrant_driver,
-} from "@gridscout/db/schema";
+} from "@gridscout/db/sqlite/schema";
 
 export class StandingsService {
   constructor(private readonly client: API) {}

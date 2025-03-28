@@ -5,7 +5,7 @@ import {
   country,
   driver,
   season_entrant_driver,
-} from "@gridscout/db/schema";
+} from "@gridscout/db/sqlite/schema";
 import { meilisearch } from "@gridscout/search";
 import { eq, sql } from "drizzle-orm";
 

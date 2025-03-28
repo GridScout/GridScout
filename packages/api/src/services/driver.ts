@@ -9,7 +9,7 @@ import {
   grand_prix,
   season_entrant_driver,
   constructor,
-} from "@gridscout/db/schema";
+} from "@gridscout/db/sqlite/schema";
 
 import { ok, err, type Result } from "@sapphire/result";
 import { eq, and, desc } from "drizzle-orm";

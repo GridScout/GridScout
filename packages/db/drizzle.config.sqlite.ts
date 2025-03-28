@@ -3,8 +3,8 @@ import path from "path";
 
 export default defineConfig({
   dialect: "sqlite",
-  schema: "./src/schema.ts",
-  out: "./drizzle",
+  schema: "./src/sqlite-schema.ts",
+  out: "./drizzle/sqlite",
 
   dbCredentials: {
     url: path.resolve(__dirname, "../../f1db.db"),

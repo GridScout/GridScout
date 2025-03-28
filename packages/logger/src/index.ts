@@ -33,7 +33,7 @@ class Logger {
       level: env.DOPPLER_ENVIRONMENT === "dev" ? "debug" : "info",
       format: combine(
         timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-        customFormat
+        customFormat,
       ),
       transports: [new transports.Console()],
     });

@@ -94,8 +94,6 @@ export async function updateBotMetrics(client: Client) {
 
       guildCount.set(guildSize);
       userCount.set(userSize);
-      logger.debug(`Updated guild count: ${guildSize}`);
-      logger.debug(`Updated user count: ${userSize}`);
     } else {
       logger.warn("Guild cache not available");
     }
@@ -103,7 +101,6 @@ export async function updateBotMetrics(client: Client) {
     // Update ws latency
     if (client.ws && client.ws.ping && !isNaN(client.ws.ping)) {
       websocketLatency.set(client.ws.ping);
-      logger.debug(`Updated websocket latency: ${client.ws.ping}ms`);
     }
   } catch (error) {
     logger.error("Error updating bot metrics", { error });

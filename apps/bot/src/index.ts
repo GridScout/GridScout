@@ -43,3 +43,14 @@ if (env.SENTRY_DSN) {
     tracesSampleRate: 1.0,
   });
 }
+
+// Prevent crash on error
+process.on("unhandledRejection", (error) => {
+  logger.error("Unhandled rejection", { error });
+  Sentry.captureException(error);
+});
+
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught exception", { error });
+  Sentry.captureException(error);
+});

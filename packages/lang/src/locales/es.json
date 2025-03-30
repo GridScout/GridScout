@@ -1,86 +1,106 @@
 {
   "sessions": {
-    "freePractice1": "Práctica Libre 1",
-    "freePractice2": "Práctica Libre 2",
-    "freePractice3": "Práctica Libre 3",
-    "sprintQualifying": "Clasificación Sprint",
-    "sprintRace": "Carrera Sprint",
-    "qualifying": "Clasificación",
-    "grandPrix": "Gran Premio"
+    "freePractice1": "Free Practice 1",
+    "freePractice2": "Free Practice 2",
+    "freePractice3": "Free Practice 3",
+    "sprintQualifying": "Sprint Qualifying",
+    "sprintRace": "Sprint Race",
+    "qualifying": "Qualifying",
+    "grandPrix": "Grand Prix"
   },
   "ordinal": {
     "rules": {
-      "1": "º",
-      "2": "º",
-      "3": "º",
-      "default": "º"
+      "1": "st",
+      "2": "nd",
+      "3": "rd",
+      "default": "th"
     }
   },
   "permissions": {
-    "manageGuild": "Gestionar Servidor"
+    "manageGuild": "Manage Guild"
   },
-  "genericError": "**¡Error!** Se ha producido un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde. Si el problema persiste, contacta con el soporte.",
-  "notYourInteraction": "Esta interacción pertenece a {{user}}. \nPor favor, ejecuta el comando `/{{command}}` para usar esta función tú mismo.",
-  "missingPermissions": "**¡Error!** Te falta el permiso: `{{permission}}`.",
+  "genericError": "**Error!** An error occurred while processing your request, please try again later.\nIf the issue persists, contact support with the error code below.",
+  "errorId": "Code: {{id}}",
+  "notYourInteraction": "This interaction belongs to {{user}}. \nPlease run the `/{{command}}` command to use this feature yourself.",
+  "missingPermissions": "**Error!** You are missing the permission: `{{permission}}`.",
+  "guildOnly": "**Error!** This command can only be used in a server.",
   "next": {
-    "error": {
-      "description": "No hay más eventos en esta temporada."
-    },
-    "author": "Calendario de Carreras",
-    "title": "Temporada {{season}}",
-    "footer": "Jornada {{round}} de {{total}}",
-    "previous": "Anterior",
-    "next": "Siguiente"
+    "error": "There are no more events this season.",
+    "author": "Race Schedule",
+    "title": "{{season}} Season",
+    "footer": "Round {{round}} of {{total}}",
+    "previous": "Previous",
+    "next": "Next"
   },
   "about": {
-    "content": "# ¡GridScout ha llegado! <:racingcar:1341846279486963854>\n\nGridScout es un bot de Discord diseñado para los aficionados al motorsport.\nYa sea que busques estadísticas de pilotos, calendarios de carreras o resultados anteriores, GridScout te ofrece la información más reciente directamente en tu servidor.\n## **Cómo Usar**\nPara empezar, escribe / en un chat para ver una lista de comandos disponibles.\nSi necesitas más ayuda, visita [docs.gridscout.xyz](<https://docs.gridscout.xyz>).\n## **Enlaces Útiles**\n- <:web:1341845985512652850> [**Sitio Web**](<https://gridscout.xyz>)\n- <:help:1341845993418788954> [**Soporte y Retroalimentación**](<https://discord.gg/SdK9QCquP4>)\n- <:terms:1341845978860355634> [**Términos de Servicio**](<https://docs.gridscout.xyz/terms>) & [**Política de Privacidad**](<https://docs.gridscout.xyz/privacy>)\n- <:invite:1341845971822186648> [**Invita a GridScout a tu Servidor**](https://discord.com/oauth2/authorize?client_id=1239680594539974787&permissions=274878417984&integration_type=0&scope=bot+applications.commands)\n\nSi disfrutas usando GridScout, por favor considera [votarlo en top.gg](<https://top.gg/bot/1239680594539974787>) para ayudar a que más personas lo descubran!"
+    "content": "# GridScout is here! <:racingcar:1341846279486963854>\n\nGridScout is a Discord bot designed for motorsport enthusiasts.\nWhether you're looking for driver stats, race schedules, or past results, GridScout delivers the latest information right in your server.\n## **How to Use**\nTo get started, type / in a chat to see a list of available commands.\nIf you need more help, head to [docs.gridscout.xyz](<https://docs.gridscout.xyz>).\n## **Useful Links**\n- <:web:1341845985512652850> [**Website**](<https://gridscout.xyz>)\n- <:help:1341845993418788954> [**Support & Feedback**](<https://discord.gg/SdK9QCquP4>)\n- <:terms:1341845978860355634> [**Terms of service**](<https://docs.gridscout.xyz/terms>) & [**Privacy Policy**](<https://docs.gridscout.xyz/privacy>)\n- <:invite:1341845971822186648> [**Invite GridScout to Your Server**](https://discord.com/oauth2/authorize?client_id=1239680594539974787&permissions=274878417984&integration_type=0&scope=bot+applications.commands)\n\nIf you enjoy using GridScout, please consider [voting for it on top.gg](<https://top.gg/bot/1239680594539974787>) to help more people discover it!"
   },
   "driver": {
-    "error": "**¡Error!** Piloto no encontrado. Comprueba la ortografía o prueba con otro nombre.",
-    "notAvailable": "N/D",
-    "acronym": "**Acrónimo**: `{{acronym}}`",
-    "constructor": "**Escudería**: {{constructorEmoji}} **{{name}}**",
-    "dob": "**Fecha de Nacimiento**: {{dob}} ({{timetag}})",
-    "nationality": "**Nacionalidad**: {{flag}} {{nationality}}",
-    "statistics": "Estadísticas",
-    "wdc": "**Campeonatos del Mundo**: {{amount}}",
-    "highestRaceFinish": "**Mejor posición en carrera**: {{position}}",
-    "highestGridPosition": "**Mejor posición en parrilla**: {{position}}",
-    "racesEntered": "**Carreras disputadas**: {{amount}}",
-    "podiums": "**Podios**: {{amount}}",
-    "points": "**Puntos**: {{amount}}",
+    "error": "**Error!** Driver not found. Please check the spelling or try another name.",
+    "notAvailable": "N/A",
+    "acronym": "**Acronym**: `{{acronym}}`",
+    "constructor": "**Constructor**: {{constructorEmoji}} **{{name}}**",
+    "dob": "**Date of Birth**: {{dob}} ({{timetag}})",
+    "nationality": "**Nationality**: {{flag}} {{nationality}}",
+    "statistics": "Statistics",
+    "wdc": "**World Championships**: {{amount}}",
+    "highestRaceFinish": "**Highest Race Finish**: {{position}}",
+    "highestGridPosition": "**Highest Grid Position**: {{position}}",
+    "racesEntered": "**Races Entered**: {{amount}}",
+    "podiums": "**Podiums**: {{amount}}",
+    "points": "**Points**: {{amount}}",
     "grandslams": "[**Grand Slams**](https://en.wikipedia.org/wiki/Grand_slam_(Formula_One)): {{amount}}",
-    "fastestLaps": "**Vueltas Rápidas**: {{amount}}",
-    "lastRaces": "Últimas carreras ({{count}})",
-    "finished": "Finalizado",
+    "fastestLaps": "**Fastest Laps**: {{amount}}",
+    "lastRaces": "Last Races ({{count}})",
+    "finished": "Finished",
     "position": "{{pos}}"
   },
+  "constructor": {
+    "error": "**Error!** Constructor not found. Please check the spelling or try another name.",
+    "name": "**Name**: {{name}}",
+    "nationality": "**Nationality**: {{flag}} {{nationality}}",
+    "currentDrivers": "Current Drivers",
+    "statistics": "Statistics",
+    "worldChampionships": "**World Championships**: {{amount}}",
+    "totalRaceWins": "**Total Race Wins**: {{amount}}",
+    "racesEntered": "**Races Entered**: {{amount}}",
+    "podiums": "**Podiums**: {{amount}}",
+    "points": "**Points**: {{amount}}",
+    "poles": "**Pole Positions**: {{amount}}",
+    "fastestLaps": "**Fastest Laps**: {{amount}}",
+    "chassis": "Chassis",
+    "engine": "Engine",
+    "recentResults": "Recent Results",
+    "finished": "Finished",
+    "position": "{{pos}}",
+    "notAvailable": "N/A"
+  },
   "calendar": {
-    "error": "**¡Error!** No se pudo encontrar el calendario para la temporada: `{{year}}`.",
-    "author": "Calendario de Carreras",
-    "title": "Temporada {{season}}",
-    "footer": "⏰ Todas las fechas mostradas se encuentran en tu zona horaria local"
+    "error": "**Error!** Unable to find the calendar for the season: `{{year}}`.",
+    "author": "Race Calendar",
+    "title": "{{season}} Season",
+    "footer": "⏰ All dates above are shown in your local timezone"
   },
   "standings": {
-    "error": "**¡Error!** No se pudo encontrar la clasificación para la temporada: `{{year}}`.",
+    "error": "**Error!** Unable to find standings for the season: `{{year}}`.",
     "drivers": {
-      "title": "Temporada {{season}}",
-      "author": "Clasificación de Pilotos"
+      "title": "{{season}} Season",
+      "author": "Driver Standings"
     },
     "constructors": {
-      "title": "Temporada {{season}}",
-      "author": "Clasificación de Escuderías"
+      "title": "{{season}} Season",
+      "author": "Constructor Standings"
     }
   },
   "results": {
     "title": "{{season}} {{race}} — {{session}}",
-    "author": "Resultados de la Carrera",
-    "error": "**¡Error!** No se pueden recuperar los datos de resultados para la carrera seleccionada.",
-    "noSessions": "**¡Error!** No hay sesiones disponibles para esta carrera.",
-    "selectSession": "Selecciona una sesión",
-    "defaultLabel": "Resultados",
-    "points": " ({{count}} punto)",
-    "points_plural": " ({{count}} puntos)",
+    "author": "Race Results",
+    "error": "**Error!** Cannot retrieve results data for the chosen race.",
+    "noSessions": "**Error!** No sessions available for this race.",
+    "selectSession": "Select a session",
+    "defaultLabel": "Results",
+    "points": " ({{count}} point)",
+    "points_plural": " ({{count}} points)",
     "dnf": "DNF ({{reason}})"
   }
 }

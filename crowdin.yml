@@ -1,3 +1,5 @@
 files:
   - source: /packages/lang/src/locales/*.json
     translation: /packages/lang/src/locales/%two_letters_code%.json
+pull_request_title: "New Crowdin translations"
+commit_message: "chore: updated translations from Crowdin"

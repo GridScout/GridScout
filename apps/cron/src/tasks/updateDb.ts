@@ -1,6 +1,6 @@
 import CronJob from "../structures/cronJob.js";
 import GitHub from "@gridscout/utils/github";
-
+import path from "path";
 import decompress from "decompress";
 
 const ghAPI = new GitHub();
@@ -14,17 +14,25 @@ export default new CronJob(
     // Check if we already have a version file
     let currentVersion;
     try {
-      const versionFile = Bun.file("../../db_version.txt");
+      const versionFile = Bun.file(
+        path.resolve(__dirname, "../../../../db_version.txt"),
+      );
       currentVersion = (await versionFile.exists())
         ? await versionFile.text()
-        : await Bun.write("../../db_version.txt", "0.0.0").then(() => "0.0.0");
+        : await Bun.write(
+            path.resolve(__dirname, "../../../../db_version.txt"),
+            "0.0.0",
+          ).then(() => "0.0.0");
     } catch {
       currentVersion = "0.0.0";
     }
 
     // Update version file with latest version from GitHub
     if (!latestRelease.isErr()) {
-      await Bun.write("../../db_version.txt", latestRelease.unwrap().tag_name);
+      await Bun.write(
+        path.resolve(__dirname, "../../../../db_version.txt"),
+        latestRelease.unwrap().tag_name,
+      );
     }
 
     // Get latest version
@@ -64,7 +72,10 @@ export default new CronJob(
     }
 
     // Replace the current database with the new one
-    await Bun.write("../../f1db.db", dbFile.data);
+    await Bun.write(
+      path.resolve(__dirname, "../../../../f1db.db"),
+      dbFile.data,
+    );
 
     console.log("Database updated successfully.");
   },

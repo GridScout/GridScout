@@ -147,7 +147,6 @@ export function startMetricsServer(port?: string) {
     return server;
   } catch (error) {
     logger.error("Failed to start metrics server", { error });
-    throw error;
   }
 }
 

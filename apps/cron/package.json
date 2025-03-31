@@ -18,6 +18,7 @@
     "@gridscout/db": "*",
     "@gridscout/env": "*",
     "@gridscout/logger": "*",
+    "@gridscout/lang": "*",
     "@gridscout/search": "*",
     "@gridscout/utils": "*",
     "decompress": "^4.2.1",

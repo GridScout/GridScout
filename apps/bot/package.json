@@ -18,6 +18,7 @@
     "@gridscout/lang": "*",
     "@gridscout/metrics": "*",
     "@gridscout/utils": "*",
+    "@gridscout/db": "*",
     "@sentry/bun": "^9.5.0",
     "discord.js": "^14.18.0"
   }

@@ -9,6 +9,7 @@
       "default": "./dist/index.js"
     },
     "./emojis/*": {
+      "types": "./src/emojis/*.json",
       "default": "./dist/emojis/*.json"
     }
   },

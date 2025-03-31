@@ -15,6 +15,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@gridscout/api": "*",
+        "@gridscout/db": "*",
         "@gridscout/env": "*",
         "@gridscout/lang": "*",
         "@gridscout/logger": "*",

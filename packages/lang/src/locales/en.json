@@ -108,6 +108,7 @@
       "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
       "success": "**Success!** Notifications configured in {{channel}}.\n\nSelect which notifications to receive and when using the dropdown menus below.",
       "updated": "**Success!** Settings updated.",
+      "typesPlaceholder": "No sessions selected",
       "reminderPlaceholder": "No time selected",
       "reminderTime": "{{minutes}} minutes",
       "reminderTimeDescription": "GridScout will send a reminder {{minutes}} minutes before",

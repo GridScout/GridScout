@@ -22,6 +22,7 @@ import {
   ButtonStyle,
   ButtonInteraction,
   MessageFlags,
+  PermissionsBitField,
 } from "discord.js";
 import { asc, eq } from "drizzle-orm";
 
@@ -338,6 +339,7 @@ export default class Command extends SlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
+      .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageChannels)
       .addSubcommand((subcommand) =>
         subcommand
           .setName("notifications")

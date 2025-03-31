@@ -56,7 +56,7 @@ export default class ChatInteractionEvent extends Event {
         embeds: [
           errorEmbed(
             "",
-            i18next.t("genericError.guildOnly", {
+            i18next.t("guildOnly", {
               lng: interaction.locale,
             }),
           ),

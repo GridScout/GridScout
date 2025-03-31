@@ -102,5 +102,19 @@
     "points": " ({{count}} point)",
     "points_plural": " ({{count}} points)",
     "dnf": "DNF ({{reason}})"
+  },
+  "settings": {
+    "notifications": {
+      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
+      "success": "**Success!** Notifications configured in {{channel}}.\n\nSelect which notifications to receive and when using the dropdown menus below.",
+      "updated": "**Success!** Settings updated.",
+      "reminderPlaceholder": "No time selected",
+      "reminderTime": "{{minutes}} minutes",
+      "reminderTimeDescription": "GridScout will send a reminder {{minutes}} minutes before",
+      "mentionEveryone": {
+        "enabled": "Click to disable @everyone",
+        "disabled": "Click to enable @everyone"
+      }
+    }
   }
 }

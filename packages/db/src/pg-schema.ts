@@ -4,18 +4,21 @@ import {
   integer,
   timestamp,
   primaryKey,
+  boolean,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { index } from "drizzle-orm/pg-core";
 
 export const guilds = pgTable("guilds", {
   id: text("id").primaryKey(),
-  channelId: text("channel_id").notNull(),
-  reminderMinutes: integer("reminder_minutes").notNull(),
+  notificationsChannelId: text("notifications_channel_id"),
+  reminderMinutes: integer("reminder_minutes"),
+  reminderMentionEveryone: boolean("reminder_mention_everyone").default(false),
 });
 
 export const reminderTypes = pgTable("reminder_types", {
   id: text("id").primaryKey(),
+  sessionId: text("session_id").notNull(),
   name: text("name").notNull(),
 });
 

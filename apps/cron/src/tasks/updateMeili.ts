@@ -1,5 +1,5 @@
 import CronJob from "../structures/cronJob.js";
-import { getDrizzle } from "@gridscout/db";
+import { getDrizzle } from "@gridscout/db/sqlite";
 import {
   constructor,
   country,

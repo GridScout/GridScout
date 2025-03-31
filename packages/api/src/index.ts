@@ -1,7 +1,7 @@
 import { CalendarService } from "./services/calendar.js";
 import { DriverService } from "./services/driver.js";
 import { StandingsService } from "./services/standings.js";
-import { getDrizzle } from "@gridscout/db";
+import { getDrizzle } from "@gridscout/db/sqlite";
 import { RedisCache } from "@gridscout/cache";
 import { ResultsService } from "./services/results.js";
 import { ConstructorService } from "./services/constructor.js";

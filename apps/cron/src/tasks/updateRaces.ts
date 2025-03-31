@@ -1,5 +1,5 @@
 import CronJob from "../structures/cronJob.js";
-import { getDrizzle } from "@gridscout/db";
+import { getDrizzle } from "@gridscout/db/sqlite";
 import { race, circuit, grand_prix } from "@gridscout/db/sqlite/schema";
 import { meilisearch } from "@gridscout/search";
 import { eq } from "drizzle-orm";

@@ -257,9 +257,9 @@ export default new CronJob(
       );
 
       if (upcomingRaces.length === 0) {
-        logger.info(
-          "No races within the reminder window, skipping notification checks.",
-        );
+        // logger.info(
+        //   "No races within the reminder window, skipping notification checks.",
+        // );
         return;
       }
 

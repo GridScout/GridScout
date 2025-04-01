@@ -1,5 +1,9 @@
-import { Registry, Counter, Gauge, Histogram } from "prom-client";
 import logger from "@gridscout/logger";
+import { guildReminderTypes, guilds } from "@gridscout/db/pg/schema";
+import db from "@gridscout/db/pg";
+
+import { Registry, Counter, Gauge, Histogram } from "prom-client";
+import { count, eq, gt } from "drizzle-orm";
 import os from "node:os";
 import { Client } from "discord.js";
 
@@ -81,6 +85,12 @@ export const interactionResponseTime = new Histogram({
   registers: [register],
 });
 
+export const notificationsEnabled = new Gauge({
+  name: "discord_notifications_enabled_count",
+  help: "Number of guilds with notifications enabled",
+  registers: [register],
+});
+
 export async function updateBotMetrics(client: Client) {
   try {
     // Update guild count
@@ -98,12 +108,32 @@ export async function updateBotMetrics(client: Client) {
       logger.warn("Guild cache not available");
     }
 
+    // Update notifications enabled count
+    // Query for guilds that have at least one notification enabled
+    const guildData = await db
+      .select({
+        guild: guilds,
+        enabledRemindersCount: count(guildReminderTypes.reminderTypeId),
+      })
+      .from(guilds)
+      .leftJoin(guildReminderTypes, eq(guilds.id, guildReminderTypes.guildId))
+      .groupBy(
+        guilds.id,
+        guilds.notificationsChannelId,
+        guilds.reminderMinutes,
+        guilds.reminderMentionEveryone,
+      )
+      .having(gt(count(guildReminderTypes.reminderTypeId), 0));
+
+    notificationsEnabled.set(guildData.length);
+
     // Update ws latency
     if (client.ws && client.ws.ping && !isNaN(client.ws.ping)) {
       websocketLatency.set(client.ws.ping);
     }
   } catch (error) {
-    logger.error("Error updating bot metrics", { error });
+    logger.error("Error updating bot metrics");
+    logger.error(error);
   }
 }
 
@@ -146,7 +176,8 @@ export function startMetricsServer(port?: string) {
     logger.info(`Metrics server listening on port ${port}`);
     return server;
   } catch (error) {
-    logger.error("Failed to start metrics server", { error });
+    logger.error("Failed to start metrics server");
+    logger.error(error);
   }
 }
 

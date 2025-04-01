@@ -148,7 +148,8 @@ class MeilisearchClient {
       await index.updateSearchableAttributes(["id", "name", "country", "team"]);
       logger.info(`Driver documents updated with task ID: ${response.taskUid}`);
     } catch (error) {
-      logger.error(`Error updating driver documents: ${error}`);
+      logger.error("Error updating driver documents");
+      logger.error(error);
     }
   }
 
@@ -174,7 +175,8 @@ class MeilisearchClient {
       ]);
       logger.info(`Race documents updated with task ID: ${response.taskUid}`);
     } catch (error) {
-      logger.error(`Error updating race documents: ${error}`);
+      logger.error("Error updating race documents");
+      logger.error(error);
     }
   }
 
@@ -198,7 +200,8 @@ class MeilisearchClient {
         `Constructor documents updated with task ID: ${response.taskUid}`,
       );
     } catch (error) {
-      logger.error(`Error updating constructor documents: ${error}`);
+      logger.error("Error updating constructor documents");
+      logger.error(error);
     }
   }
 
@@ -239,7 +242,8 @@ class MeilisearchClient {
       const index = this.client.index(indexName);
       await index.deleteAllDocuments();
     } catch (error) {
-      logger.error(`Error deleting all documents: ${error}`);
+      logger.error("Error deleting all documents");
+      logger.error(error);
     }
   }
 
@@ -252,7 +256,8 @@ class MeilisearchClient {
       const index = this.client.index(this.raceIndexName);
       await index.deleteAllDocuments();
     } catch (error) {
-      logger.error(`Error deleting all race documents: ${error}`);
+      logger.error("Error deleting all race documents");
+      logger.error(error);
     }
   }
 }

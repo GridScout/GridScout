@@ -47,11 +47,8 @@ class Logger {
     this.logger.warn(message);
   }
 
-  public error(message: string, errObject?: any): void {
+  public error(message: unknown): void {
     this.logger.error(message);
-    if (errObject) {
-      this.logger.error(errObject);
-    }
   }
 
   public debug(message: string): void {

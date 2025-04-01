@@ -46,11 +46,13 @@ if (env.SENTRY_DSN) {
 
 // Prevent crash on error
 process.on("unhandledRejection", (error) => {
-  logger.error("Unhandled rejection", { error });
+  logger.error("Unhandled rejection");
+  logger.error(error);
   Sentry.captureException(error);
 });
 
 process.on("uncaughtException", (error) => {
-  logger.error("Uncaught exception", { error });
+  logger.error("Uncaught exception");
+  logger.error(error);
   Sentry.captureException(error);
 });

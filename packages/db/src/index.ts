@@ -35,7 +35,8 @@ async function refreshConnection() {
 
       logger.debug("Database connection refreshed successfully.");
     } catch (error) {
-      logger.error("Failed to refresh database connection:", error);
+      logger.error("Failed to refresh database connection");
+      logger.error(error);
       logger.warn(
         "Keeping the existing database connection to avoid breaking the app.",
       );

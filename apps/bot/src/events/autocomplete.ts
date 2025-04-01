@@ -29,7 +29,8 @@ export default class AutocompleteInteractionEvent extends Event {
         await (command as SlashCommand).handleAutocomplete(interaction);
         return;
       } catch (error) {
-        logger.error(`Error handling autocomplete for ${commandName}:`, error);
+        logger.error(`Error handling autocomplete for ${commandName}`);
+        logger.error(error);
         await interaction.respond([]);
         return;
       }

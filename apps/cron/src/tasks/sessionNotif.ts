@@ -159,9 +159,9 @@ async function sendDiscordNotification(notification: any) {
       return sendDiscordNotification(notification);
     }
     logger.error(
-      `Error sending notification for guild ${notification.guildId}:`,
-      error,
+      `Error sending notification for guild ${notification.guildId}`,
     );
+    logger.error(error);
   }
 }
 
@@ -364,7 +364,8 @@ export default new CronJob(
             ),
           );
       } catch (error) {
-        logger.error("Error fetching existing notifications:", error);
+        logger.error("Error fetching existing notifications");
+        logger.error(error);
       }
 
       const existingSet = new Set(
@@ -410,16 +411,17 @@ export default new CronJob(
             });
           } catch (error) {
             logger.error(
-              `Error recording notification for guild ${notification.guildId}:`,
-              error,
+              `Error recording notification for guild ${notification.guildId}`,
             );
+            logger.error(error);
           }
 
           await wait(250);
         }
       }
     } catch (error) {
-      logger.error("Error in SessionNotifications job:", error);
+      logger.error("Error in SessionNotifications job");
+      logger.error(error);
     } finally {
       isJobRunning = false;
     }

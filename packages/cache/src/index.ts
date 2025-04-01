@@ -19,7 +19,8 @@ export class RedisCache {
     });
 
     this.client.on("error", (err) => {
-      logger.error("Redis connection error:", err);
+      logger.error("Redis connection error");
+      logger.error(err);
     });
   }
 
@@ -32,7 +33,8 @@ export class RedisCache {
     try {
       return await this.client.get(key);
     } catch (error) {
-      logger.error(`Error getting key "${key}" from Redis:`, error);
+      logger.error(`Error getting key "${key}" from Redis`);
+      logger.error(error);
       return null;
     }
   }
@@ -53,7 +55,8 @@ export class RedisCache {
       }
       return true;
     } catch (error) {
-      logger.error(`Error setting key "${key}" in Redis:`, error);
+      logger.error(`Error setting key "${key}" in Redis`);
+      logger.error(error);
       return false;
     }
   }

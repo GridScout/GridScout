@@ -19,6 +19,7 @@ export async function seedReminderTypes() {
 
     logger.debug("Database seeded with reminder types");
   } catch (error) {
-    logger.error("Error seeding database:", error);
+    logger.error("Error seeding database");
+    logger.error(error);
   }
 }

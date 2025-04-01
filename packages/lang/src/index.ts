@@ -18,7 +18,8 @@ i18next.use(Backend).init(
   },
   (err) => {
     if (err) {
-      logger.error("Error loading i18next:", err);
+      logger.error("Error loading i18next");
+      logger.error(err);
     } else {
       logger.debug("i18next loaded successfully");
     }

@@ -84,8 +84,8 @@ export default class ChatInteractionEvent extends Event {
         } catch (error) {
           logger.error(
             `Error executing command ${commandName} by ${interaction.user.username}`,
-            error,
           );
+          logger.error(error);
 
           // Mark the span as errored
           span.setStatus({

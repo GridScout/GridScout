@@ -42,10 +42,12 @@ async function runMigrations() {
           await seedReminderTypes();
         }
       } catch (seedError) {
-        logger.error("Error checking or applying seed data:", seedError);
+        logger.error("Error checking or applying seed data");
+        logger.error(seedError);
       }
     } else {
-      logger.error("Failed to run PostgreSQL migrations:", error);
+      logger.error("Failed to run PostgreSQL migrations");
+      logger.error(error);
     }
   }
 }

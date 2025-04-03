@@ -35,6 +35,7 @@
         "@gridscout/api": "*",
         "@gridscout/db": "*",
         "@gridscout/env": "*",
+        "@gridscout/lang": "*",
         "@gridscout/logger": "*",
         "@gridscout/search": "*",
         "@gridscout/utils": "*",

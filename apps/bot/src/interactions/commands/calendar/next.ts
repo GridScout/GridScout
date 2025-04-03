@@ -14,6 +14,8 @@ import {
   ButtonInteraction,
   MessageFlags,
   Locale,
+  InteractionContextType,
+  ApplicationIntegrationType,
 } from "discord.js";
 
 const api = new API();
@@ -265,6 +267,15 @@ export default class Command extends SlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
+      .setContexts([
+        InteractionContextType.BotDM,
+        InteractionContextType.Guild,
+        InteractionContextType.PrivateChannel,
+      ])
+      .setIntegrationTypes([
+        ApplicationIntegrationType.GuildInstall,
+        ApplicationIntegrationType.UserInstall,
+      ])
       .toJSON();
   }
 }

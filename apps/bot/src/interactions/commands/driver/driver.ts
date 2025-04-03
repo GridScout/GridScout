@@ -12,6 +12,8 @@ import {
   type ChatInputCommandInteraction,
   type AutocompleteInteraction,
   type Locale,
+  ApplicationIntegrationType,
+  InteractionContextType,
 } from "discord.js";
 
 const api = new API();
@@ -135,20 +137,6 @@ export default class Command extends SlashCommand {
     await interaction.respond(options);
   }
 
-  override async build() {
-    return new SlashCommandBuilder()
-      .setName(this.name)
-      .setDescription(this.description)
-      .addStringOption((option) =>
-        option
-          .setName("driver")
-          .setDescription("The driver to view information on")
-          .setAutocomplete(true)
-          .setRequired(true),
-      )
-      .toJSON();
-  }
-
   private generateLastRacesANSI(
     races: Driver["recentRaces"],
     locale: Locale,
@@ -203,5 +191,28 @@ export default class Command extends SlashCommand {
         year: "numeric",
       })
       .replace(day.toString(), ordinalDay);
+  }
+
+  override async build() {
+    return new SlashCommandBuilder()
+      .setName(this.name)
+      .setDescription(this.description)
+      .setContexts([
+        InteractionContextType.BotDM,
+        InteractionContextType.Guild,
+        InteractionContextType.PrivateChannel,
+      ])
+      .setIntegrationTypes([
+        ApplicationIntegrationType.GuildInstall,
+        ApplicationIntegrationType.UserInstall,
+      ])
+      .addStringOption((option) =>
+        option
+          .setName("driver")
+          .setDescription("The driver to view information on")
+          .setAutocomplete(true)
+          .setRequired(true),
+      )
+      .toJSON();
   }
 }

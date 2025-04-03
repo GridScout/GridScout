@@ -10,6 +10,8 @@ import {
   Locale,
   SlashCommandBuilder,
   AutocompleteInteraction,
+  ApplicationIntegrationType,
+  InteractionContextType,
 } from "discord.js";
 import { meilisearch } from "@gridscout/search";
 
@@ -178,6 +180,15 @@ export default class Command extends SlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
+      .setContexts([
+        InteractionContextType.BotDM,
+        InteractionContextType.Guild,
+        InteractionContextType.PrivateChannel,
+      ])
+      .setIntegrationTypes([
+        ApplicationIntegrationType.GuildInstall,
+        ApplicationIntegrationType.UserInstall,
+      ])
       .addIntegerOption((option) =>
         option
           .setName("season")

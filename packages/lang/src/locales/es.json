@@ -96,7 +96,7 @@
     "title": "Temporada {{season}} {{race}} — {{session}}",
     "author": "Resultados de la Carrera",
     "error": "**¡Error!** No se pudieron recuperar los datos de resultados para la carrera seleccionada.",
-    "noSessions": "**¡Error!** No hay sesiones disponibles para esta carrera.",
+    "noSessions": "**Error!** No data available for this race.\n\nOur data source typically updates data on the Sunday of each race week.",
     "selectSession": "Selecciona una sesión",
     "defaultLabel": "Resultados",
     "points": " ({{count}} punto)",

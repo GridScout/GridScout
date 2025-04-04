@@ -249,7 +249,9 @@ export default class Command extends SlashCommand {
           "";
 
         const pointsInfo =
-          sessionType === "RACE_RESULT" && result.points > 0
+          (sessionType === "RACE_RESULT" ||
+            sessionType === "SPRINT_RACE_RESULT") &&
+          result.points > 0
             ? t("results.points", { count: result.points })
             : "";
 
@@ -313,8 +315,8 @@ export default class Command extends SlashCommand {
     const keys = config.timingKeys;
     const sessions = result.sessions?.[0] || {};
 
-    // For sprint races, show time for P1 and gap for others
-    if (sessionType === "SPRINT_RACE_RESULT") {
+    // For sprint races and grand prix, show time for P1 and gap for others
+    if (sessionType === "SPRINT_RACE_RESULT" || sessionType === "RACE_RESULT") {
       if (index === 0 && keys.length >= 2) {
         return sessions[keys[1] as keyof typeof sessions] || "";
       } else {

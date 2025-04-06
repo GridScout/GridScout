@@ -7,6 +7,7 @@ export default createEnv({
 
     DISCORD_TOKEN: z.string().min(1),
     DEV_SERVER_ID: z.string(),
+    GUILD_ID: z.string().min(1),
 
     SENTRY_DSN: z.string().optional(),
 

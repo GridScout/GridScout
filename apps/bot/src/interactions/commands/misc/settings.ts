@@ -1,6 +1,7 @@
 import SlashCommand from "../../../structures/slashCommand.js";
 
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
+import env from "@gridscout/env";
 import db from "@gridscout/db/pg";
 import {
   guilds,
@@ -351,8 +352,10 @@ export default class Command extends SlashCommand {
       });
     }
 
-    const newsChannel = (await interaction.guild?.channels.fetch(
-      process.env.NEWS_CHANNEL_ID!,
+    const mainGuild = interaction.client.guilds.cache.get(env.GUILD_ID);
+
+    const newsChannel = (await mainGuild?.channels.fetch(
+      env.NEWS_CHANNEL_ID!,
     )) as NewsChannel;
 
     if (!newsChannel) {

@@ -22,6 +22,8 @@ export default createEnv({
     GITHUB_API_KEY: z.string().min(1),
 
     METRICS_PORT: z.string().optional(),
+
+    NEWS_CHANNEL_ID: z.string().min(1),
   },
 
   /**

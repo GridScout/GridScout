@@ -23,6 +23,7 @@ import {
   ButtonInteraction,
   MessageFlags,
   PermissionsBitField,
+  NewsChannel,
 } from "discord.js";
 import { asc, eq } from "drizzle-orm";
 
@@ -46,6 +47,9 @@ export default class Command extends SlashCommand {
     switch (subcommand) {
       case "notifications":
         await this.handleNotifications(interaction, t);
+        break;
+      case "motorsportcom":
+        await this.handleMotorsportCom(interaction, t);
         break;
     }
   }
@@ -335,6 +339,67 @@ export default class Command extends SlashCommand {
     buttonCollector.on("end", handleCollectorsEnd);
   }
 
+  private async handleMotorsportCom(
+    interaction: ChatInputCommandInteraction,
+    t: (key: string, options?: object) => string,
+  ) {
+    const channel = interaction.options.getChannel("channel") as Channel;
+
+    if (!channel || !channel.isTextBased()) {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("settings.notifications.invalidChannel"))],
+      });
+    }
+
+    const newsChannel = (await interaction.guild?.channels.fetch(
+      process.env.NEWS_CHANNEL_ID!,
+    )) as NewsChannel;
+
+    if (!newsChannel) {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("genericError"))],
+      });
+    }
+
+    await newsChannel
+      .addFollower(
+        channel.id,
+        `Requested by ${interaction.user.toString()} (${interaction.user.id})`,
+      )
+      .then(() => {
+        interaction.editReply({
+          embeds: [
+            primaryEmbed(
+              "",
+              t("settings.motorsportcom.success", {
+                channel: channel.toString(),
+              }),
+            ),
+          ],
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.code === 50001 || err.code === 50013) {
+          interaction.editReply({
+            embeds: [
+              errorEmbed(
+                "",
+                t("settings.motorsportcom.missingPermissions", {
+                  permission: "Manage Webhooks",
+                  channel: channel.toString(),
+                }),
+              ),
+            ],
+          });
+        } else {
+          interaction.editReply({
+            embeds: [errorEmbed("", t("genericError"))],
+          });
+        }
+      });
+  }
+
   override async build() {
     return new SlashCommandBuilder()
       .setName(this.name)
@@ -348,6 +413,19 @@ export default class Command extends SlashCommand {
             option
               .setName("channel")
               .setDescription("The channel to send reminders in")
+              .setRequired(true),
+          ),
+      )
+      .addSubcommand((subcommand) =>
+        subcommand
+          .setName("motorsportcom")
+          .setDescription("Enable Motorsport.com news notifications")
+          .addChannelOption((option) =>
+            option
+              .setName("channel")
+              .setDescription(
+                "The channel to send Motorsport.com news notifications in",
+              )
               .setRequired(true),
           ),
       )

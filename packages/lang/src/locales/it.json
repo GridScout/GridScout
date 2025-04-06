@@ -17,7 +17,8 @@
     }
   },
   "permissions": {
-    "manageGuild": "Gestisci Server"
+    "manageGuild": "Gestisci Server",
+    "manageWebhooks": "Manage Webhooks"
   },
   "genericError": "**Errore!** Si è verificato un errore durante l'elaborazione della tua richiesta, riprova più tardi.\nSe il problema persiste, contatta il supporto con il codice di errore sottostante.",
   "errorId": "Codice: {{id}}",
@@ -116,6 +117,11 @@
         "enabled": "Clicca per disabilitare @everyone",
         "disabled": "Clicca per abilitare @everyone"
       }
+    },
+    "motorsportcom": {
+      "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
+      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}."
     }
   }
 }

@@ -91,6 +91,13 @@ export default class Command extends SlashCommand {
       });
     }
 
+    // Check if the race is in the future
+    if (selectedRace && new Date(selectedRace.date) > new Date()) {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("results.future"))],
+      });
+    }
+
     // Get available session types for this race
     const availableSessionsResult =
       await api.results.getRaceEvents(raceIdNumber);

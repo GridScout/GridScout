@@ -98,6 +98,7 @@
     "author": "Race Results",
     "error": "**Error!** Cannot retrieve results data for the chosen race.",
     "noSessions": "**Error!** No data available yet for this race.\n\nOur data source typically updates data on the Sunday evening of each race week.",
+    "future": "**Error!** The selected race has not yet taken place.",
     "selectSession": "Select a session",
     "defaultLabel": "Results",
     "points": " ({{count}} point)",

@@ -17,7 +17,8 @@
     }
   },
   "permissions": {
-    "manageGuild": "Gérer le Serveur"
+    "manageGuild": "Gérer le Serveur",
+    "manageWebhooks": "Manage Webhooks"
   },
   "genericError": "**Erreur !** Une erreur est survenue lors du traitement de votre demande, veuillez réessayer plus tard.\nSi le problème persiste, contactez le support avec le code d'erreur ci-dessous.",
   "errorId": "Code : {{id}}",
@@ -96,7 +97,7 @@
     "title": "Saison {{season}} {{race}} — {{session}}",
     "author": "Résultats de la Course",
     "error": "**Erreur !** Impossible de récupérer les données de résultats pour la course sélectionnée.",
-    "noSessions": "**Error!** No data available for this race.\n\nOur data source typically updates data on the Sunday of each race week.",
+    "noSessions": "**Error!** No data available yet for this race.\n\nOur data source typically updates data on the Sunday evening of each race week.",
     "selectSession": "Sélectionnez une session",
     "defaultLabel": "Résultats",
     "points": " ({{count}} point)",
@@ -116,6 +117,11 @@
         "enabled": "Cliquez pour désactiver @everyone",
         "disabled": "Cliquez pour activer @everyone"
       }
+    },
+    "motorsportcom": {
+      "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
+      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}."
     }
   }
 }

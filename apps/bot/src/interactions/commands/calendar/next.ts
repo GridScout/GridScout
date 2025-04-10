@@ -81,7 +81,7 @@ export default class Command extends SlashCommand {
     // Create a collector for button interactions
     const collector = message.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      time: 900000, // 15 minutes collector (token expires after 15 min)
+      time: 1000 * 60 * 14, // 14 minutes
     });
 
     collector.on("collect", async (i: ButtonInteraction) => {

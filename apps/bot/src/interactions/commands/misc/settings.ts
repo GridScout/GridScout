@@ -25,9 +25,10 @@ import {
   MessageFlags,
   PermissionsBitField,
   NewsChannel,
+  ChannelType,
 } from "discord.js";
 import { asc, eq } from "drizzle-orm";
-
+import * as Sentry from "@sentry/bun";
 export default class Command extends SlashCommand {
   constructor() {
     super("settings", "Configure GridScout for your server", {
@@ -352,6 +353,15 @@ export default class Command extends SlashCommand {
       });
     }
 
+    // If channel is an announcement channel, return an error
+    if (channel.type === ChannelType.GuildAnnouncement) {
+      return interaction.editReply({
+        embeds: [
+          errorEmbed("", t("settings.motorsportcom.announcementChannel")),
+        ],
+      });
+    }
+
     const mainGuild = interaction.client.guilds.cache.get(env.GUILD_ID);
 
     const newsChannel = (await mainGuild?.channels.fetch(
@@ -396,6 +406,7 @@ export default class Command extends SlashCommand {
             ],
           });
         } else {
+          Sentry.captureException(err);
           interaction.editReply({
             embeds: [errorEmbed("", t("genericError"))],
           });

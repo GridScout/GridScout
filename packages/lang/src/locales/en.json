@@ -121,7 +121,8 @@
     "motorsportcom": {
       "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
       "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
-      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}."
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
+      "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }
   }
 }

@@ -228,7 +228,9 @@ export default class Command extends SlashCommand {
         ).getTime();
 
         // Add the event to the list
-        events.push(`${session.label}: <t:${date / 1000}:f>`);
+        events.push(
+          `${session.label}: <t:${date / 1000}:f> (<t:${date / 1000}:R>)`,
+        );
       }
     }
 

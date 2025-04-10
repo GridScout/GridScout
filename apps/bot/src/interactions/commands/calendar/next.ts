@@ -65,6 +65,7 @@ export default class Command extends SlashCommand {
       t,
       currentIndex,
       currentSeasonRaces.length,
+      nextRaceIndex,
     );
     const initialRow = this.createNavigationRow(
       currentIndex,
@@ -119,6 +120,7 @@ export default class Command extends SlashCommand {
         t,
         newIndex,
         currentSeasonRaces.length,
+        nextRaceIndex,
       );
       const row = this.createNavigationRow(
         newIndex,
@@ -157,6 +159,7 @@ export default class Command extends SlashCommand {
     t: (key: string, options?: Record<string, any>) => string,
     currentIndex = 0,
     totalRaces = 0,
+    nextRaceIndex = -1,
   ) {
     // if no race found
     if (!race) {
@@ -164,6 +167,9 @@ export default class Command extends SlashCommand {
     }
 
     const date = new Date(`${race.grandPrix.date}T${race.grandPrix.time}`);
+
+    const isNextUpcomingRace =
+      nextRaceIndex >= 0 && currentIndex === nextRaceIndex;
 
     // Get the country emoji
     const countryEmoji =
@@ -223,14 +229,18 @@ export default class Command extends SlashCommand {
         "date" in raceSession &&
         "time" in raceSession
       ) {
-        const date = new Date(
+        const sessionDate = new Date(
           `${raceSession.date}T${raceSession.time}`,
         ).getTime();
 
         // Add the event to the list
-        events.push(
-          `${session.label}: <t:${date / 1000}:f> (<t:${date / 1000}:R>)`,
-        );
+        if (isNextUpcomingRace) {
+          events.push(
+            `${session.label}: <t:${sessionDate / 1000}:f> (<t:${sessionDate / 1000}:R>)`,
+          );
+        } else {
+          events.push(`${session.label}: <t:${sessionDate / 1000}:f>`);
+        }
       }
     }
 

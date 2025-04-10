@@ -163,7 +163,7 @@ export default class Command extends SlashCommand {
     // Create collector for session selection
     const collector = response.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
-      time: 900000, // 15mins because token expires after 15m
+      time: 1000 * 60 * 14, // 14 minutes
     });
 
     collector.on("collect", async (i: StringSelectMenuInteraction) => {

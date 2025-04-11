@@ -97,7 +97,8 @@
     "title": "Stagione {{season}} {{race}} — {{session}}",
     "author": "Risultati Gara",
     "error": "**Errore!** Impossibile recuperare i dati dei risultati per la gara selezionata.",
-    "noSessions": "**Error!** No data available yet for this race.\n\nOur data source typically updates data on the Sunday evening of each race week.",
+    "noSessions": "**Errore!** Nessun dato disponibile per questa gara.\n\nLa nostra fonte di dati aggiorna solitamente le informazioni la domenica della settimana di gara.",
+    "future": "**Error!** The selected race has not yet taken place.",
     "selectSession": "Seleziona una sessione",
     "defaultLabel": "Risultati",
     "points": " ({{count}} punto)",
@@ -121,7 +122,8 @@
     "motorsportcom": {
       "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
       "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
-      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}."
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
+      "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }
   }
 }

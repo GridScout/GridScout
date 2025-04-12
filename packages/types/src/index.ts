@@ -22,6 +22,8 @@ interface DriverStatistics {
   worldChampionships: number;
   highestRaceFinish: number;
   highestGridPosition: number;
+  highestRaceFinishCount: number;
+  highestGridPositionCount: number;
   racesEntered: number;
   podiums: number;
   points: number;

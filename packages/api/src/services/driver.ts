@@ -12,7 +12,7 @@ import {
 } from "@gridscout/db/sqlite/schema";
 
 import { ok, err, type Result } from "@sapphire/result";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 export class DriverService {
   constructor(private readonly client: API) {}
@@ -47,6 +47,10 @@ export class DriverService {
           points: driver.total_points,
           fastestLaps: driver.total_fastest_laps,
           grandSlams: driver.total_grand_slams,
+          highestRaceFinishCount: sql<number>`0`.as("highestRaceFinishCount"),
+          highestGridPositionCount: sql<number>`0`.as(
+            "highestGridPositionCount",
+          ),
         },
       })
       .from(driver)
@@ -56,6 +60,57 @@ export class DriverService {
 
     // If there was no data found, driver is not in database, return err
     if (driverData.length == 0) return err("No driver found");
+
+    const driverResult = driverData[0];
+    if (!driverResult) return err("Driver data processing error");
+
+    // Calculate how many times the driver achieved their best race result
+    if (driverResult.statistics.highestRaceFinish !== null) {
+      const bestRaceResultCount = await db
+        .select({
+          count: sql<number>`count(*)`,
+        })
+        .from(race_data)
+        .where(
+          and(
+            eq(race_data.driver_id, idSanitised),
+            eq(race_data.type, "RACE_RESULT"),
+            eq(
+              race_data.position_text,
+              driverResult.statistics.highestRaceFinish.toString(),
+            ),
+          ),
+        );
+
+      if (bestRaceResultCount[0]) {
+        driverResult.statistics.highestRaceFinishCount =
+          bestRaceResultCount[0].count;
+      }
+    }
+
+    // Calculate how many times the driver achieved their best grid position
+    if (driverResult.statistics.highestGridPosition !== null) {
+      const bestGridPositionCount = await db
+        .select({
+          count: sql<number>`count(*)`,
+        })
+        .from(race_data)
+        .where(
+          and(
+            eq(race_data.driver_id, idSanitised),
+            eq(race_data.type, "QUALIFYING_RESULT"),
+            eq(
+              race_data.position_text,
+              driverResult.statistics.highestGridPosition.toString(),
+            ),
+          ),
+        );
+
+      if (bestGridPositionCount[0]) {
+        driverResult.statistics.highestGridPositionCount =
+          bestGridPositionCount[0].count;
+      }
+    }
 
     // Fetch the 3 most recent races for the driver
     const recentRaces = await db
@@ -99,10 +154,10 @@ export class DriverService {
       .orderBy(desc(season_entrant_driver.year))
       .limit(1);
 
-    const image = await this.getWikipediaHeadshot(driverData[0]?.name!);
+    const image = await this.getWikipediaHeadshot(driverResult.name);
 
     const combinedData = {
-      ...driverData[0],
+      ...driverResult,
       image: image.unwrapOr(null),
       team: latestConstructor[0],
       recentRaces,

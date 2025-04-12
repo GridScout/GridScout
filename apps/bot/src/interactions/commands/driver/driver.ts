@@ -89,8 +89,8 @@ export default class Command extends SlashCommand {
         name: t("driver.statistics"),
         value:
           `${t("driver.wdc", { amount: driverInfo.statistics.worldChampionships })}\n` +
-          `${t("driver.highestRaceFinish", { position: driverInfo.statistics.highestRaceFinish || 0 })}\n` +
-          `${t("driver.highestGridPosition", { position: driverInfo.statistics.highestGridPosition || 0 })}\n` +
+          `${t("driver.highestRaceFinish", { position: driverInfo.statistics.highestRaceFinish || 0, count: driverInfo.statistics.highestRaceFinishCount })}\n` +
+          `${t("driver.highestGridPosition", { position: driverInfo.statistics.highestGridPosition || 0, count: driverInfo.statistics.highestGridPositionCount })}\n` +
           `${t("driver.racesEntered", { amount: driverInfo.statistics.racesEntered })}\n`,
         inline: true,
       },

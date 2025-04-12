@@ -55,7 +55,7 @@ export default class ReadyEvent extends Event {
           )[0];
 
         if (upcomingGp) {
-          const daysRemaining = Math.floor(
+          const daysRemaining = Math.ceil(
             (new Date(upcomingGp.grandPrix.date).getTime() - now.getTime()) /
               (1000 * 60 * 60 * 24),
           );

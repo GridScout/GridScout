@@ -179,7 +179,7 @@ export default class Command extends SlashCommand {
                   )
                   .setDescription(
                     t(`settings.notifications.reminderTimeDescription`, {
-                      minutes: currentReminderMinutes,
+                      minutes: minutes,
                     }),
                   )
                   .setValue(minutes.toString())

@@ -45,8 +45,8 @@
     "nationality": "**Nationalité** : {{flag}} {{nationality}}",
     "statistics": "Statistiques",
     "wdc": "**Championnats du Monde** : {{amount}}",
-    "highestRaceFinish": "**Meilleur Résultat en Course** : {{position}}",
-    "highestGridPosition": "**Meilleure Position sur la Grille** : {{position}}",
+    "highestRaceFinish": "**Highest Race Finish**: {{position}} (x{{count}})",
+    "highestGridPosition": "**Highest Grid Position**: {{position}} (x{{count}})",
     "racesEntered": "**Courses Participées** : {{amount}}",
     "podiums": "**Podiums** : {{amount}}",
     "points": "**Points** : {{amount}}",
@@ -97,7 +97,8 @@
     "title": "Saison {{season}} {{race}} — {{session}}",
     "author": "Résultats de la Course",
     "error": "**Erreur !** Impossible de récupérer les données de résultats pour la course sélectionnée.",
-    "noSessions": "**Error!** No data available yet for this race.\n\nOur data source typically updates data on the Sunday evening of each race week.",
+    "noSessions": "**Error!** No data available for this race.\n\nOur data source typically updates data on the Sunday of each race week.",
+    "future": "**Error!** The selected race has not yet taken place.",
     "selectSession": "Sélectionnez une session",
     "defaultLabel": "Résultats",
     "points": " ({{count}} point)",
@@ -121,7 +122,8 @@
     "motorsportcom": {
       "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
       "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
-      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}."
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
+      "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }
   }
 }

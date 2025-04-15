@@ -43,21 +43,25 @@ export default class Command extends SlashCommand {
     }
 
     const calendarUnwrapped = calendar.unwrap();
+    const now = new Date();
 
     // Get current season races
-    const currentYear = new Date().getFullYear();
+    const currentYear = now.getFullYear();
     const currentSeasonRaces = calendarUnwrapped.races.filter(
       (gp) => new Date(gp.grandPrix.date).getFullYear() === currentYear,
     );
 
     // Find the upcoming event
-    const nextRaceIndex = currentSeasonRaces.findIndex(
-      (gp) => new Date(gp.grandPrix.date) > new Date(),
-    );
+    const upcomingIndex = currentSeasonRaces.findIndex((race) => {
+      const raceDate = new Date(
+        `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`,
+      );
+      return raceDate >= now;
+    });
 
     // If no upcoming events, show the last race of the season
     let currentIndex =
-      nextRaceIndex === -1 ? currentSeasonRaces.length - 1 : nextRaceIndex;
+      upcomingIndex === -1 ? currentSeasonRaces.length - 1 : upcomingIndex;
 
     // Initial race display
     const initialEmbed = this.createRaceEmbed(
@@ -65,7 +69,7 @@ export default class Command extends SlashCommand {
       t,
       currentIndex,
       currentSeasonRaces.length,
-      nextRaceIndex,
+      upcomingIndex,
     );
     const initialRow = this.createNavigationRow(
       currentIndex,
@@ -120,7 +124,7 @@ export default class Command extends SlashCommand {
         t,
         newIndex,
         currentSeasonRaces.length,
-        nextRaceIndex,
+        upcomingIndex,
       );
       const row = this.createNavigationRow(
         newIndex,
@@ -166,7 +170,9 @@ export default class Command extends SlashCommand {
       return errorEmbed("", t("next.error"));
     }
 
-    const date = new Date(`${race.grandPrix.date}T${race.grandPrix.time}`);
+    const date = new Date(
+      `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`,
+    );
 
     const isNextUpcomingRace =
       nextRaceIndex >= 0 && currentIndex === nextRaceIndex;
@@ -230,7 +236,7 @@ export default class Command extends SlashCommand {
         "time" in raceSession
       ) {
         const sessionDate = new Date(
-          `${raceSession.date}T${raceSession.time}`,
+          `${raceSession.date}T${raceSession.time || "00:00:00Z"}`,
         ).getTime();
 
         // Add the event to the list

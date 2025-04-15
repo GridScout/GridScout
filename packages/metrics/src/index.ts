@@ -116,6 +116,8 @@ export async function updateBotMetrics(client: Client) {
 
     // Update user install count
     if (client.application) {
+      await client.application.fetch();
+
       const userInstallSize = client.application.approximateUserInstallCount;
       if (userInstallSize) {
         userInstallCount.set(userInstallSize);

@@ -43,7 +43,9 @@ export default class Command extends SlashCommand {
     }
 
     const calendarUnwrapped = calendar.unwrap();
+    // Get date in UTC
     const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
     // Get current season races
     const currentYear = now.getFullYear();

@@ -71,7 +71,9 @@ export default class Command extends SlashCommand {
     });
 
     // Find the upcoming race
+    // Get date in UTC
     const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     const upcomingIndex = races.findIndex((race) => {
       const raceDate = new Date(
         `${race.grandPrix.date}T${race.grandPrix.time || "00:00:00Z"}`,

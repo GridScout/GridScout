@@ -2,6 +2,7 @@ import SlashCommand from "../../../structures/slashCommand.js";
 
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
+import teamColours from "@gridscout/lang/emojis/colours" with { type: "json" };
 import { API } from "@gridscout/api";
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { meilisearch } from "@gridscout/search";
@@ -10,6 +11,7 @@ import {
   SlashCommandBuilder,
   type ChatInputCommandInteraction,
   type AutocompleteInteraction,
+  type ColorResolvable,
   Locale,
   ApplicationIntegrationType,
   InteractionContextType,
@@ -68,6 +70,12 @@ export default class Command extends SlashCommand {
       `${t("constructor.name", { name: team.fullName })}\n` +
         `${t("constructor.nationality", { flag: team.nationality.alpha3 ? countryEmojis[team.nationality.alpha3 as keyof typeof countryEmojis] || "" : "", nationality: team.nationality.demonym || "" })}`,
     );
+
+    // Set team color if available
+    if (team.id && team.id in teamColours) {
+      const teamColor = teamColours[team.id as keyof typeof teamColours];
+      embed.setColor(teamColor as ColorResolvable);
+    }
 
     if (team.currentEngine) {
       embed.addFields({

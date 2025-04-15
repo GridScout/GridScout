@@ -3,6 +3,7 @@ import SlashCommand from "../../../structures/slashCommand.js";
 import type { Driver } from "@gridscout/types";
 import countryEmojis from "@gridscout/lang/emojis/countries" with { type: "json" };
 import constructorEmojis from "@gridscout/lang/emojis/teams" with { type: "json" };
+import teamColours from "@gridscout/lang/emojis/colours" with { type: "json" };
 import { API } from "@gridscout/api";
 import { errorEmbed, primaryEmbed } from "@gridscout/utils";
 import { meilisearch } from "@gridscout/search";
@@ -14,6 +15,7 @@ import {
   type Locale,
   ApplicationIntegrationType,
   InteractionContextType,
+  type ColorResolvable,
 } from "discord.js";
 
 const api = new API();
@@ -66,6 +68,13 @@ export default class Command extends SlashCommand {
       `${driverInfo.name} ${driverInfo.permanentNumber ? `[${driverInfo.permanentNumber}]` : ""}`,
       "",
     );
+
+    // Set team color if available
+    if (driverInfo.team?.id && driverInfo.team.id in teamColours) {
+      const teamColor =
+        teamColours[driverInfo.team.id as keyof typeof teamColours];
+      embed.setColor(teamColor as ColorResolvable);
+    }
 
     const teamId = driverInfo.team.id;
     // Get the team emoji from the team id

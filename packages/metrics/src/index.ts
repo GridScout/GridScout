@@ -17,6 +17,12 @@ export const guildCount = new Gauge({
   registers: [register],
 });
 
+export const userInstallCount = new Gauge({
+  name: "discord_user_install_count",
+  help: "Number of users who have installed the bot",
+  registers: [register],
+});
+
 export const userCount = new Gauge({
   name: "discord_user_count",
   help: "Number of users in all guilds",
@@ -106,6 +112,18 @@ export async function updateBotMetrics(client: Client) {
       userCount.set(userSize);
     } else {
       logger.warn("Guild cache not available");
+    }
+
+    // Update user install count
+    if (client.application) {
+      const userInstallSize = client.application.approximateUserInstallCount;
+      if (userInstallSize) {
+        userInstallCount.set(userInstallSize);
+      } else {
+        logger.warn("User install count not available");
+      }
+    } else {
+      logger.warn("Application not available");
     }
 
     // Update notifications enabled count

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "doppler run -- bun --no-clear-screen --watch ./src/index.ts",
+    "deploy": "doppler run -- bun --no-clear-screen --watch ./src/index.ts -D",
     "build": "tsc",
     "check-types": "tsc --noEmit"
   },

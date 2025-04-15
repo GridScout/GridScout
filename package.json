@@ -11,6 +11,7 @@
     "dev:bot": "turbo run dev --filter bot",
     "dev:cron": "turbo run dev --filter cron",
     "dev:packages": "turbo run dev --filter {./packages/*}",
+    "deploy": "turbo run deploy --filter bot",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"

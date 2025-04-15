@@ -55,13 +55,30 @@ export default class ReadyEvent extends Event {
           )[0];
 
         if (upcomingGp) {
-          const daysRemaining = Math.ceil(
-            (new Date(upcomingGp.grandPrix.date).getTime() - now.getTime()) /
-              (1000 * 60 * 60 * 24),
+          const gpDate = new Date(upcomingGp.grandPrix.date + "T00:00:00Z");
+
+          const timeString = upcomingGp.grandPrix.time || "00:00";
+          const [hours, minutes] = timeString.split(":");
+
+          gpDate.setUTCHours(
+            parseInt(hours || "0", 10),
+            parseInt(minutes || "0", 10),
           );
-          activity = `the ${upcomingGp.name} in ${daysRemaining} day${
-            daysRemaining === 1 ? "" : "s"
-          }`;
+
+          const hoursRemaining = Math.ceil(
+            (gpDate.getTime() - now.getTime()) / (1000 * 60 * 60),
+          );
+
+          if (hoursRemaining < 24) {
+            activity = `the ${upcomingGp.name} in ${hoursRemaining} hour${
+              hoursRemaining === 1 ? "" : "s"
+            }`;
+          } else {
+            const daysRemaining = Math.floor(hoursRemaining / 24);
+            activity = `the ${upcomingGp.name} in ${daysRemaining} day${
+              daysRemaining === 1 ? "" : "s"
+            }`;
+          }
         }
       }
 

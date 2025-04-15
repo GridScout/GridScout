@@ -101,8 +101,8 @@
     "future": "**Error!** The selected race has not yet taken place.",
     "selectSession": "Seleziona una sessione",
     "defaultLabel": "Risultati",
-    "points": " ({{count}} punto)",
-    "points_plural": " ({{count}} punti)",
+    "points_one": " ({{count}} point)",
+    "points_other": " ({{count}} points)",
     "dnf": "DNF ({{reason}})"
   },
   "settings": {

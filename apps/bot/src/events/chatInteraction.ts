@@ -25,6 +25,7 @@ export default class ChatInteractionEvent extends Event {
 
     // Start timer
     const commandName = interaction.commandName;
+    const subCommand = interaction.options.getSubcommand(false);
     const endTimer = metrics.startInteractionTimer(commandName);
 
     // Increment counterr
@@ -68,7 +69,7 @@ export default class ChatInteractionEvent extends Event {
     await Sentry.startSpan(
       {
         op: "command",
-        name: commandName,
+        name: commandName + (subCommand ? ` ${subCommand}` : ""),
         attributes: {
           arguments: JSON.stringify(interaction.options),
           user: interaction.user.username,

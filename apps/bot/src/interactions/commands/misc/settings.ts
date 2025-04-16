@@ -62,15 +62,15 @@ export default class Command extends SlashCommand {
   ) {
     const channel = interaction.options.getChannel("channel") as Channel;
 
-    if (!channel || !channel.isTextBased()) {
+    if (!interaction.guildId) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("settings.notifications.invalidChannel"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 
-    if (!interaction.guildId) {
+    if (!channel || !channel.isTextBased()) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("genericError"))],
+        embeds: [errorEmbed("", t("settings.invalidChannel"))],
       });
     }
 
@@ -347,14 +347,8 @@ export default class Command extends SlashCommand {
   ) {
     const channel = interaction.options.getChannel("channel") as Channel;
 
-    if (!channel || !channel.isTextBased()) {
-      return interaction.editReply({
-        embeds: [errorEmbed("", t("settings.notifications.invalidChannel"))],
-      });
-    }
-
     // If channel is an announcement channel, return an error
-    if (channel.type === ChannelType.GuildAnnouncement) {
+    if (channel.type == ChannelType.GuildAnnouncement) {
       return interaction.editReply({
         embeds: [
           errorEmbed("", t("settings.motorsportcom.announcementChannel")),
@@ -362,7 +356,13 @@ export default class Command extends SlashCommand {
       });
     }
 
-    const mainGuild = interaction.client.guilds.cache.get(env.GUILD_ID);
+    if (channel.type !== ChannelType.GuildText) {
+      return interaction.editReply({
+        embeds: [errorEmbed("", t("settings.invalidChannel"))],
+      });
+    }
+
+    const mainGuild = await interaction.client.guilds.cache.get(env.GUILD_ID);
 
     const newsChannel = (await mainGuild?.channels.fetch(
       env.NEWS_CHANNEL_ID!,
@@ -370,7 +370,7 @@ export default class Command extends SlashCommand {
 
     if (!newsChannel) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("genericError"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 
@@ -392,7 +392,6 @@ export default class Command extends SlashCommand {
         });
       })
       .catch((err) => {
-        console.log(err);
         if (err.code === 50001 || err.code === 50013) {
           interaction.editReply({
             embeds: [
@@ -408,7 +407,7 @@ export default class Command extends SlashCommand {
         } else {
           Sentry.captureException(err);
           interaction.editReply({
-            embeds: [errorEmbed("", t("genericError"))],
+            embeds: [errorEmbed("", t("genericErrorNoId"))],
           });
         }
       });

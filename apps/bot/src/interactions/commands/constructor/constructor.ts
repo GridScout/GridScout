@@ -36,7 +36,7 @@ export default class Command extends SlashCommand {
     // If no constructor ID, return an error
     if (!constructorId) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("genericError"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 

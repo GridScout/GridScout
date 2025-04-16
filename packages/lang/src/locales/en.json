@@ -21,6 +21,7 @@
     "manageWebhooks": "Manage Webhooks"
   },
   "genericError": "**Error!** An error occurred while processing your request, please try again later.\nIf the issue persists, contact support with the error code below.",
+  "genericErrorNoId": "**Error!** An error occurred while processing your request, please try again later.\nIf the issue persists, contact support.",
   "errorId": "Code: {{id}}",
   "notYourInteraction": "This interaction belongs to {{user}}. \nPlease run the `/{{command}}` command to use this feature yourself.",
   "missingPermissions": "**Error!** You are missing the permission: `{{permission}}`.",
@@ -106,8 +107,8 @@
     "dnf": "DNF ({{reason}})"
   },
   "settings": {
+    "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
     "notifications": {
-      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
       "success": "**Success!** Notifications configured in {{channel}}.\n\nSelect which notifications to receive and when using the dropdown menus below.",
       "updated": "**Success!** Settings updated.",
       "typesPlaceholder": "No sessions selected",
@@ -121,7 +122,6 @@
     },
     "motorsportcom": {
       "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
-      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
       "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
       "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }

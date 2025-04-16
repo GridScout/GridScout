@@ -38,7 +38,7 @@ export default class Command extends SlashCommand {
     // if an error occurred, return an error message
     if (calendar.isErr()) {
       return await interaction.editReply({
-        embeds: [errorEmbed("", t("genericError.description"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 

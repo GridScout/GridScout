@@ -39,7 +39,7 @@ export default class Command extends SlashCommand {
     // If no driver empty, return an error
     if (!driver) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("genericError"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 

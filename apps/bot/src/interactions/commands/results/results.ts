@@ -74,7 +74,7 @@ export default class Command extends SlashCommand {
     // If no race ID, return an error
     if (!raceId) {
       return interaction.editReply({
-        embeds: [errorEmbed("", t("genericError"))],
+        embeds: [errorEmbed("", t("genericErrorNoId"))],
       });
     }
 

@@ -114,9 +114,9 @@ export default class ReadyEvent extends Event {
       );
 
       if (env.DOPPLER_ENVIRONMENT === "dev") {
-        const devGuild = client.guilds.cache.get(env.DEV_SERVER_ID);
+        const devGuild = client.guilds.cache.get(env.GUILD_ID);
         if (!devGuild) {
-          logger.error(`Could not find guild with ID ${env.DEV_SERVER_ID}`);
+          logger.error(`Could not find guild with ID ${env.GUILD_ID}`);
           return;
         }
         const existingCommands = await devGuild.commands.fetch();

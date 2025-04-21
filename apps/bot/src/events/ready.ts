@@ -43,42 +43,47 @@ export default class ReadyEvent extends Event {
       const now = new Date();
       let activity = "the next Grand Prix 🏆";
 
-      // Find the next upcoming Grand Prix
-      if (!nextGrandPrix.isErr()) {
-        const upcomingGp = nextGrandPrix
-          .unwrap()
-          .races.filter((gp) => new Date(gp.grandPrix.date) >= now)
-          .sort(
-            (a, b) =>
-              new Date(a.grandPrix.date).getTime() -
-              new Date(b.grandPrix.date).getTime(),
-          )[0];
+      if (nextGrandPrix.isErr()) {
+        return;
+      }
 
-        if (upcomingGp) {
-          const gpDate = new Date(upcomingGp.grandPrix.date + "T00:00:00Z");
+      const upcomingGp = nextGrandPrix
+        .unwrap()
+        .races.map((gp) => {
+          const timeString = gp.grandPrix.time || "00:00";
+          const dateTimeString = `${gp.grandPrix.date}T${timeString}:00Z`;
+          return {
+            ...gp,
+            dateTime: new Date(dateTimeString),
+          };
+        })
+        .filter((gp) => gp.dateTime >= now)
+        .sort((a, b) => a.dateTime.getTime() - b.dateTime.getTime())[0];
 
-          const timeString = upcomingGp.grandPrix.time || "00:00";
-          const [hours, minutes] = timeString.split(":");
+      if (upcomingGp) {
+        const gpDate = new Date(upcomingGp.grandPrix.date + "T00:00:00Z");
 
-          gpDate.setUTCHours(
-            parseInt(hours || "0", 10),
-            parseInt(minutes || "0", 10),
-          );
+        const timeString = upcomingGp.grandPrix.time || "00:00";
+        const [hours, minutes] = timeString.split(":");
 
-          const hoursRemaining = Math.ceil(
-            (gpDate.getTime() - now.getTime()) / (1000 * 60 * 60),
-          );
+        gpDate.setUTCHours(
+          parseInt(hours || "0", 10),
+          parseInt(minutes || "0", 10),
+        );
 
-          if (hoursRemaining < 24) {
-            activity = `the ${upcomingGp.name} in ${hoursRemaining} hour${
-              hoursRemaining === 1 ? "" : "s"
-            }`;
-          } else {
-            const daysRemaining = Math.floor(hoursRemaining / 24);
-            activity = `the ${upcomingGp.name} in ${daysRemaining} day${
-              daysRemaining === 1 ? "" : "s"
-            }`;
-          }
+        const hoursRemaining = Math.ceil(
+          (gpDate.getTime() - now.getTime()) / (1000 * 60 * 60),
+        );
+
+        if (hoursRemaining < 24) {
+          activity = `the ${upcomingGp.name} in ${hoursRemaining} hour${
+            hoursRemaining === 1 ? "" : "s"
+          }`;
+        } else {
+          const daysRemaining = Math.floor(hoursRemaining / 24);
+          activity = `the ${upcomingGp.name} in ${daysRemaining} day${
+            daysRemaining === 1 ? "" : "s"
+          }`;
         }
       }
 

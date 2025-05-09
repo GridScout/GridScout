@@ -43,7 +43,7 @@ GridScout is a feature rich Discord bot providing real time information about Fo
 
 - `/constructor <name>` - View details about an F1 team
 
-### [Read more on the documentation](https://docs.gridscout.xyz)
+### [Read more on the documentation](https://gridscout.xyz/docs)
 
 ## 📊 Data Sources
 

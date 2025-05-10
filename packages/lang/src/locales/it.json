@@ -21,6 +21,7 @@
     "manageWebhooks": "Manage Webhooks"
   },
   "genericError": "**Errore!** Si è verificato un errore durante l'elaborazione della tua richiesta, riprova più tardi.\nSe il problema persiste, contatta il supporto con il codice di errore sottostante.",
+  "genericErrorNoId": "**Error!** An error occurred while processing your request, please try again later.\nIf the issue persists, contact support.",
   "errorId": "Codice: {{id}}",
   "notYourInteraction": "Questa interazione appartiene a {{user}}.\nPer favore, esegui il comando `/{{command}}` per utilizzare questa funzionalità.",
   "missingPermissions": "**Errore!** Ti manca il permesso: `{{permission}}`.",
@@ -101,13 +102,13 @@
     "future": "**Error!** The selected race has not yet taken place.",
     "selectSession": "Seleziona una sessione",
     "defaultLabel": "Risultati",
-    "points": " ({{count}} punto)",
-    "points_plural": " ({{count}} punti)",
+    "points_one": " ({{count}} point)",
+    "points_other": " ({{count}} points)",
     "dnf": "DNF ({{reason}})"
   },
   "settings": {
+    "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
     "notifications": {
-      "invalidChannel": "**Errore!** Canale non valido. Seleziona un canale testuale valido.",
       "success": "**Successo!** Notifiche configurate in {{channel}}.\n\nSeleziona quali notifiche ricevere e quando utilizzando i menu a tendina sottostanti.",
       "updated": "**Successo!** Impostazioni aggiornate.",
       "typesPlaceholder": "Nessuna sessione selezionata",
@@ -121,7 +122,6 @@
     },
     "motorsportcom": {
       "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
-      "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
       "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
       "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }

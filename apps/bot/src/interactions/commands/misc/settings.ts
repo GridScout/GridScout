@@ -63,6 +63,12 @@ export default class Command extends SlashCommand {
   ) {
     const channel = interaction.options.getChannel("channel") as Channel;
     const mentionRole = interaction.options.getRole("mention") as Role | null;
+    
+    let mentionRoleId = mentionRole?.id || null;
+
+    if (mentionRole?.id === interaction.guild?.id) {
+      mentionRoleId = "everyone";
+    }
 
     if (!interaction.guildId) {
       return interaction.editReply({
@@ -97,7 +103,7 @@ export default class Command extends SlashCommand {
           id: interaction.guildId!,
           notificationsChannelId: channel.id,
           reminderMinutes: 15,
-          reminderMentionRoleId: mentionRole?.id || null,
+          reminderMentionRoleId: mentionRoleId,
         });
 
         if (reminderTypesList.length > 0) {
@@ -112,14 +118,14 @@ export default class Command extends SlashCommand {
     } else if (
       guildData[0]?.notificationsChannelId !== channel.id ||
       (mentionRole !== null &&
-        guildData[0]?.reminderMentionRoleId !== mentionRole.id)
+        guildData[0]?.reminderMentionRoleId !== mentionRoleId)
     ) {
       await db
         .update(guilds)
         .set({
           notificationsChannelId: channel.id,
           ...(mentionRole !== null
-            ? { reminderMentionRoleId: mentionRole.id }
+            ? { reminderMentionRoleId: mentionRoleId }
             : {}),
         })
         .where(eq(guilds.id, interaction.guildId));
@@ -148,7 +154,15 @@ export default class Command extends SlashCommand {
 
     let selectedReminderTypes: string[] = enabledTypes;
     let selectedReminderTime = currentReminderMinutes.toString();
-    let mentionRoleId = mentionRole?.id || currentMentionRoleId;
+    
+    // Update mentionRoleId with current settings if not set by command
+    if (!mentionRole) {
+      mentionRoleId = currentMentionRoleId;
+    }
+    
+    if (mentionRoleId === interaction.guild?.id || mentionRoleId === "everyone") {
+      mentionRoleId = "everyone";
+    }
 
     const timeOptions = [5, 15, 30, 60];
 
@@ -196,19 +210,21 @@ export default class Command extends SlashCommand {
             ),
         );
 
-      const mentionToggleRow =
-        new ActionRowBuilder<ButtonBuilder>().addComponents(
-          new ButtonBuilder()
-            .setCustomId("toggle_mention")
-            .setLabel(
-              mentionRoleId
-                ? t("settings.notifications.mention.disable")
-                : t("settings.notifications.mention.enable"),
-            )
-            .setStyle(mentionRoleId ? ButtonStyle.Danger : ButtonStyle.Success),
-        );
+      const components = [typeRow, timeRow] as ActionRowBuilder<any>[];
+      
+      // Only show disable button if a mention role is set
+      if (mentionRoleId) {
+        const mentionDisableRow =
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+              .setCustomId("disable_mention")
+              .setLabel(t("settings.notifications.mention.disable"))
+              .setStyle(ButtonStyle.Danger),
+          );
+        components.push(mentionDisableRow);
+      }
 
-      return [typeRow, timeRow, mentionToggleRow];
+      return components;
     };
 
     const response = await interaction.editReply({
@@ -305,20 +321,13 @@ export default class Command extends SlashCommand {
       const guildId = interaction.guildId;
       if (!guildId) return;
 
-      if (i.customId === "toggle_mention") {
-        // Toggle between null (no mentions) and the selected role ID or "everyone"
-        if (mentionRoleId) {
-          // If mentions are enabled, disable them
-          mentionRoleId = null;
-        } else {
-          // If mentions are disabled, enable them with the selected role or default to null
-          mentionRoleId = mentionRole?.id || "everyone";
-        }
+      if (i.customId === "disable_mention") {
+        mentionRoleId = null;
 
         await db
           .update(guilds)
           .set({
-            reminderMentionRoleId: mentionRoleId,
+            reminderMentionRoleId: null,
           })
           .where(eq(guilds.id, guildId));
       }

@@ -115,9 +115,9 @@
       "reminderPlaceholder": "No time selected",
       "reminderTime": "{{minutes}} minutes",
       "reminderTimeDescription": "GridScout will send a reminder {{minutes}} minutes before",
-      "mentionEveryone": {
-        "enabled": "Click to disable @everyone",
-        "disabled": "Click to enable @everyone"
+      "mention": {
+        "enable": "Click to enable mentions",
+        "disable": "Click to disable mentions"
       }
     },
     "motorsportcom": {

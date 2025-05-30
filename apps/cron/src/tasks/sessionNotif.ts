@@ -135,7 +135,16 @@ async function sendDiscordNotification(notification: any) {
   await checkRateLimit(notification.channelId);
 
   try {
-    const content = notification.mentionEveryone ? "@everyone" : undefined;
+    let content: string | undefined = undefined;
+    
+    // Handle role mentions
+    if (notification.mentionRoleId) {
+      if (notification.mentionRoleId === "everyone") {
+        content = "@everyone";
+      } else {
+        content = `<@&${notification.mentionRoleId}>`;
+      }
+    }
 
     const response = await rest.post(
       Routes.channelMessages(notification.channelId),
@@ -332,7 +341,7 @@ export default new CronJob(
                 sessionType: session.type,
                 sessionDateTime: sessionDateTime.toISOString(),
                 countryCode: raceEntry.country_alpha3,
-                mentionEveryone: guild.reminderMentionEveryone || false,
+                mentionRoleId: guild.reminderMentionRoleId || null,
               });
             }
           }
@@ -397,8 +406,15 @@ export default new CronJob(
         channelNotifications,
       ] of notificationsByChannel.entries()) {
         for (const notification of channelNotifications) {
+          let mentionText = "without mention";
+          if (notification.mentionRoleId) {
+            mentionText = notification.mentionRoleId === "everyone" 
+              ? "with @everyone mention" 
+              : `with role <@&${notification.mentionRoleId}> mention`;
+          }
+            
           logger.info(
-            `Sending notification for ${notification.raceName} - ${notification.sessionType} to guild ${notification.guildId}${notification.mentionEveryone ? " with @everyone mention" : ""}`,
+            `Sending notification for ${notification.raceName} - ${notification.sessionType} to guild ${notification.guildId} ${mentionText}`,
           );
 
           await sendDiscordNotification(notification);

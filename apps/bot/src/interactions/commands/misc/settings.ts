@@ -26,6 +26,7 @@ import {
   PermissionsBitField,
   NewsChannel,
   ChannelType,
+  Role,
 } from "discord.js";
 import { asc, eq } from "drizzle-orm";
 import * as Sentry from "@sentry/bun";
@@ -61,6 +62,7 @@ export default class Command extends SlashCommand {
     t: (key: string, options?: object) => string,
   ) {
     const channel = interaction.options.getChannel("channel") as Channel;
+    const mentionRole = interaction.options.getRole("mention") as Role | null;
 
     if (!interaction.guildId) {
       return interaction.editReply({
@@ -95,7 +97,7 @@ export default class Command extends SlashCommand {
           id: interaction.guildId!,
           notificationsChannelId: channel.id,
           reminderMinutes: 15,
-          reminderMentionEveryone: false,
+          reminderMentionRoleId: mentionRole?.id || null,
         });
 
         if (reminderTypesList.length > 0) {
@@ -107,18 +109,24 @@ export default class Command extends SlashCommand {
           );
         }
       });
-    } else if (guildData[0]?.notificationsChannelId !== channel.id) {
+    } else if (
+      guildData[0]?.notificationsChannelId !== channel.id ||
+      (mentionRole !== null &&
+        guildData[0]?.reminderMentionRoleId !== mentionRole.id)
+    ) {
       await db
         .update(guilds)
         .set({
           notificationsChannelId: channel.id,
+          ...(mentionRole !== null
+            ? { reminderMentionRoleId: mentionRole.id }
+            : {}),
         })
         .where(eq(guilds.id, interaction.guildId));
     }
 
     const currentReminderMinutes = guildData[0]?.reminderMinutes ?? 15;
-    const selectedMentionEveryone =
-      guildData[0]?.reminderMentionEveryone ?? false;
+    const currentMentionRoleId = guildData[0]?.reminderMentionRoleId || null;
 
     // build the enabled reminder types array
     let enabledTypes: string[] = [];
@@ -140,7 +148,7 @@ export default class Command extends SlashCommand {
 
     let selectedReminderTypes: string[] = enabledTypes;
     let selectedReminderTime = currentReminderMinutes.toString();
-    let mentionEveryone = selectedMentionEveryone;
+    let mentionRoleId = mentionRole?.id || currentMentionRoleId;
 
     const timeOptions = [5, 15, 30, 60];
 
@@ -188,21 +196,19 @@ export default class Command extends SlashCommand {
             ),
         );
 
-      const mentionEveryoneRow =
+      const mentionToggleRow =
         new ActionRowBuilder<ButtonBuilder>().addComponents(
           new ButtonBuilder()
-            .setCustomId("mention_everyone")
+            .setCustomId("toggle_mention")
             .setLabel(
-              mentionEveryone
-                ? t("settings.notifications.mentionEveryone.enabled")
-                : t("settings.notifications.mentionEveryone.disabled"),
+              mentionRoleId
+                ? t("settings.notifications.mention.disable")
+                : t("settings.notifications.mention.enable"),
             )
-            .setStyle(
-              mentionEveryone ? ButtonStyle.Danger : ButtonStyle.Success,
-            ),
+            .setStyle(mentionRoleId ? ButtonStyle.Danger : ButtonStyle.Success),
         );
 
-      return [typeRow, timeRow, mentionEveryoneRow];
+      return [typeRow, timeRow, mentionToggleRow];
     };
 
     const response = await interaction.editReply({
@@ -299,13 +305,20 @@ export default class Command extends SlashCommand {
       const guildId = interaction.guildId;
       if (!guildId) return;
 
-      if (i.customId === "mention_everyone") {
-        mentionEveryone = !mentionEveryone;
+      if (i.customId === "toggle_mention") {
+        // Toggle between null (no mentions) and the selected role ID or "everyone"
+        if (mentionRoleId) {
+          // If mentions are enabled, disable them
+          mentionRoleId = null;
+        } else {
+          // If mentions are disabled, enable them with the selected role or default to null
+          mentionRoleId = mentionRole?.id || "everyone";
+        }
 
         await db
           .update(guilds)
           .set({
-            reminderMentionEveryone: mentionEveryone,
+            reminderMentionRoleId: mentionRoleId,
           })
           .where(eq(guilds.id, guildId));
       }
@@ -427,6 +440,12 @@ export default class Command extends SlashCommand {
               .setName("channel")
               .setDescription("The channel to send reminders in")
               .setRequired(true),
+          )
+          .addRoleOption((option) =>
+            option
+              .setName("mention")
+              .setDescription("The role to mention in notifications")
+              .setRequired(false),
           ),
       )
       .addSubcommand((subcommand) =>

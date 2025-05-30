@@ -14,6 +14,7 @@ export const guilds = pgTable("guilds", {
   notificationsChannelId: text("notifications_channel_id"),
   reminderMinutes: integer("reminder_minutes"),
   reminderMentionEveryone: boolean("reminder_mention_everyone").default(false),
+  reminderMentionRoleId: text("reminder_mention_role_id"),
 });
 
 export const reminderTypes = pgTable("reminder_types", {

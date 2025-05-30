@@ -35,6 +35,6 @@
   "dependencies": {
     "@gridscout/env": "*",
     "@gridscout/logger": "*",
-    "drizzle-orm": "^0.40.1"
+    "drizzle-orm": "^0.44.0"
   }
 }

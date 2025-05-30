@@ -115,9 +115,9 @@
       "reminderPlaceholder": "No se ha seleccionado ningún horario",
       "reminderTime": "{{minutes}} minutos",
       "reminderTimeDescription": "GridScout enviará un recordatorio {{minutes}} minutos antes",
-      "mentionEveryone": {
-        "enabled": "Haz clic para desactivar @everyone",
-        "disabled": "Haz clic para activar @everyone"
+      "mention": {
+        "enable": "Click to enable mentions",
+        "disable": "Click to disable mentions"
       }
     },
     "motorsportcom": {

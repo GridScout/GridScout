@@ -29,6 +29,8 @@
   "devDependencies": {
     "@gridscout/tsconfig": "*",
     "@gridscout/types": "*",
+    "@libsql/client": "^0.15.8",
+    "postgres": "^3.4.7",
     "@types/bun": "^1.2.4",
     "drizzle-kit": "^0.30.5"
   },

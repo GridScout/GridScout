@@ -1,0 +1,28 @@
+{
+  "name": "@gridscout/utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./github": {
+      "types": "./src/githubApi.ts",
+      "default": "./dist/githubApi.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gridscout/tsconfig": "*"
+  },
+  "dependencies": {
+    "@gridscout/env": "*",
+    "@sapphire/result": "^2.7.2"
+  }
+}

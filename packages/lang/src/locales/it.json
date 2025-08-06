@@ -1,0 +1,129 @@
+{
+  "sessions": {
+    "freePractice1": "Prova Libera 1",
+    "freePractice2": "Prova Libera 2",
+    "freePractice3": "Prova Libera 3",
+    "sprintQualifying": "Qualifiche Sprint",
+    "sprintRace": "Corsa Sprint",
+    "qualifying": "Qualifiche",
+    "grandPrix": "Gran Premio"
+  },
+  "ordinal": {
+    "rules": {
+      "1": "°",
+      "2": "°",
+      "3": "°",
+      "default": "°"
+    }
+  },
+  "permissions": {
+    "manageGuild": "Gestisci Server",
+    "manageWebhooks": "Manage Webhooks"
+  },
+  "genericError": "**Errore!** Si è verificato un errore durante l'elaborazione della tua richiesta, riprova più tardi.\nSe il problema persiste, contatta il supporto con il codice di errore sottostante.",
+  "genericErrorNoId": "**Error!** An error occurred while processing your request, please try again later.\nIf the issue persists, contact support.",
+  "errorId": "Codice: {{id}}",
+  "notYourInteraction": "Questa interazione appartiene a {{user}}.\nPer favore, esegui il comando `/{{command}}` per utilizzare questa funzionalità.",
+  "missingPermissions": "**Errore!** Ti manca il permesso: `{{permission}}`.",
+  "guildOnly": "**Errore!** Questo comando può essere utilizzato solo in un server.",
+  "next": {
+    "error": "Non ci sono altri eventi per questa stagione.",
+    "author": "Calendario Gare",
+    "title": "Stagione {{season}}",
+    "footer": "Giornata {{round}} di {{total}}",
+    "previous": "Precedente",
+    "next": "Successivo"
+  },
+  "about": {
+    "content": "# GridScout è arrivato! <:racingcar:1341846279486963854>\n\nGridScout è un bot Discord progettato per gli appassionati di motorsport.\nChe tu stia cercando statistiche sui piloti, calendari delle gare o risultati passati, GridScout ti offre le ultime informazioni direttamente nel tuo server.\n## **Come Utilizzare**\nPer iniziare, digita / in una chat per vedere l'elenco dei comandi disponibili.\nSe hai bisogno di ulteriore assistenza, visita [docs.gridscout.xyz](<https://docs.gridscout.xyz>).\n## **Link Utili**\n- <:web:1341845985512652850> [**Sito Web**](<https://gridscout.xyz>)\n- <:help:1341845993418788954> [**Supporto e Feedback**](<https://discord.gg/SdK9QCquP4>)\n- <:terms:1341845978860355634> [**Termini di Servizio**](<https://docs.gridscout.xyz/terms>) & [**Privacy Policy**](<https://docs.gridscout.xyz/privacy>)\n- <:invite:1341845971822186648> [**Invita GridScout nel tuo server**](https://discord.com/oauth2/authorize?client_id=1239680594539974787&permissions=274878417984&integration_type=0&scope=bot+applications.commands)\n\nSe ti piace usare GridScout, considera di [votarlo su top.gg](<https://top.gg/bot/1239680594539974787>) per aiutare altre persone a scoprirlo!"
+  },
+  "driver": {
+    "error": "**Errore!** Pilota non trovato. Verifica l'ortografia o prova un altro nome.",
+    "notAvailable": "N/D",
+    "acronym": "**Acronimo**: `{{acronym}}`",
+    "constructor": "**Costruttore**: {{constructorEmoji}} **{{name}}**",
+    "dob": "**Data di Nascita**: {{dob}} ({{timetag}})",
+    "nationality": "**Nazionalità**: {{flag}} {{nationality}}",
+    "statistics": "Statistiche",
+    "wdc": "**Campionati del Mondo**: {{amount}}",
+    "highestRaceFinish": "**Highest Race Finish**: {{position}} (x{{count}})",
+    "highestGridPosition": "**Highest Grid Position**: {{position}} (x{{count}})",
+    "racesEntered": "**Gare Partecipate**: {{amount}}",
+    "podiums": "**Podi**: {{amount}}",
+    "points": "**Punti**: {{amount}}",
+    "grandslams": "[**Grand Slam**](https://en.wikipedia.org/wiki/Grand_slam_(Formula_One)): {{amount}}",
+    "fastestLaps": "**Giri Veloci**: {{amount}}",
+    "lastRaces": "Ultime Gare ({{count}})",
+    "finished": "Finito",
+    "position": "{{pos}}"
+  },
+  "constructor": {
+    "error": "**Errore!** Costruttore non trovato. Verifica l'ortografia o prova un altro nome.",
+    "name": "**Nome**: {{name}}",
+    "nationality": "**Nazionalità**: {{flag}} {{nationality}}",
+    "currentDrivers": "Piloti Attuali",
+    "statistics": "Statistiche",
+    "worldChampionships": "**Campionati del Mondo**: {{amount}}",
+    "totalRaceWins": "**Vittorie Totali**: {{amount}}",
+    "racesEntered": "**Gare Partecipate**: {{amount}}",
+    "podiums": "**Podi**: {{amount}}",
+    "points": "**Punti**: {{amount}}",
+    "poles": "**Pole Position**: {{amount}}",
+    "fastestLaps": "**Giri Veloci**: {{amount}}",
+    "chassis": "Telaio",
+    "engine": "Motore",
+    "recentResults": "Risultati Recenti",
+    "finished": "Finito",
+    "position": "{{pos}}",
+    "notAvailable": "N/D"
+  },
+  "calendar": {
+    "error": "**Errore!** Impossibile trovare il calendario per la stagione: `{{year}}`.",
+    "author": "Calendario Gare",
+    "title": "Stagione {{season}}",
+    "footer": "⏰ Tutte le date sopra sono mostrate nel tuo fuso orario locale"
+  },
+  "standings": {
+    "error": "**Errore!** Impossibile trovare la classifica per la stagione: `{{year}}`.",
+    "drivers": {
+      "title": "Stagione {{season}}",
+      "author": "Classifica Piloti"
+    },
+    "constructors": {
+      "title": "Stagione {{season}}",
+      "author": "Classifica Costruttori"
+    }
+  },
+  "results": {
+    "title": "Stagione {{season}} {{race}} — {{session}}",
+    "author": "Risultati Gara",
+    "error": "**Errore!** Impossibile recuperare i dati dei risultati per la gara selezionata.",
+    "noSessions": "**Errore!** Nessun dato disponibile per questa gara.\n\nLa nostra fonte di dati aggiorna solitamente le informazioni la domenica della settimana di gara.",
+    "future": "**Error!** The selected race has not yet taken place.",
+    "selectSession": "Seleziona una sessione",
+    "defaultLabel": "Risultati",
+    "points_one": " ({{count}} point)",
+    "points_other": " ({{count}} points)",
+    "dnf": "DNF ({{reason}})"
+  },
+  "settings": {
+    "invalidChannel": "**Error!** Invalid channel. Please select a valid text channel.",
+    "notifications": {
+      "success": "**Successo!** Notifiche configurate in {{channel}}.\n\nSeleziona quali notifiche ricevere e quando utilizzando i menu a tendina sottostanti.",
+      "updated": "**Successo!** Impostazioni aggiornate.",
+      "typesPlaceholder": "Nessuna sessione selezionata",
+      "reminderPlaceholder": "Nessun orario selezionato",
+      "reminderTime": "{{minutes}} minuti",
+      "reminderTimeDescription": "GridScout invierà un promemoria {{minutes}} minuti prima",
+      "mention": {
+        "enable": "Click to enable mentions",
+        "disable": "Click to disable mentions"
+      }
+    },
+    "motorsportcom": {
+      "success": "**Success!** Motorsport.com news notifications enabled in {{channel}}.",
+      "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
+      "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
+    }
+  }
+}

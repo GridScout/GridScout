@@ -1,0 +1,33 @@
+{
+  "name": "bot",
+  "repository": {
+    "url": "https://github.com/GridScout/GridScout"
+  },
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --concurrency 15",
+    "dev:bot": "turbo run dev --filter bot",
+    "dev:cron": "turbo run dev --filter cron",
+    "dev:packages": "turbo run dev --filter {./packages/*}",
+    "deploy": "turbo run deploy --filter bot",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.4",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "typescript": "5.8.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.2.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

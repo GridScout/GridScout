@@ -1,0 +1,41 @@
+{
+  "name": "@gridscout/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./sqlite": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./sqlite/schema": {
+      "types": "./src/sqlite-schema.ts",
+      "default": "./dist/sqlite-schema.js"
+    },
+    "./pg": {
+      "types": "./src/postgres.ts",
+      "default": "./dist/postgres.js"
+    },
+    "./pg/schema": {
+      "types": "./src/pg-schema.ts",
+      "default": "./dist/pg-schema.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gridscout/tsconfig": "*",
+    "@gridscout/types": "*",
+    "@libsql/client": "^0.15.8",
+    "postgres": "^3.4.7",
+    "@types/bun": "^1.2.4",
+    "drizzle-kit": "^0.30.5"
+  },
+  "dependencies": {
+    "@gridscout/env": "*",
+    "@gridscout/logger": "*"
+  }
+}

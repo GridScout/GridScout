@@ -1,0 +1,25 @@
+{
+  "name": "@gridscout/logger",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gridscout/tsconfig": "*"
+  },
+  "dependencies": {
+    "@gridscout/env": "*",
+    "chalk": "^5.4.1",
+    "winston": "^3.17.0"
+  }
+}

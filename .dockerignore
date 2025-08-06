@@ -1,0 +1,43 @@
+# Node modules & dependencies
+node_modules
+packages/*/node_modules
+
+# Build artifacts
+dist
+packages/*/dist
+
+# Turbo cache
+.turbo
+packages/*/.turbo
+apps/*/.turbo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Docker-related files
+Dockerfile*
+docker-compose.yml
+
+# Editor & OS-specific files
+.vscode
+.idea
+*.swp
+*.swo
+*.swn
+.DS_Store
+Thumbs.db
+
+# Database
+*.db

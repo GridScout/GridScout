@@ -1,0 +1,26 @@
+{
+  "name": "bot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "doppler run -- bun --no-clear-screen --watch ./src/index.ts",
+    "deploy": "doppler run -- bun --no-clear-screen --watch ./src/index.ts -D",
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gridscout/tsconfig": "*"
+  },
+  "dependencies": {
+    "@gridscout/api": "*",
+    "@gridscout/env": "*",
+    "@gridscout/logger": "*",
+    "@gridscout/lang": "*",
+    "@gridscout/metrics": "*",
+    "@gridscout/utils": "*",
+    "@gridscout/db": "*",
+    "@sentry/bun": "^9.5.0",
+    "discord.js": "^14.18.0"
+  }
+}

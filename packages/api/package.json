@@ -1,0 +1,27 @@
+{
+  "name": "@gridscout/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@gridscout/tsconfig": "*",
+    "@gridscout/types": "*"
+  },
+  "dependencies": {
+    "@gridscout/db": "*",
+    "@gridscout/cache": "*",
+    "@sapphire/result": "^2.7.2",
+    "drizzle-orm": "^0.40.1"
+  }
+}

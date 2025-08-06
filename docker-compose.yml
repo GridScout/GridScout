@@ -1,0 +1,53 @@
+services:
+  gridscout:
+    image: ghcr.io/gridscout/gridscout:latest
+    environment:
+      - DOPPLER_TOKEN=
+    volumes:
+      - /path/to/db:/app/f1db.db
+    restart: unless-stopped
+    depends_on:
+      - cron
+
+  cron:
+    image: ghcr.io/gridscout/cron:latest
+    environment:
+      - DOPPLER_TOKEN=
+    volumes:
+      - /path/to/db:/app/f1db.db
+    restart: unless-stopped
+
+  # Redis (dragonflydb)
+  dragonfly:
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'
+    ulimits:
+      memlock: -1
+    ports:
+      - "6379:6379"
+    volumes:
+      - dragonflydata:/data
+
+  meilisearch:
+    image: 'getmeili/meilisearch'
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearchdata:/data.ms
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_MASTER_KEY=masterKey
+
+  postgres:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=gridscout
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+volumes:
+  dragonflydata:
+  meilisearchdata:
+  postgresdata:

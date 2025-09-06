@@ -2,7 +2,7 @@ name: Build & Push Docker
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "workflow"]
   workflow_dispatch:
 
 env:

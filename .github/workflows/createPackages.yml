@@ -1,0 +1,38 @@
+name: Create Packages
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  create-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create gridscout package
+        run: |
+          echo "FROM alpine:latest" > Dockerfile.temp
+          echo "LABEL org.opencontainers.image.source=https://github.com/${{ github.repository }}" >> Dockerfile.temp
+          docker build -f Dockerfile.temp -t ${{ env.REGISTRY }}/gridscout/gridscout:init .
+          docker push ${{ env.REGISTRY }}/gridscout/gridscout:init
+          rm Dockerfile.temp
+
+      - name: Create cron package  
+        run: |
+          echo "FROM alpine:latest" > Dockerfile.temp
+          echo "LABEL org.opencontainers.image.source=https://github.com/${{ github.repository }}" >> Dockerfile.temp
+          docker build -f Dockerfile.temp -t ${{ env.REGISTRY }}/gridscout/cron:init .
+          docker push ${{ env.REGISTRY }}/gridscout/cron:init
+          rm Dockerfile.temp

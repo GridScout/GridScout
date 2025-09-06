@@ -8,13 +8,13 @@ on:
 env:
   REGISTRY: ghcr.io
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   buildAndPush:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - uses: actions/checkout@v3

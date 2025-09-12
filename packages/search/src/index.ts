@@ -34,11 +34,19 @@ interface Constructor {
   };
 }
 
+interface Circuit {
+  id: string;
+  name: string;
+  location: string;
+  country: string;
+}
+
 class MeilisearchClient {
   private client: MeiliSearch;
   driverIndexName: string;
   raceIndexName: string;
   constructorIndexName: string;
+  circuitIndexName: string;
 
   constructor(
     host: string = env.MEILISEARCH_HOST,
@@ -46,11 +54,13 @@ class MeilisearchClient {
     driverIndexName: string = "drivers",
     raceIndexName: string = "races",
     constructorIndexName: string = "constructors",
+    circuitIndexName: string = "circuits",
   ) {
     this.client = new MeiliSearch({ host, apiKey });
     this.driverIndexName = driverIndexName;
     this.raceIndexName = raceIndexName;
     this.constructorIndexName = constructorIndexName;
+    this.circuitIndexName = circuitIndexName;
   }
 
   /**
@@ -133,6 +143,22 @@ class MeilisearchClient {
     return response.hits;
   }
 
+  async searchCircuitByName(
+    name: string,
+    limit: number = 25,
+  ): Promise<Circuit[]> {
+    try {
+      const index = this.client.index(this.circuitIndexName);
+      const response = await index.search<Circuit>(name, {
+        limit: limit,
+        sort: ["name:asc"],
+      });
+      return response.hits;
+    } catch (error) {
+      return [];
+    }
+  }
+
   /**
    * Update driver documents in the Meilisearch index
    *
@@ -202,6 +228,44 @@ class MeilisearchClient {
     } catch (error) {
       logger.error("Error updating constructor documents");
       logger.error(error);
+    }
+  }
+
+  async updateCircuitDocuments(circuits: Circuit[]): Promise<void> {
+    try {
+      const index = this.client.index(this.circuitIndexName);
+      await index.deleteAllDocuments();
+      const response = await index.addDocuments(circuits, {
+        primaryKey: "id",
+      });
+      await index.updateFilterableAttributes(["name", "country"]);
+      await index.updateSortableAttributes(["name"]);
+      await index.updateSearchableAttributes([
+        "id",
+        "name",
+        "location",
+        "country",
+      ]);
+      logger.info(
+        `Circuit documents updated with task ID: ${response.taskUid}`,
+      );
+    } catch (error) {
+      logger.error("Error updating circuit documents");
+      logger.error(error);
+    }
+  }
+
+  /**
+   * Get all circuit documents from the Meilisearch index
+   * @returns {Promise<Circuit[]>} Array of all circuit documents in the index
+   */
+  async getAllCircuits(): Promise<Circuit[]> {
+    try {
+      const index = this.client.index(this.circuitIndexName);
+      const response = await index.getDocuments<Circuit>({ limit: 10000 });
+      return response.results;
+    } catch (error) {
+      return [];
     }
   }
 

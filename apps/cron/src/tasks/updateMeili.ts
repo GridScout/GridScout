@@ -1,13 +1,14 @@
 import CronJob from "../structures/cronJob.js";
 import { getDrizzle } from "@gridscout/db/sqlite";
 import {
+  circuit,
   constructor,
   country,
   driver,
   season_entrant_driver,
 } from "@gridscout/db/sqlite/schema";
 import { meilisearch } from "@gridscout/search";
-import { eq, sql } from "drizzle-orm";
+import { eq, name, sql } from "drizzle-orm";
 
 export default new CronJob(
   "MeilisearchUpdater",
@@ -135,6 +136,44 @@ export default new CronJob(
       );
       await meilisearch.updateConstructorDocuments(constructorsToAdd);
     }
+
+    // Get all circuits
+    const circuits = await db
+      .select({
+        id: circuit.id,
+        name: circuit.name,
+        location: circuit.place_name,
+        country: circuit.country_id,
+      })
+      .from(circuit);
+
+    console.log(`Found ${circuits.length} circuits in the database`);
+
+    const uploadedCircuits = await meilisearch.getAllDocuments(
+      meilisearch.circuitIndexName,
+    );
+    console.log(`Found ${uploadedCircuits.length} circuits in Meilisearch`);
+
+    const searchCircuitMap = new Map(uploadedCircuits.map((c) => [c.id, c]));
+
+    const circuitsToAdd: Circuit[] = [];
+
+    // check for updates & new circuits
+    for (const circuit of circuits) {
+      const existingCircuit = searchCircuitMap.get(circuit.id);
+
+      if (!existingCircuit) {
+        // new circuit, needs to be added
+        circuitsToAdd.push(circuit);
+      }
+    }
+
+    if (circuitsToAdd.length > 0) {
+      console.log(`Adding ${circuitsToAdd.length} new circuits to Meilisearch`);
+      await meilisearch.updateCircuitDocuments(circuitsToAdd);
+    }
+
+    console.log("Meilisearch update complete");
   },
 );
 
@@ -152,4 +191,11 @@ interface Constructor {
   fullName: string;
   nationality: { id: string; alpha3: string; demonym: string | null };
   active: boolean;
+}
+
+interface Circuit {
+  id: string;
+  name: string;
+  location: string;
+  country: string;
 }

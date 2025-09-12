@@ -197,3 +197,31 @@ export interface Constructor {
     }[];
   }[];
 }
+
+export interface Circuit {
+  id: string;
+  name: string;
+  location: string;
+  country: {
+    id: string;
+    alpha3: string;
+    name: string;
+  };
+  type: "ROAD" | "RACE";
+  direction: "CLOCKWISE" | "ANTI_CLOCKWISE";
+  length: number;
+  turns: number;
+  total_races_held: number;
+  first_gp_year: number;
+  lapRecord: {
+    time: string;
+    driver: {
+      id: string;
+      name: string;
+      country_alpha3: string;
+    };
+    year: number;
+  } | null;
+  // Google maps url format: http://maps.google.com/maps?z=15&t=k&q=loc:<latitude>,<longitude>
+  map_url: string;
+}

@@ -125,5 +125,27 @@
       "missingPermissions": "**Error!** I am missing the permission: `{{permission}}` in {{channel}}.",
       "announcementChannel": "**Error!** Due to a current limitation, notifications cannot be enabled in announcement channels."
     }
+  },
+  "circuit": {
+    "error": "**Error!** Circuit not found. Please check the spelling or try another name.",
+    "generalInformation": "General Information",
+    "name": "**Name**: {{name}}",
+    "location": "**Location**: {{locationEmoji}} {{placeName}}, {{countryName}}",
+    "type": "**Type**: {{type}}",
+    "direction": "**Direction**: {{direction}}",
+    "length": "**Length**: {{length}} km ({{lengthMiles}} miles)",
+    "turns": "**Turns**: {{turns}}",
+    "racesHeld": "**Races Held**: {{racesHeld}}",
+    "firstGp": "**First Grand Prix**: {{year}}",
+    "lapRecord": "Lap Record",
+    "notAvailable": "N/A",
+    "openMap": "Open Map",
+    "types": {
+      "RACE": "Race",
+      "STREET": "Street Circuit",
+      "ROAD": "Road Circuit",
+      "CLOCKWISE": "Clockwise",
+      "ANTI_CLOCKWISE": "Anti-Clockwise"
+    }
   }
 }
